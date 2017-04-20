@@ -1,0 +1,11 @@
+#include <pkcs11.h>
+
+// CKA_TOKEN
+const CK_BBOOL ON_TOKEN = CK_TRUE;
+const CK_BBOOL IN_SESSION = CK_FALSE;
+
+// CKA_PRIVATE
+const CK_BBOOL IS_PRIVATE = CK_TRUE;
+const CK_BBOOL IS_PUBLIC = CK_FALSE;
+
+int generateRsaKeyPair(CK_SESSION_HANDLE hSession, CK_BBOOL bTokenPuk, CK_BBOOL bPrivatePuk, CK_BBOOL bTokenPrk, CK_BBOOL bPrivatePrk, CK_OBJECT_HANDLE *hPuk, CK_OBJECT_HANDLE *hPrk);

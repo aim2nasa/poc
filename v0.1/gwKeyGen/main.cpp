@@ -1,6 +1,7 @@
 #include <iostream>
 #include "library.h"
 #include "createToken.h"
+#include "generateRSA.h"
 
 using namespace std;
 
@@ -31,6 +32,15 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	cout << "token(" << label << ") created" << endl;
+
+	//RSA Key pair를 생성한다
+	cout << "generating RSA key pair..." << endl;
+	CK_OBJECT_HANDLE hPuk, hPrk;
+	if ((nRtn = generateRsaKeyPair(hSession, ON_TOKEN, IS_PUBLIC, ON_TOKEN, IS_PUBLIC, &hPuk, &hPrk)) != 0) {
+		cout << "ERROR: generateRSA=" << nRtn << endl;
+		return -1;
+	}
+	cout << "RSA key pair generated" << endl;
 
 	unloadLib(module);
 	cout << "end" << endl;
