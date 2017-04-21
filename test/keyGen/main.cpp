@@ -76,28 +76,30 @@ int main(int argc, const char* argv[])
 	}
 
 	//AES키를 생성
-	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
-	CK_ULONG bytes = 16;
-	CK_BBOOL bTrue = CK_TRUE;
-	CK_BBOOL bFalse = CK_FALSE;
-	CK_ATTRIBUTE keyAttribs[] = {
-		{ CKA_TOKEN, &bTrue, sizeof(bTrue) },
-		{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
-		{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
-		{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) },
-		{ CKA_DERIVE, &bTrue, sizeof(bTrue) },
-		{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
-		{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
-		{ CKA_WRAP, &bTrue, sizeof(bTrue) },
-		{ CKA_UNWRAP, &bTrue, sizeof(bTrue) },
-		{ CKA_VALUE_LEN, &bytes, sizeof(bytes) }
-	};
+	{
+		CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
+		CK_ULONG bytes = 16;
+		CK_BBOOL bTrue = CK_TRUE;
+		CK_BBOOL bFalse = CK_FALSE;
+		CK_ATTRIBUTE keyAttribs[] = {
+			{ CKA_TOKEN, &bTrue, sizeof(bTrue) },
+			{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
+			{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
+			{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) },
+			{ CKA_DERIVE, &bTrue, sizeof(bTrue) },
+			{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
+			{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
+			{ CKA_WRAP, &bTrue, sizeof(bTrue) },
+			{ CKA_UNWRAP, &bTrue, sizeof(bTrue) },
+			{ CKA_VALUE_LEN, &bytes, sizeof(bytes) }
+		};
 
-	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
-	rv = C_GenerateKey(hSession, &mechanism,keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE),&hKey);
-	if (rv != CKR_OK) {
-		cout << "ERROR: C_GenerateKey: 0x" << hex << rv << endl;
-		return -1;
+		CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
+		rv = C_GenerateKey(hSession, &mechanism, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hKey);
+		if (rv != CKR_OK) {
+			cout << "ERROR: C_GenerateKey: 0x" << hex << rv << endl;
+			return -1;
+		}
 	}
 
 	unloadLib(module);
