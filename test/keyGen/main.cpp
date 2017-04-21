@@ -76,6 +76,7 @@ int main(int argc, const char* argv[])
 	}
 
 	//AES키를 생성
+	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
 	{
 		CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
 		CK_ULONG bytes = 16;
@@ -94,10 +95,52 @@ int main(int argc, const char* argv[])
 			{ CKA_VALUE_LEN, &bytes, sizeof(bytes) }
 		};
 
-		CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
 		rv = C_GenerateKey(hSession, &mechanism, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hKey);
 		if (rv != CKR_OK) {
 			cout << "ERROR: C_GenerateKey: 0x" << hex << rv << endl;
+			return -1;
+		}
+	}
+
+	//Key Derivation
+	{
+		CK_MECHANISM mechanism = { CKM_AES_ECB_ENCRYPT_DATA, NULL_PTR, 0 };
+		CK_KEY_DERIVATION_STRING_DATA param1;
+		CK_BYTE data[] = {
+			0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+			0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+			0x17, 0x18, 0x19, 0x20, 0x21, 0x22, 0x23, 0x24,
+			0x25, 0x26, 0x27, 0x28, 0x29, 0x30, 0x31, 0x32
+		};
+
+		param1.pData = &data[0];
+		param1.ulLen = sizeof(data);
+		mechanism.pParameter = &param1;
+		mechanism.ulParameterLen = sizeof(param1);
+
+		CK_KEY_TYPE keyType = CKK_AES;
+		CK_MECHANISM mechEncrypt = { CKM_VENDOR_DEFINED, NULL_PTR, 0 };
+		mechEncrypt.mechanism = keyType;
+		CK_ULONG secLen = 32;
+
+		CK_OBJECT_CLASS keyClass = CKO_SECRET_KEY;
+		CK_BBOOL bTrue = CK_TRUE;
+		CK_BBOOL bFalse = CK_FALSE;
+		CK_ATTRIBUTE keyAttribs[] = {
+			{ CKA_CLASS, &keyClass, sizeof(keyClass) },
+			{ CKA_KEY_TYPE, &keyType, sizeof(keyType) },
+			{ CKA_PRIVATE, &bFalse, sizeof(bFalse) },
+			{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
+			{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
+			{ CKA_SENSITIVE, &bFalse, sizeof(bFalse) },
+			{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
+			{ CKA_VALUE_LEN, &secLen, sizeof(secLen) }
+		};
+
+		CK_OBJECT_HANDLE hDerivedKey = CK_INVALID_HANDLE;
+		rv = C_DeriveKey(hSession, &mechanism, hKey, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hDerivedKey);
+		if (rv != CKR_OK) {
+			cout << "ERROR: C_DeriveKey: 0x" << hex << rv << endl;
 			return -1;
 		}
 	}
