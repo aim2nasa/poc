@@ -3,6 +3,8 @@
 
 using namespace std;
 
+int symDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_KEY_TYPE keyType);
+
 int main(int argc, const char* argv[])
 {
 	if (argc < 4) {
@@ -103,54 +105,112 @@ int main(int argc, const char* argv[])
 	}
 
 	//Key Derivation
-	{
-		CK_MECHANISM mechanism = { CKM_AES_ECB_ENCRYPT_DATA, NULL_PTR, 0 };
-		CK_KEY_DERIVATION_STRING_DATA param1;
-		CK_BYTE data[] = {
-			0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-			0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
-			0x17, 0x18, 0x19, 0x20, 0x21, 0x22, 0x23, 0x24,
-			0x25, 0x26, 0x27, 0x28, 0x29, 0x30, 0x31, 0x32
-		};
+	CK_OBJECT_HANDLE hDerivedKey = CK_INVALID_HANDLE;
+	CK_KEY_TYPE keyType[] = { CKK_GENERIC_SECRET, CKK_DES, CKK_DES2, CKK_DES3, CKK_AES };
+	for (int i = 0; i < sizeof(keyType) / sizeof(CK_KEY_TYPE); i++) {
+		int nRtn = symDerive(hSession, hKey, hDerivedKey, CKM_AES_ECB_ENCRYPT_DATA, keyType[i]);
+		if (nRtn != 0) {
+			cout << "ERROR: symDerive: " << dec << "i=" << i << ",rtn=" << nRtn << endl;
+			return -1;
+		}
+	}
+	cout << "symmetric derivation ok" << endl;
 
+	unloadLib(module);
+	cout << "end" << endl;
+	return 0;
+}
+
+int symDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_KEY_TYPE keyType)
+{
+	CK_RV rv;
+	CK_MECHANISM mechanism = { mechType, NULL_PTR, 0 };
+	CK_MECHANISM mechEncrypt = { CKM_VENDOR_DEFINED, NULL_PTR, 0 };
+	CK_KEY_DERIVATION_STRING_DATA param1;
+	CK_DES_CBC_ENCRYPT_DATA_PARAMS param2;
+	CK_AES_CBC_ENCRYPT_DATA_PARAMS param3;
+
+	CK_BYTE data[] = {
+		0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+		0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+		0x17, 0x18, 0x19, 0x20, 0x21, 0x22, 0x23, 0x24,
+		0x25, 0x26, 0x27, 0x28, 0x29, 0x30, 0x31, 0x32
+	};
+	CK_ULONG secLen = 0;
+
+	switch (mechType)
+	{
+	case CKM_DES_ECB_ENCRYPT_DATA:
+	case CKM_DES3_ECB_ENCRYPT_DATA:
+	case CKM_AES_ECB_ENCRYPT_DATA:
 		param1.pData = &data[0];
 		param1.ulLen = sizeof(data);
 		mechanism.pParameter = &param1;
 		mechanism.ulParameterLen = sizeof(param1);
-
-		CK_KEY_TYPE keyType = CKK_AES;			//ok
-		//CK_KEY_TYPE keyType = CKK_GENERIC_SECRET;	//ok
-		//CK_KEY_TYPE keyType = CKK_DES;			//0x10	CKR_ATTRIBUTE_READ_ONLY
-		//CK_KEY_TYPE keyType = CKK_DES2;			//0x10	CKR_ATTRIBUTE_READ_ONLY
-		//CK_KEY_TYPE keyType = CKK_DES3;			//0x10	CKR_ATTRIBUTE_READ_ONLY
-
-		CK_MECHANISM mechEncrypt = { CKM_VENDOR_DEFINED, NULL_PTR, 0 };
-		mechEncrypt.mechanism = keyType;
-		CK_ULONG secLen = 32;
-
-		CK_OBJECT_CLASS keyClass = CKO_SECRET_KEY;
-		CK_BBOOL bTrue = CK_TRUE;
-		CK_BBOOL bFalse = CK_FALSE;
-		CK_ATTRIBUTE keyAttribs[] = {
-			{ CKA_CLASS, &keyClass, sizeof(keyClass) },
-			{ CKA_KEY_TYPE, &keyType, sizeof(keyType) },
-			{ CKA_PRIVATE, &bFalse, sizeof(bFalse) },
-			{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
-			{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
-			{ CKA_SENSITIVE, &bFalse, sizeof(bFalse) },
-			{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
-			{ CKA_VALUE_LEN, &secLen, sizeof(secLen) }
-		};
-
-		CK_OBJECT_HANDLE hDerivedKey = CK_INVALID_HANDLE;
-		rv = C_DeriveKey(hSession, &mechanism, hKey, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hDerivedKey);
-		if (rv != CKR_OK) {
-			cout << "ERROR: C_DeriveKey: 0x" << hex << rv << endl;
-			return -1;
-		}
+		break;
+	case CKM_DES_CBC_ENCRYPT_DATA:
+	case CKM_DES3_CBC_ENCRYPT_DATA:
+		memcpy(param2.iv, "12345678", 8);
+		param2.pData = &data[0];
+		param2.length = sizeof(data);
+		mechanism.pParameter = &param2;
+		mechanism.ulParameterLen = sizeof(param2);
+		break;
+	case CKM_AES_CBC_ENCRYPT_DATA:
+		memcpy(param3.iv, "1234567890ABCDEF", 16);
+		param3.pData = &data[0];
+		param3.length = sizeof(data);
+		mechanism.pParameter = &param3;
+		mechanism.ulParameterLen = sizeof(param3);
+		break;
+	default:
+		return -1; //Invalid mechanism
 	}
 
-	unloadLib(module);
-	cout << "end" << endl;
+	switch (keyType)
+	{
+	case CKK_GENERIC_SECRET:
+		secLen = 32;
+		break;
+	case CKK_DES:
+		mechEncrypt.mechanism = CKM_DES_ECB;
+		break;
+	case CKK_DES2:
+	case CKK_DES3:
+		mechEncrypt.mechanism = CKM_DES3_ECB;
+		break;
+	case CKK_AES:
+		mechEncrypt.mechanism = CKM_AES_ECB;
+		secLen = 32;
+		break;
+	default:
+		return -2; //Invalid key type
+	}
+
+	CK_OBJECT_CLASS keyClass = CKO_SECRET_KEY;
+	CK_BBOOL bFalse = CK_FALSE;
+	CK_BBOOL bTrue = CK_TRUE;
+	CK_ATTRIBUTE keyAttribs[] = {
+		{ CKA_CLASS, &keyClass, sizeof(keyClass) },
+		{ CKA_KEY_TYPE, &keyType, sizeof(keyType) },
+		{ CKA_PRIVATE, &bFalse, sizeof(bFalse) },
+		{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_SENSITIVE, &bFalse, sizeof(bFalse) },
+		{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
+		{ CKA_VALUE_LEN, &secLen, sizeof(secLen) }
+	};
+
+	hDerive = CK_INVALID_HANDLE;
+	if (secLen > 0)
+	{
+		rv = C_DeriveKey(hSession, &mechanism, hKey,keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE),&hDerive);
+	}
+	else
+	{
+		rv = C_DeriveKey(hSession, &mechanism, hKey,keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE)-1,&hDerive);
+	}
+
+	if (rv != CKR_OK) return -3;
 	return 0;
 }
