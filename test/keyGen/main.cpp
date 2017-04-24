@@ -118,7 +118,12 @@ int main(int argc, const char* argv[])
 		mechanism.pParameter = &param1;
 		mechanism.ulParameterLen = sizeof(param1);
 
-		CK_KEY_TYPE keyType = CKK_AES;
+		CK_KEY_TYPE keyType = CKK_AES;			//ok
+		//CK_KEY_TYPE keyType = CKK_GENERIC_SECRET;	//ok
+		//CK_KEY_TYPE keyType = CKK_DES;			//0x10	CKR_ATTRIBUTE_READ_ONLY
+		//CK_KEY_TYPE keyType = CKK_DES2;			//0x10	CKR_ATTRIBUTE_READ_ONLY
+		//CK_KEY_TYPE keyType = CKK_DES3;			//0x10	CKR_ATTRIBUTE_READ_ONLY
+
 		CK_MECHANISM mechEncrypt = { CKM_VENDOR_DEFINED, NULL_PTR, 0 };
 		mechEncrypt.mechanism = keyType;
 		CK_ULONG secLen = 32;
