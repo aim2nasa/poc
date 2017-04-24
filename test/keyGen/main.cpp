@@ -106,11 +106,19 @@ int main(int argc, const char* argv[])
 
 	//Key Derivation
 	CK_OBJECT_HANDLE hDerivedKey = CK_INVALID_HANDLE;
-	CK_KEY_TYPE keyType[] = { CKK_GENERIC_SECRET, CKK_DES, CKK_DES2, CKK_DES3, CKK_AES };
+	//CK_KEY_TYPE keyType[] = { CKK_GENERIC_SECRET, CKK_DES, CKK_DES2, CKK_DES3, CKK_AES };
+	CK_KEY_TYPE keyType[] = { CKK_AES };
 	for (int i = 0; i < sizeof(keyType) / sizeof(CK_KEY_TYPE); i++) {
 		int nRtn = symDerive(hSession, hKey, hDerivedKey, CKM_AES_ECB_ENCRYPT_DATA, keyType[i]);
 		if (nRtn != 0) {
 			cout << "ERROR: symDerive: " << dec << "i=" << i << ",rtn=" << nRtn << endl;
+			return -1;
+		}
+
+		CK_OBJECT_HANDLE hDerivedKey1 = CK_INVALID_HANDLE;
+		nRtn = symDerive(hSession, hDerivedKey, hDerivedKey1, CKM_AES_ECB_ENCRYPT_DATA, keyType[i]);
+		if (nRtn != 0) {
+			cout << "ERROR: symDerive[1]: " << dec << "i=" << i << ",rtn=" << nRtn << endl;
 			return -1;
 		}
 	}
@@ -196,6 +204,7 @@ int symDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDL
 		{ CKA_PRIVATE, &bFalse, sizeof(bFalse) },
 		{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
 		{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_DERIVE, &bTrue, sizeof(bTrue) },
 		{ CKA_SENSITIVE, &bFalse, sizeof(bFalse) },
 		{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
 		{ CKA_VALUE_LEN, &secLen, sizeof(secLen) }
