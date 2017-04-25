@@ -142,10 +142,9 @@ int main(int argc, const char* argv[])
 	//Derive T1 from G1
 	CK_OBJECT_HANDLE hT1 = CK_INVALID_HANDLE;
 
-	CK_ATTRIBUTE valAttrib = { CKA_VALUE, NULL_PTR, 0 };
-	rv = C_GetAttributeValue(hSession, hG1, &valAttrib, 1);
-	assert(rv == CKR_OK);
-	valAttrib.pValue = (CK_BYTE_PTR)malloc(valAttrib.ulValueLen);
+	CK_BYTE symValue[64];
+	CK_ULONG ulSymValueLen = sizeof(symValue);
+	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &symValue, ulSymValueLen };
 	rv = C_GetAttributeValue(hSession, hG1, &valAttrib, 1);
 	assert(rv == CKR_OK);
 
@@ -154,8 +153,6 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
-
-	free(valAttrib.pValue);
 	cout << "symmetric derivation ok" << endl;
 
 	unloadLib(module);
