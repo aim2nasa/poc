@@ -133,7 +133,7 @@ int main(int argc, const char* argv[])
 	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
 	CK_BYTE g1Data[32];
 	memset(g1Data, 0, sizeof(g1Data));
-	memcpy(g1Data, "G1", sizeof("G1"));
+	memcpy(g1Data, "Unique Name of G1", sizeof("Unique Name of G1"));
 	nRtn = aesDerive(hSession, hGw, hG1, CKM_AES_ECB_ENCRYPT_DATA, g1Data, sizeof(g1Data));
 	if (nRtn != 0) {
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
@@ -161,7 +161,7 @@ int main(int argc, const char* argv[])
 
 	CK_BYTE g11Data[32];
 	memset(g11Data, 0, sizeof(g11Data));
-	memcpy(g11Data, "G11", sizeof("G11"));
+	memcpy(g11Data, "Serial Number of G11", sizeof("Serial Number of G11"));
 	nRtn = aesDerive(hSession, hG1, hG11, CKM_AES_ECB_ENCRYPT_DATA, g11Data, sizeof(g11Data));
 	if (nRtn != 0) {
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
@@ -174,7 +174,7 @@ int main(int argc, const char* argv[])
 
 	CK_BYTE g12Data[32];
 	memset(g12Data, 0, sizeof(g12Data));
-	memcpy(g12Data, "G12", sizeof("G12"));
+	memcpy(g12Data, "Serial Number of G12", sizeof("Serial Number of G12"));
 	nRtn = aesDerive(hSession, hG1, hG12, CKM_AES_ECB_ENCRYPT_DATA, g12Data, sizeof(g12Data));
 	if (nRtn != 0) {
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
