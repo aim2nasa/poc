@@ -169,6 +169,19 @@ int main(int argc, const char* argv[])
 	}
 	cout << "G11 Key(" << hG11 << ") ok" << endl;
 
+	//Derive G12 from G1
+	CK_OBJECT_HANDLE hG12 = CK_INVALID_HANDLE;
+
+	CK_BYTE g12Data[32];
+	memset(g12Data, 0, sizeof(g12Data));
+	memcpy(g12Data, "G12", sizeof("G12"));
+	nRtn = aesDerive(hSession, hG1, hG12, CKM_AES_ECB_ENCRYPT_DATA, g12Data, sizeof(g12Data));
+	if (nRtn != 0) {
+		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
+		return -1;
+	}
+	cout << "G12 Key(" << hG12 << ") ok" << endl;
+
 	unloadLib(module);
 	cout << "end" << endl;
 	return 0;
