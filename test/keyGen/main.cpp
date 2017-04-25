@@ -152,7 +152,8 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
-	cout << "symmetric derivation ok" << endl;
+	cout << "Derive T1 from G1 ok" << endl;
+
 
 	unloadLib(module);
 	cout << "end" << endl;
