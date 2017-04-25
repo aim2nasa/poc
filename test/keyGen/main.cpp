@@ -288,7 +288,7 @@ int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDL
 
 	CK_KEY_TYPE keyType = CKK_AES;
 	mechEncrypt.mechanism = CKM_AES_ECB;
-	CK_ULONG secLen = 32;	//8*32 = 256bit
+	CK_ULONG secLen = dataSize;	//8*32 = 256bit
 
 	CK_OBJECT_CLASS keyClass = CKO_SECRET_KEY;
 	CK_BBOOL bFalse = CK_FALSE;
