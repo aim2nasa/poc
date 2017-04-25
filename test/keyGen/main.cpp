@@ -105,6 +105,7 @@ int main(int argc, const char* argv[])
 			return -1;
 		}
 	}
+	cout << "GW Key("<< hGw <<") ok" << endl;
 
 	//Key Derivation
 #if 0
@@ -138,6 +139,7 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
+	cout << "G1 Key(" << hG1 << ") ok" << endl;
 
 	//Derive T1 from G1
 	CK_OBJECT_HANDLE hT1 = CK_INVALID_HANDLE;
@@ -152,7 +154,7 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
-	cout << "Derive T1 from G1 ok" << endl;
+	cout << "T1 Key(" << hT1 << ") ok" << endl;
 
 	//Derive G11 from G1
 	CK_OBJECT_HANDLE hG11 = CK_INVALID_HANDLE;
@@ -165,7 +167,7 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
-	cout << "Derive G11 from G1 ok" << endl;
+	cout << "G11 Key(" << hG11 << ") ok" << endl;
 
 	unloadLib(module);
 	cout << "end" << endl;
