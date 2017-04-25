@@ -78,11 +78,11 @@ int main(int argc, const char* argv[])
 		return -1;
 	}
 
-	//AES虐甫 积己
+	//GwKey(AES虐甫 积己)
 	CK_OBJECT_HANDLE hGw = CK_INVALID_HANDLE;
 	{
 		CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
-		CK_ULONG bytes = 16;
+		CK_ULONG bytes = 32;
 		CK_BBOOL bTrue = CK_TRUE;
 		CK_BBOOL bFalse = CK_FALSE;
 		CK_ATTRIBUTE keyAttribs[] = {
