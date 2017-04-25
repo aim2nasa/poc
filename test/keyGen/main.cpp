@@ -1,10 +1,12 @@
 #include <iostream>
 #include <assert.h>
+#include <iomanip>
 #include "library.h"
 
 using namespace std;
 
 int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv=NULL);
+CK_RV printKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey);
 
 int main(int argc, const char* argv[])
 {
@@ -104,6 +106,7 @@ int main(int argc, const char* argv[])
 			return -1;
 		}
 	}
+	printKey(hSession, hGw);
 	cout << "GW Key("<< hGw <<") ok" << endl;
 
 	//Derive G1
@@ -117,6 +120,7 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
+	printKey(hSession, hG1);
 	cout << "G1 Key(" << hG1 << ") ok" << endl;
 
 	//Derive T1 from G1
@@ -132,6 +136,7 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
+	printKey(hSession, hT1);
 	cout << "T1 Key(" << hT1 << ") ok" << endl;
 
 	//Derive G11 from G1
@@ -145,6 +150,7 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
+	printKey(hSession, hG11);
 	cout << "G11 Key(" << hG11 << ") ok" << endl;
 
 	//Derive G12 from G1
@@ -158,6 +164,7 @@ int main(int argc, const char* argv[])
 		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
 		return -1;
 	}
+	printKey(hSession, hG12);
 	cout << "G12 Key(" << hG12 << ") ok" << endl;
 
 	unloadLib(module);
@@ -217,4 +224,17 @@ int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDL
 	if (rv != CKR_OK) return -3;
 
 	return 0;
+}
+
+CK_RV printKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey)
+{
+	CK_BYTE keyValue[64];
+	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &keyValue, sizeof(keyValue) };
+	CK_RV rv = C_GetAttributeValue(hSession, hKey, &valAttrib, 1);
+	if (rv == CKR_OK) {
+		cout << "Key(" << hKey << "):";
+		for (unsigned long i = 0; i < valAttrib.ulValueLen; i++) cout << hex << setw(2) << (int)keyValue[i] << " ";
+		cout << endl;
+	}
+	return rv;
 }
