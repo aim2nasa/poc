@@ -154,6 +154,18 @@ int main(int argc, const char* argv[])
 	}
 	cout << "Derive T1 from G1 ok" << endl;
 
+	//Derive G11 from G1
+	CK_OBJECT_HANDLE hG11 = CK_INVALID_HANDLE;
+
+	CK_BYTE g11Data[32];
+	memset(g11Data, 0, sizeof(g11Data));
+	memcpy(g11Data, "G11", sizeof("G11"));
+	nRtn = aesDerive(hSession, hG1, hG11, CKM_AES_ECB_ENCRYPT_DATA, g11Data, sizeof(g11Data));
+	if (nRtn != 0) {
+		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
+		return -1;
+	}
+	cout << "Derive G11 from G1 ok" << endl;
 
 	unloadLib(module);
 	cout << "end" << endl;
