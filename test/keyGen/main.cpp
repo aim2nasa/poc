@@ -78,7 +78,7 @@ int main(int argc, const char* argv[])
 	}
 
 	//AES키를 생성
-	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
+	CK_OBJECT_HANDLE hGw = CK_INVALID_HANDLE;
 	{
 		CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
 		CK_ULONG bytes = 16;
@@ -97,7 +97,7 @@ int main(int argc, const char* argv[])
 			{ CKA_VALUE_LEN, &bytes, sizeof(bytes) }
 		};
 
-		rv = C_GenerateKey(hSession, &mechanism, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hKey);
+		rv = C_GenerateKey(hSession, &mechanism, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hGw);
 		if (rv != CKR_OK) {
 			cout << "ERROR: C_GenerateKey: 0x" << hex << rv << endl;
 			return -1;
@@ -105,18 +105,18 @@ int main(int argc, const char* argv[])
 	}
 
 	//Key Derivation
-	CK_OBJECT_HANDLE hDerivedKey = CK_INVALID_HANDLE;
+	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
 	//CK_KEY_TYPE keyType[] = { CKK_GENERIC_SECRET, CKK_DES, CKK_DES2, CKK_DES3, CKK_AES };
 	CK_KEY_TYPE keyType[] = { CKK_AES };
 	for (int i = 0; i < sizeof(keyType) / sizeof(CK_KEY_TYPE); i++) {
-		int nRtn = symDerive(hSession, hKey, hDerivedKey, CKM_AES_ECB_ENCRYPT_DATA, keyType[i]);
+		int nRtn = symDerive(hSession, hGw, hG1, CKM_AES_ECB_ENCRYPT_DATA, keyType[i]);
 		if (nRtn != 0) {
 			cout << "ERROR: symDerive: " << dec << "i=" << i << ",rtn=" << nRtn << endl;
 			return -1;
 		}
 
-		CK_OBJECT_HANDLE hDerivedKey1 = CK_INVALID_HANDLE;
-		nRtn = symDerive(hSession, hDerivedKey, hDerivedKey1, CKM_AES_ECB_ENCRYPT_DATA, keyType[i]);
+		CK_OBJECT_HANDLE hT1 = CK_INVALID_HANDLE;
+		nRtn = symDerive(hSession, hG1, hT1, CKM_AES_ECB_ENCRYPT_DATA, keyType[i]);
 		if (nRtn != 0) {
 			cout << "ERROR: symDerive[1]: " << dec << "i=" << i << ",rtn=" << nRtn << endl;
 			return -1;
