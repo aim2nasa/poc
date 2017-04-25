@@ -1,9 +1,11 @@
 #include <iostream>
+#include <assert.h>
 #include "library.h"
 
 using namespace std;
 
 int symDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_KEY_TYPE keyType);
+int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv=NULL);
 
 int main(int argc, const char* argv[])
 {
@@ -105,6 +107,7 @@ int main(int argc, const char* argv[])
 	}
 
 	//Key Derivation
+#if 0
 	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
 	//CK_KEY_TYPE keyType[] = { CKK_GENERIC_SECRET, CKK_DES, CKK_DES2, CKK_DES3, CKK_AES };
 	CK_KEY_TYPE keyType[] = { CKK_AES };
@@ -122,6 +125,37 @@ int main(int argc, const char* argv[])
 			return -1;
 		}
 	}
+#endif // 0
+
+	//Derive G1
+	int nRtn;
+	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
+	CK_BYTE g1Data[32];
+	memset(g1Data, 0, sizeof(g1Data));
+	memcpy(g1Data, "G1", sizeof("G1"));
+	nRtn = aesDerive(hSession, hGw, hG1, CKM_AES_ECB_ENCRYPT_DATA, g1Data, sizeof(g1Data));
+	if (nRtn != 0) {
+		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
+		return -1;
+	}
+
+	//Derive T1 from G1
+	CK_OBJECT_HANDLE hT1 = CK_INVALID_HANDLE;
+
+	CK_ATTRIBUTE valAttrib = { CKA_VALUE, NULL_PTR, 0 };
+	rv = C_GetAttributeValue(hSession, hG1, &valAttrib, 1);
+	assert(rv == CKR_OK);
+	valAttrib.pValue = (CK_BYTE_PTR)malloc(valAttrib.ulValueLen);
+	rv = C_GetAttributeValue(hSession, hG1, &valAttrib, 1);
+	assert(rv == CKR_OK);
+
+	nRtn = aesDerive(hSession, hG1, hT1, CKM_AES_ECB_ENCRYPT_DATA, (CK_BYTE*)valAttrib.pValue, valAttrib.ulValueLen);
+	if (nRtn != 0) {
+		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
+		return -1;
+	}
+
+	free(valAttrib.pValue);
 	cout << "symmetric derivation ok" << endl;
 
 	unloadLib(module);
@@ -221,5 +255,59 @@ int symDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDL
 	}
 
 	if (rv != CKR_OK) return -3;
+	return 0;
+}
+
+int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv)
+{
+	CK_RV rv;
+	CK_MECHANISM mechanism = { mechType, NULL_PTR, 0 };
+	CK_MECHANISM mechEncrypt = { CKM_VENDOR_DEFINED, NULL_PTR, 0 };
+	CK_KEY_DERIVATION_STRING_DATA param1;
+	CK_AES_CBC_ENCRYPT_DATA_PARAMS param3;
+
+	switch (mechType)
+	{
+	case CKM_AES_ECB_ENCRYPT_DATA:
+		param1.pData = data;
+		param1.ulLen = dataSize;
+		mechanism.pParameter = &param1;
+		mechanism.ulParameterLen = sizeof(param1);
+		break;
+	case CKM_AES_CBC_ENCRYPT_DATA:
+		assert(iv);
+		memcpy(param3.iv, iv, 16);
+		param3.pData = data;
+		param3.length = dataSize;
+		mechanism.pParameter = &param3;
+		mechanism.ulParameterLen = sizeof(param3);
+		break;
+	default:
+		return -1; //Invalid mechanism
+	}
+
+	CK_KEY_TYPE keyType = CKK_AES;
+	mechEncrypt.mechanism = CKM_AES_ECB;
+	CK_ULONG secLen = 32;	//8*32 = 256bit
+
+	CK_OBJECT_CLASS keyClass = CKO_SECRET_KEY;
+	CK_BBOOL bFalse = CK_FALSE;
+	CK_BBOOL bTrue = CK_TRUE;
+	CK_ATTRIBUTE keyAttribs[] = {
+		{ CKA_CLASS, &keyClass, sizeof(keyClass) },
+		{ CKA_KEY_TYPE, &keyType, sizeof(keyType) },
+		{ CKA_PRIVATE, &bFalse, sizeof(bFalse) },
+		{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_DERIVE, &bTrue, sizeof(bTrue) },
+		{ CKA_SENSITIVE, &bFalse, sizeof(bFalse) },
+		{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
+		{ CKA_VALUE_LEN, &secLen, sizeof(secLen) }
+	};
+
+	hDerive = CK_INVALID_HANDLE;
+	rv = C_DeriveKey(hSession, &mechanism, hKey, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hDerive);
+	if (rv != CKR_OK) return -3;
+
 	return 0;
 }
