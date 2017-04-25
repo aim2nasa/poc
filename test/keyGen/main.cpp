@@ -142,9 +142,8 @@ int main(int argc, const char* argv[])
 	//Derive T1 from G1
 	CK_OBJECT_HANDLE hT1 = CK_INVALID_HANDLE;
 
-	CK_BYTE symValue[64];
-	CK_ULONG ulSymValueLen = sizeof(symValue);
-	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &symValue, ulSymValueLen };
+	CK_BYTE keyValue[64];
+	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &keyValue, sizeof(keyValue) };
 	rv = C_GetAttributeValue(hSession, hG1, &valAttrib, 1);
 	assert(rv == CKR_OK);
 
