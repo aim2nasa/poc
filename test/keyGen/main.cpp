@@ -5,6 +5,7 @@
 
 using namespace std;
 
+int deriveGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_HANDLE hParent, CK_BYTE_PTR data, CK_ULONG dataSize, const char *group);
 int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup, const char *tag);
 int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv=NULL);
 CK_RV printKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey);
@@ -110,19 +111,14 @@ int main(int argc, const char* argv[])
 	printKey(hSession, hGw);
 	cout << "GW Key("<< hGw <<") ok" << endl;
 
-	//Derive G1
 	int nRtn;
+
+	//Derive G1
 	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
 	CK_BYTE g1Data[32];
 	memset(g1Data, 0, sizeof(g1Data));
 	memcpy(g1Data, "Unique Name of G1", sizeof("Unique Name of G1"));
-	nRtn = aesDerive(hSession, hGw, hG1, CKM_AES_ECB_ENCRYPT_DATA, g1Data, sizeof(g1Data));
-	if (nRtn != 0) {
-		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
-		return -1;
-	}
-	printKey(hSession, hG1);
-	cout << "G1 Key(" << hG1 << ") ok" << endl;
+	deriveGroup(hSession, hG1, hGw, g1Data, sizeof(g1Data), "G1");
 
 	//Derive T1 from G1
 	CK_OBJECT_HANDLE hT1 = CK_INVALID_HANDLE;
@@ -172,6 +168,20 @@ int main(int argc, const char* argv[])
 
 	unloadLib(module);
 	cout << "end" << endl;
+	return 0;
+}
+
+//Derive Group
+int deriveGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_HANDLE hParent, CK_BYTE_PTR data, CK_ULONG dataSize, const char *group)
+{
+	hGroup = CK_INVALID_HANDLE;
+	int nRtn;
+	if ((nRtn=aesDerive(hSession, hParent, hGroup, CKM_AES_ECB_ENCRYPT_DATA, data, dataSize)) != 0) {
+		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
+		return -1;
+	}
+	printKey(hSession, hGroup);
+	cout << group << " Key(" << hGroup << ") ok" << endl;
 	return 0;
 }
 
