@@ -5,6 +5,7 @@
 
 using namespace std;
 
+int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup, const char *tag);
 int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv=NULL);
 CK_RV printKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey);
 
@@ -125,19 +126,7 @@ int main(int argc, const char* argv[])
 
 	//Derive T1 from G1
 	CK_OBJECT_HANDLE hT1 = CK_INVALID_HANDLE;
-
-	CK_BYTE keyValue[64];
-	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &keyValue, sizeof(keyValue) };
-	rv = C_GetAttributeValue(hSession, hG1, &valAttrib, 1);
-	assert(rv == CKR_OK);
-
-	nRtn = aesDerive(hSession, hG1, hT1, CKM_AES_ECB_ENCRYPT_DATA, (CK_BYTE*)valAttrib.pValue, valAttrib.ulValueLen);
-	if (nRtn != 0) {
-		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
-		return -1;
-	}
-	printKey(hSession, hT1);
-	cout << "T1 Key(" << hT1 << ") ok" << endl;
+	deriveTagFromGroup(hSession, hT1, hG1, "T1");
 
 	//Derive G11 from G1
 	CK_OBJECT_HANDLE hG11 = CK_INVALID_HANDLE;
@@ -183,6 +172,29 @@ int main(int argc, const char* argv[])
 
 	unloadLib(module);
 	cout << "end" << endl;
+	return 0;
+}
+
+//Derive Tag from Group
+int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup,const char *tag)
+{
+	hTag = CK_INVALID_HANDLE;
+
+	CK_BYTE keyValue[64];
+	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &keyValue, sizeof(keyValue) };
+	CK_RV rv = C_GetAttributeValue(hSession, hGroup, &valAttrib, 1);
+	if (rv != CKR_OK)
+		return -1;
+
+	int nRtn;
+	if ((nRtn=aesDerive(hSession, hGroup, hTag, CKM_AES_ECB_ENCRYPT_DATA, (CK_BYTE*)valAttrib.pValue, valAttrib.ulValueLen)) != 0) {
+		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
+		return -2;
+	}
+	printKey(hSession, hTag);
+
+	assert(tag);
+	cout <<tag<< " Key(" << hTag << ") ok" << endl;
 	return 0;
 }
 
