@@ -196,7 +196,7 @@ CK_RV printKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey)
 	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &keyValue, sizeof(keyValue) };
 	CK_RV rv = C_GetAttributeValue(hSession, hKey, &valAttrib, 1);
 	if (rv == CKR_OK) {
-		cout << "Key(" << hKey << "):";
+		cout << "\tKey(" << hKey << "):";
 		for (unsigned long i = 0; i < valAttrib.ulValueLen; i++) cout << hex << setw(2) << (int)keyValue[i] << " ";
 		cout << endl;
 	}
