@@ -111,8 +111,6 @@ int main(int argc, const char* argv[])
 	printKey(hSession, hGw);
 	cout << "GW Key("<< hGw <<") ok" << endl;
 
-	int nRtn;
-
 	//Derive G1
 	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
 	CK_BYTE g1Data[32];
@@ -126,45 +124,24 @@ int main(int argc, const char* argv[])
 
 	//Derive G11 from G1
 	CK_OBJECT_HANDLE hG11 = CK_INVALID_HANDLE;
-
 	CK_BYTE g11Data[32];
 	memset(g11Data, 0, sizeof(g11Data));
 	memcpy(g11Data, "Serial Number of G11", sizeof("Serial Number of G11"));
-	nRtn = aesDerive(hSession, hG1, hG11, CKM_AES_ECB_ENCRYPT_DATA, g11Data, sizeof(g11Data));
-	if (nRtn != 0) {
-		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
-		return -1;
-	}
-	printKey(hSession, hG11);
-	cout << "G11 Key(" << hG11 << ") ok" << endl;
+	deriveGroup(hSession, hG11, hG1, g11Data, sizeof(g11Data), "G11");
 
 	//Derive G12 from G1
 	CK_OBJECT_HANDLE hG12 = CK_INVALID_HANDLE;
-
 	CK_BYTE g12Data[32];
 	memset(g12Data, 0, sizeof(g12Data));
 	memcpy(g12Data, "Serial Number of G12", sizeof("Serial Number of G12"));
-	nRtn = aesDerive(hSession, hG1, hG12, CKM_AES_ECB_ENCRYPT_DATA, g12Data, sizeof(g12Data));
-	if (nRtn != 0) {
-		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
-		return -1;
-	}
-	printKey(hSession, hG12);
-	cout << "G12 Key(" << hG12 << ") ok" << endl;
+	deriveGroup(hSession, hG12, hG1, g12Data, sizeof(g12Data), "G12");
 
 	//Derive G13 from G1
 	CK_OBJECT_HANDLE hG13 = CK_INVALID_HANDLE;
-
 	CK_BYTE g13Data[32];
 	memset(g13Data, 0, sizeof(g13Data));
 	memcpy(g13Data, "Serial Number of G13", sizeof("Serial Number of G13"));
-	nRtn = aesDerive(hSession, hG1, hG13, CKM_AES_ECB_ENCRYPT_DATA, g13Data, sizeof(g13Data));
-	if (nRtn != 0) {
-		cout << "ERROR: aesDerive: " << dec << ",rtn=" << nRtn << endl;
-		return -1;
-	}
-	printKey(hSession, hG13);
-	cout << "G13 Key(" << hG13 << ") ok" << endl;
+	deriveGroup(hSession, hG13, hG1, g13Data, sizeof(g13Data), "G13");
 
 	unloadLib(module);
 	cout << "end" << endl;
