@@ -28,7 +28,7 @@ int main(int argc, const char* argv[])
 
 	CK_BYTE salt[32];
 
-	//Derive G1
+	//Derive G1 -----------------------------------------------------------------
 	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
 	memInit(salt, sizeof(salt), "Unique Name of G1");
 	deriveGroup(hSession, hG1, hGw, salt, sizeof(salt), "G1");
@@ -51,6 +51,25 @@ int main(int argc, const char* argv[])
 	CK_OBJECT_HANDLE hG13 = CK_INVALID_HANDLE;
 	memInit(salt, sizeof(salt), "Serial Number of G13");
 	deriveGroup(hSession, hG13, hG1, salt, sizeof(salt), "G13");
+
+	//Derive G2 -----------------------------------------------------------------
+	CK_OBJECT_HANDLE hG2 = CK_INVALID_HANDLE;
+	memInit(salt, sizeof(salt), "Unique Name of G2");
+	deriveGroup(hSession, hG2, hGw, salt, sizeof(salt), "G2");
+
+	//Derive T2 from G2
+	CK_OBJECT_HANDLE hT2 = CK_INVALID_HANDLE;
+	deriveTagFromGroup(hSession, hT2, hG2, "T2");
+
+	//Derive G21 from G2
+	CK_OBJECT_HANDLE hG21 = CK_INVALID_HANDLE;
+	memInit(salt, sizeof(salt), "Serial Number of G21");
+	deriveGroup(hSession, hG21, hG2, salt, sizeof(salt), "G21");
+
+	//Derive G22 from G2
+	CK_OBJECT_HANDLE hG22 = CK_INVALID_HANDLE;
+	memInit(salt, sizeof(salt), "Serial Number of G22");
+	deriveGroup(hSession, hG22, hG2, salt, sizeof(salt), "G22");
 
 	unloadLib(module);
 	cout << "end" << endl;
