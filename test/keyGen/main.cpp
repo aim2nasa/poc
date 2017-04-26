@@ -5,6 +5,7 @@
 
 using namespace std;
 
+int createAesKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, CK_ULONG bytes, const char *gw);
 int deriveGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_HANDLE hParent, CK_BYTE_PTR data, CK_ULONG dataSize, const char *group);
 int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup, const char *tag);
 int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv=NULL);
@@ -84,32 +85,7 @@ int main(int argc, const char* argv[])
 
 	//GwKey(AES虐甫 积己)
 	CK_OBJECT_HANDLE hGw = CK_INVALID_HANDLE;
-	{
-		CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
-		CK_ULONG bytes = 32;
-		CK_BBOOL bTrue = CK_TRUE;
-		CK_BBOOL bFalse = CK_FALSE;
-		CK_ATTRIBUTE keyAttribs[] = {
-			{ CKA_TOKEN, &bTrue, sizeof(bTrue) },
-			{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
-			{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
-			{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) },
-			{ CKA_DERIVE, &bTrue, sizeof(bTrue) },
-			{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
-			{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
-			{ CKA_WRAP, &bTrue, sizeof(bTrue) },
-			{ CKA_UNWRAP, &bTrue, sizeof(bTrue) },
-			{ CKA_VALUE_LEN, &bytes, sizeof(bytes) }
-		};
-
-		rv = C_GenerateKey(hSession, &mechanism, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hGw);
-		if (rv != CKR_OK) {
-			cout << "ERROR: C_GenerateKey: 0x" << hex << rv << endl;
-			return -1;
-		}
-	}
-	printKey(hSession, hGw);
-	cout << "GW Key("<< hGw <<") ok" << endl;
+	createAesKey(hSession, hGw, 32, "gw");
 
 	//Derive G1
 	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
@@ -145,6 +121,37 @@ int main(int argc, const char* argv[])
 
 	unloadLib(module);
 	cout << "end" << endl;
+	return 0;
+}
+
+//GwKey(AES虐甫 积己)
+int createAesKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, CK_ULONG bytes, const char *gw)
+{
+	hKey = CK_INVALID_HANDLE;
+	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
+	CK_BBOOL bTrue = CK_TRUE;
+	CK_BBOOL bFalse = CK_FALSE;
+	CK_ATTRIBUTE keyAttribs[] = {
+		{ CKA_TOKEN, &bTrue, sizeof(bTrue) },
+		{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
+		{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
+		{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) },
+		{ CKA_DERIVE, &bTrue, sizeof(bTrue) },
+		{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_WRAP, &bTrue, sizeof(bTrue) },
+		{ CKA_UNWRAP, &bTrue, sizeof(bTrue) },
+		{ CKA_VALUE_LEN, &bytes, sizeof(bytes) }
+	};
+
+	CK_RV rv = C_GenerateKey(hSession, &mechanism, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hKey);
+	if (rv != CKR_OK) {
+		cout << "ERROR: C_GenerateKey: 0x" << hex << rv << endl;
+		return -1;
+	}
+
+	printKey(hSession, hKey);
+	cout << gw << " Key(" << hKey << ") ok" << endl;
 	return 0;
 }
 
