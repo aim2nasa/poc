@@ -5,6 +5,7 @@
 
 using namespace std;
 
+void memInit(CK_BYTE_PTR data, CK_ULONG dataSize, const char *name);
 int prepare(CK_FUNCTION_LIST_PTR p11, const char *soPin, const char *label, const char *userPin, CK_SESSION_HANDLE &hSession);
 int createAesKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, CK_ULONG bytes, const char *gw);
 int deriveGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_HANDLE hParent, CK_BYTE_PTR data, CK_ULONG dataSize, const char *group);
@@ -34,12 +35,12 @@ int main(int argc, const char* argv[])
 	CK_OBJECT_HANDLE hGw = CK_INVALID_HANDLE;
 	createAesKey(hSession, hGw, 32, "gw");
 
+	CK_BYTE salt[32];
+
 	//Derive G1
 	CK_OBJECT_HANDLE hG1 = CK_INVALID_HANDLE;
-	CK_BYTE g1Data[32];
-	memset(g1Data, 0, sizeof(g1Data));
-	memcpy(g1Data, "Unique Name of G1", sizeof("Unique Name of G1"));
-	deriveGroup(hSession, hG1, hGw, g1Data, sizeof(g1Data), "G1");
+	memInit(salt, sizeof(salt), "Unique Name of G1");
+	deriveGroup(hSession, hG1, hGw, salt, sizeof(salt), "G1");
 
 	//Derive T1 from G1
 	CK_OBJECT_HANDLE hT1 = CK_INVALID_HANDLE;
@@ -47,28 +48,29 @@ int main(int argc, const char* argv[])
 
 	//Derive G11 from G1
 	CK_OBJECT_HANDLE hG11 = CK_INVALID_HANDLE;
-	CK_BYTE g11Data[32];
-	memset(g11Data, 0, sizeof(g11Data));
-	memcpy(g11Data, "Serial Number of G11", sizeof("Serial Number of G11"));
-	deriveGroup(hSession, hG11, hG1, g11Data, sizeof(g11Data), "G11");
+	memInit(salt, sizeof(salt), "Serial Number of G11");
+	deriveGroup(hSession, hG11, hG1, salt, sizeof(salt), "G11");
 
 	//Derive G12 from G1
 	CK_OBJECT_HANDLE hG12 = CK_INVALID_HANDLE;
-	CK_BYTE g12Data[32];
-	memset(g12Data, 0, sizeof(g12Data));
-	memcpy(g12Data, "Serial Number of G12", sizeof("Serial Number of G12"));
-	deriveGroup(hSession, hG12, hG1, g12Data, sizeof(g12Data), "G12");
+	memInit(salt, sizeof(salt), "Serial Number of G12");
+	deriveGroup(hSession, hG12, hG1, salt, sizeof(salt), "G12");
 
 	//Derive G13 from G1
 	CK_OBJECT_HANDLE hG13 = CK_INVALID_HANDLE;
-	CK_BYTE g13Data[32];
-	memset(g13Data, 0, sizeof(g13Data));
-	memcpy(g13Data, "Serial Number of G13", sizeof("Serial Number of G13"));
-	deriveGroup(hSession, hG13, hG1, g13Data, sizeof(g13Data), "G13");
+	memInit(salt, sizeof(salt), "Serial Number of G13");
+	deriveGroup(hSession, hG13, hG1, salt, sizeof(salt), "G13");
 
 	unloadLib(module);
 	cout << "end" << endl;
 	return 0;
+}
+
+void memInit(CK_BYTE_PTR data,CK_ULONG dataSize,const char *name)
+{
+	assert(strlen(name) <= dataSize);
+	memset(data, 0, dataSize);
+	memcpy(data, name, strlen(name));
 }
 
 //토큰을 생성한다 (세션 오픈 포함)
