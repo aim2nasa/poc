@@ -7,3 +7,4 @@ int deriveGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_
 int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup, const char *tag);
 int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv = NULL);
 CK_RV printKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey);
+void aesEcbEncDec(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, const size_t blockSize, CK_BYTE_PTR data, CK_LONG dataSize);

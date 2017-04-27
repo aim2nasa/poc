@@ -2,6 +2,7 @@
 #include <iostream>
 #include <assert.h>
 #include <iomanip>
+#include <vector>
 
 using namespace std;
 
@@ -199,4 +200,39 @@ CK_RV printKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey)
 		cout << endl;
 	}
 	return rv;
+}
+
+void aesEcbEncDec(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, const size_t blockSize, CK_BYTE_PTR data, CK_LONG dataSize)
+{
+	//AES ECB encoding
+	const CK_MECHANISM mechanism = { CKM_AES_ECB, NULL_PTR, 0 };
+	CK_MECHANISM_PTR pMechanism((CK_MECHANISM_PTR)&mechanism);
+
+	CK_RV rv = C_EncryptInit(hSession, pMechanism, hKey);
+	assert(rv == CKR_OK);
+
+	CK_ULONG ulEncryptedDataLen;
+	rv = C_Encrypt(hSession, data, dataSize, NULL_PTR, &ulEncryptedDataLen);
+	assert(rv == CKR_OK);
+
+	std::vector<CK_BYTE> vEncryptedData;
+	vEncryptedData.resize(ulEncryptedDataLen);
+	rv = C_Encrypt(hSession, data, dataSize, &vEncryptedData.front(), &ulEncryptedDataLen);
+	assert(rv == CKR_OK);
+
+	//AES ECB decoding
+	rv = C_DecryptInit(hSession, pMechanism, hKey);
+	assert(rv == CKR_OK);
+
+	CK_ULONG ulDataLen;
+	rv = C_Decrypt(hSession, &vEncryptedData.front(), (unsigned long)vEncryptedData.size(), NULL_PTR, &ulDataLen);
+	assert(rv == CKR_OK);
+
+	std::vector<CK_BYTE> vDecryptedData;
+	vDecryptedData.resize(ulDataLen);
+	rv = C_Decrypt(hSession, &vEncryptedData.front(), (unsigned long)vEncryptedData.size(), &vDecryptedData.front(), &ulDataLen);
+	assert(rv == CKR_OK);
+
+	assert(dataSize == ulDataLen);
+	assert(memcmp(data, &vDecryptedData.front(), dataSize)==0);
 }

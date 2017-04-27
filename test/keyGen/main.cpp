@@ -71,6 +71,13 @@ int main(int argc, const char* argv[])
 	memInit(salt, sizeof(salt), "Serial Number of G22");
 	deriveGroup(hSession, hG22, hG2, salt, sizeof(salt), "G22");
 
+	//AES ECB encoding/decoding test
+	const int blockSize(0x10);
+	const int NumBlock(10);
+	CK_BYTE data[blockSize*NumBlock] = { "Billy Elliot the musical. What a fascinating experince! Love it" };
+
+	aesEcbEncDec(hSession, hT1, blockSize, data, sizeof(data));
+
 	unloadLib(module);
 	cout << "end" << endl;
 	return 0;
