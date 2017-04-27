@@ -140,7 +140,6 @@ int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDL
 {
 	CK_RV rv;
 	CK_MECHANISM mechanism = { mechType, NULL_PTR, 0 };
-	CK_MECHANISM mechEncrypt = { CKM_VENDOR_DEFINED, NULL_PTR, 0 };
 	CK_KEY_DERIVATION_STRING_DATA param1;
 	CK_AES_CBC_ENCRYPT_DATA_PARAMS param3;
 
@@ -165,7 +164,6 @@ int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDL
 	}
 
 	CK_KEY_TYPE keyType = CKK_AES;
-	mechEncrypt.mechanism = CKM_AES_ECB;
 	CK_ULONG secLen = dataSize;	//8*32 = 256bit
 
 	CK_OBJECT_CLASS keyClass = CKO_SECRET_KEY;
