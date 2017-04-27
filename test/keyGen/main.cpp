@@ -20,7 +20,7 @@ int main(int argc, const char* argv[])
 	cout << "loadLib ok" << endl;
 
 	CK_SESSION_HANDLE hSession;
-	prepare(p11, argv[1],argv[2],argv[3],hSession);
+	prepare(".\\softhsm2.conf",p11, argv[1], argv[2], argv[3], hSession);
 
 	//GwKey(AES키를 생성)
 	CK_OBJECT_HANDLE hGw = CK_INVALID_HANDLE;

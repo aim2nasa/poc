@@ -14,9 +14,9 @@ void memInit(CK_BYTE_PTR data, CK_ULONG dataSize, const char *name)
 }
 
 //토큰을 생성한다 (세션 오픈 포함)
-int prepare(CK_FUNCTION_LIST_PTR p11, const char *soPin, const char *label, const char *userPin, CK_SESSION_HANDLE &hSession)
+int prepare(const char *confPath, CK_FUNCTION_LIST_PTR p11, const char *soPin, const char *label, const char *userPin, CK_SESSION_HANDLE &hSession)
 {
-	setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+	setenv("SOFTHSM2_CONF", confPath, 1);
 
 	CK_ULONG ulSlotCount;
 	CK_RV rv = p11->C_GetSlotList(CK_FALSE, NULL_PTR, &ulSlotCount);
