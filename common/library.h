@@ -6,6 +6,7 @@
 #define DEFAULT_PKCS11_LIB "softhsm2.dll"
 
 int loadLib(void **module, CK_FUNCTION_LIST_PTR *p11);
+int loadLibOnly(void **module, CK_FUNCTION_LIST_PTR *p11);
 void unloadLib(void *module);
 
 #endif

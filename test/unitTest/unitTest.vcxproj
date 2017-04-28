@@ -94,7 +94,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,6 +102,9 @@
       <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -111,7 +114,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,6 +122,9 @@
       <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -130,7 +136,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +146,9 @@
       <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -151,7 +160,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,8 +170,14 @@
       <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\common\library.cpp" />
+    <ClCompile Include="libTest.cpp" />
+    <ClCompile Include="HsmTest.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sampleTest.cpp" />
   </ItemGroup>
