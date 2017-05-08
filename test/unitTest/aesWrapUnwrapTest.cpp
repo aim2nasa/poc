@@ -61,3 +61,47 @@ TEST_F(AesWrapUnwrapTest, aesKeyGen)
 	EXPECT_EQ(generateAesKey(IN_SESSION, IS_PUBLIC, 32, "testAesKey", hKey), CKR_OK);
 	EXPECT_NE(hKey, CK_INVALID_HANDLE);
 }
+
+TEST_F(AesWrapUnwrapTest, aesWrap)
+{
+	CK_BBOOL bToken = CK_FALSE;		//IN_SESSION
+	CK_BBOOL bPrivate = CK_FALSE;	//IS_PUBLIC
+
+	EXPECT_NE(_hSession, CK_INVALID_HANDLE);
+	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
+	EXPECT_EQ(generateAesKey(bToken, bPrivate, 32, "testAesKey", hKey), CKR_OK);
+	EXPECT_NE(hKey, CK_INVALID_HANDLE);
+
+	CK_MECHANISM_TYPE mechanismType = CKM_AES_KEY_WRAP;
+	CK_MECHANISM mechanism = { mechanismType, NULL_PTR, 0 };
+	CK_BBOOL bFalse = CK_FALSE;
+	CK_BBOOL bTrue = CK_TRUE;
+	CK_OBJECT_CLASS secretClass = CKO_SECRET_KEY;
+	CK_KEY_TYPE genKeyType = CKK_GENERIC_SECRET;
+	CK_BYTE keyPtr[128];
+	CK_ULONG keyLen = mechanismType == CKM_AES_KEY_WRAP_PAD ? 125UL : 128UL;
+	CK_ATTRIBUTE attribs[] = {
+		{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
+		{ CKA_CLASS, &secretClass, sizeof(secretClass) },
+		{ CKA_KEY_TYPE, &genKeyType, sizeof(genKeyType) },
+		{ CKA_TOKEN, &bToken, sizeof(bToken) },
+		{ CKA_PRIVATE, &bPrivate, sizeof(bPrivate) },
+		{ CKA_SENSITIVE, &bTrue, sizeof(bTrue) },	// Wrapping is allowed even on sensitive objects
+		{ CKA_VALUE, keyPtr, keyLen }
+	};
+
+	CK_OBJECT_HANDLE hSecret = CK_INVALID_HANDLE;
+	EXPECT_EQ(C_CreateObject(_hSession, attribs, sizeof(attribs) / sizeof(CK_ATTRIBUTE), &hSecret), CKR_OK);
+	EXPECT_NE(hSecret, CK_INVALID_HANDLE);
+
+	CK_BYTE_PTR wrappedPtr = NULL_PTR;
+	CK_ULONG wrappedLen = 0UL;
+	EXPECT_EQ(C_WrapKey(_hSession, &mechanism, hKey, hSecret, NULL, &wrappedLen), CKR_OK);
+	EXPECT_NE(wrappedLen, 0);
+
+	wrappedPtr = (CK_BYTE_PTR)malloc(wrappedLen);
+	EXPECT_EQ(C_WrapKey(_hSession, &mechanism, hKey, hSecret, wrappedPtr, &wrappedLen), CKR_OK);
+	EXPECT_NE(wrappedLen, 0);
+
+	free(wrappedPtr);
+}
