@@ -12,6 +12,7 @@ protected:
 	virtual void SetUp()
 	{
 		ASSERT_EQ(loadLibOnly(&_module, &_p11), 0);
+		_p11->C_Finalize(NULL_PTR);
 		ASSERT_EQ(_p11->C_Initialize(NULL_PTR), CKR_OK);
 	}
 
