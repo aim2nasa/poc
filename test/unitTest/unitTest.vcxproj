@@ -181,6 +181,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sampleTest.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="softhsm2.conf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
