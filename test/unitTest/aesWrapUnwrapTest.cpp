@@ -53,3 +53,10 @@ TEST_F(AesWrapUnwrapTest, sessionopen)
 {
 	EXPECT_NE(_hSession, CK_INVALID_HANDLE);
 }
+
+TEST_F(AesWrapUnwrapTest, aesKeyGen)
+{
+	EXPECT_NE(_hSession, CK_INVALID_HANDLE);
+	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
+	EXPECT_EQ(generateAesKey(IN_SESSION, IS_PUBLIC, 32, "testAesKey", hKey), CKR_OK);
+}
