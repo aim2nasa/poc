@@ -12,6 +12,7 @@ protected:
 	virtual void SetUp()
 	{
 		EXPECT_EQ(loadLibOnly(&_module, &_p11),0);
+		EXPECT_EQ(_p11->C_Initialize(NULL_PTR), CKR_OK);
 	}
 
 	virtual void TearDown()
