@@ -28,7 +28,7 @@ protected:
 	CK_SESSION_HANDLE _hSession;
 };
 
-CK_RV AesWrapUnwrapTest::generateAesKey(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_ULONG bytes, const char *gw, CK_OBJECT_HANDLE &hKey)
+CK_RV AesWrapUnwrapTest::generateAesKey(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_ULONG keySize, const char *gw, CK_OBJECT_HANDLE &hKey)
 {
 	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
 	CK_BBOOL bTrue = CK_TRUE;
@@ -43,7 +43,7 @@ CK_RV AesWrapUnwrapTest::generateAesKey(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_U
 		{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
 		{ CKA_WRAP, &bTrue, sizeof(bTrue) },
 		{ CKA_UNWRAP, &bTrue, sizeof(bTrue) },
-		{ CKA_VALUE_LEN, &bytes, sizeof(bytes) }
+		{ CKA_VALUE_LEN, &keySize, sizeof(keySize) }
 	};
 
 	hKey = CK_INVALID_HANDLE;
