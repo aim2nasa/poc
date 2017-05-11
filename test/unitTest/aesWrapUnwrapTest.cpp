@@ -50,11 +50,11 @@ CK_RV AesWrapUnwrapTest::generateAesKey(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_U
 	return C_GenerateKey(_hSession, &mechanism, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hKey);
 }
 
-void AesWrapUnwrapTest::generateAesKeyTest(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_ULONG bytes, const char *gw, CK_OBJECT_HANDLE &hKey)
+void AesWrapUnwrapTest::generateAesKeyTest(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_ULONG keySize, const char *gw, CK_OBJECT_HANDLE &hKey)
 {
 	EXPECT_NE(_hSession, CK_INVALID_HANDLE);
 	hKey = CK_INVALID_HANDLE;
-	EXPECT_EQ(generateAesKey(IN_SESSION, IS_PUBLIC, 32, "testAesKey", hKey), CKR_OK);
+	EXPECT_EQ(generateAesKey(bToken, bPrivate, keySize, gw, hKey), CKR_OK);
 	EXPECT_NE(hKey, CK_INVALID_HANDLE);
 }
 
