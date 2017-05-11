@@ -23,6 +23,7 @@ protected:
 	}
 
 	CK_RV generateAesKey(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_ULONG bytes, const char *gw, CK_OBJECT_HANDLE &hKey);
+	void generateAesKeyTest(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_ULONG bytes, const char *gw, CK_OBJECT_HANDLE &hKey);
 
 	CK_SESSION_HANDLE _hSession;
 };
@@ -49,6 +50,14 @@ CK_RV AesWrapUnwrapTest::generateAesKey(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_U
 	return C_GenerateKey(_hSession, &mechanism, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hKey);
 }
 
+void AesWrapUnwrapTest::generateAesKeyTest(CK_BBOOL bToken, CK_BBOOL bPrivate, CK_ULONG bytes, const char *gw, CK_OBJECT_HANDLE &hKey)
+{
+	EXPECT_NE(_hSession, CK_INVALID_HANDLE);
+	hKey = CK_INVALID_HANDLE;
+	EXPECT_EQ(generateAesKey(IN_SESSION, IS_PUBLIC, 32, "testAesKey", hKey), CKR_OK);
+	EXPECT_NE(hKey, CK_INVALID_HANDLE);
+}
+
 TEST_F(AesWrapUnwrapTest, sessionopen)
 {
 	EXPECT_NE(_hSession, CK_INVALID_HANDLE);
@@ -56,10 +65,8 @@ TEST_F(AesWrapUnwrapTest, sessionopen)
 
 TEST_F(AesWrapUnwrapTest, aesKeyGen)
 {
-	EXPECT_NE(_hSession, CK_INVALID_HANDLE);
 	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
-	EXPECT_EQ(generateAesKey(IN_SESSION, IS_PUBLIC, 32, "testAesKey", hKey), CKR_OK);
-	EXPECT_NE(hKey, CK_INVALID_HANDLE);
+	generateAesKeyTest(IN_SESSION, IS_PUBLIC, 32, "testAesKey", hKey);
 }
 
 TEST_F(AesWrapUnwrapTest, aesWrapUnwrap)
@@ -68,10 +75,8 @@ TEST_F(AesWrapUnwrapTest, aesWrapUnwrap)
 	CK_BBOOL bToken = CK_FALSE;		//IN_SESSION
 	CK_BBOOL bPrivate = CK_FALSE;	//IS_PUBLIC
 
-	EXPECT_NE(_hSession, CK_INVALID_HANDLE);
 	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
-	EXPECT_EQ(generateAesKey(bToken, bPrivate, 32, "testAesKey", hKey), CKR_OK);
-	EXPECT_NE(hKey, CK_INVALID_HANDLE);
+	generateAesKeyTest(bToken, bPrivate, 32, "testAesKey", hKey);
 
 	//hSecret, Wrapping의 대상이 되는 객체 준비 (키는 C_GenerateRandom을 사용해서 생성한다.)
 	CK_MECHANISM_TYPE mechanismType = CKM_AES_KEY_WRAP;
