@@ -145,3 +145,22 @@ TEST_F(AesWrapUnwrapTest, aesWrapUnwrap)
 
 	free(wrappedPtr);
 }
+
+TEST_F(AesWrapUnwrapTest, aesKeyRetrieve)
+{
+	CK_ULONG keySize = 32;
+
+	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
+	generateAesKeyTest(IN_SESSION, IS_PUBLIC, keySize, "testAesKey", hKey);
+
+	CK_ATTRIBUTE keyAttribs[] = {
+		{ CKA_VALUE, NULL_PTR, 0 }
+	};
+
+	EXPECT_EQ(C_GetAttributeValue(_hSession, hKey, keyAttribs, 1), CKR_OK);
+
+	keyAttribs[0].pValue = (CK_BYTE_PTR)malloc(keyAttribs[0].ulValueLen);
+	EXPECT_EQ(C_GetAttributeValue(_hSession, hKey, keyAttribs, 1), CKR_OK);
+	EXPECT_EQ(keyAttribs[0].ulValueLen, keySize);
+	free(keyAttribs[0].pValue);
+}
