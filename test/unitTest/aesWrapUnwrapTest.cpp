@@ -164,3 +164,77 @@ TEST_F(AesWrapUnwrapTest, aesKeyRetrieve)
 	EXPECT_EQ(keyAttribs[0].ulValueLen, keySize);
 	free(keyAttribs[0].pValue);
 }
+
+//softhsm2 void ObjectTests::testCreateSecretKey() 참조
+TEST_F(AesWrapUnwrapTest, aesKeyInjection)
+{
+	//1. 원하는 키를 만들어 그 값으로 객체를 생성한다.
+	CK_ULONG keySize = 32;	//Max size
+	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
+	CK_BBOOL bTrue = CK_TRUE;
+	CK_BBOOL bFalse = CK_FALSE;
+	CK_BYTE_PTR key = (CK_BYTE_PTR)malloc(keySize);
+	for (CK_ULONG i = 0; i < keySize; i++) key[i] = (CK_BYTE)i;		//키값을 원하는 값으로 정의함
+
+	CK_OBJECT_CLASS secretClass = CKO_SECRET_KEY;
+	CK_KEY_TYPE keyType = CKK_GENERIC_SECRET;
+	CK_ATTRIBUTE attribs[] = {
+		{ CKA_VALUE, key, keySize },
+		{ CKA_EXTRACTABLE, &bTrue, sizeof(bFalse) },
+		{ CKA_CLASS, &secretClass, sizeof(secretClass) },
+		{ CKA_KEY_TYPE, &keyType, sizeof(keyType) },
+		{ CKA_TOKEN, &bFalse, sizeof(bFalse) },
+		{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
+		{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) }
+	};
+
+	CK_OBJECT_HANDLE hKey = CK_INVALID_HANDLE;
+	EXPECT_EQ(C_CreateObject(_hSession, attribs, sizeof(attribs) / sizeof(CK_ATTRIBUTE), &hKey), CKR_OK);
+
+	//2. 객체에 키값을 읽어들여 그 값이 1에서 지정한 키 값인지 확인한다.
+	CK_ATTRIBUTE keyAttribs[] = {
+		{ CKA_VALUE, NULL_PTR, 0 }
+	};
+
+	EXPECT_EQ(C_GetAttributeValue(_hSession, hKey, keyAttribs, 1), CKR_OK);
+
+	keyAttribs[0].pValue = (CK_BYTE_PTR)malloc(keyAttribs[0].ulValueLen);
+	EXPECT_EQ(C_GetAttributeValue(_hSession, hKey, keyAttribs, 1), CKR_OK);
+	EXPECT_EQ(keyAttribs[0].ulValueLen, keySize);
+	EXPECT_EQ(memcmp(key, keyAttribs[0].pValue, keySize), 0);
+	free(keyAttribs[0].pValue);
+
+	//3. 위에서 생성된 객체(키)를 이용해서 암호화 및 복호화를 수행한다. (AES ECB encoding/decoding test)
+	const int blockSize(0x10);
+	const int NumBlock(10);
+	CK_BYTE data[blockSize*NumBlock] = { "Billy Elliot the musical. What a fascinating experince! Love it" };
+
+	//AES ECB encoding
+	const CK_MECHANISM mechanismEnc = { CKM_AES_ECB, NULL_PTR, 0 };
+	CK_MECHANISM_PTR pMechanism((CK_MECHANISM_PTR)&mechanismEnc);
+
+	EXPECT_EQ(C_EncryptInit(_hSession, pMechanism, hKey),CKR_OK);
+
+	CK_ULONG ulEncryptedDataLen;
+	EXPECT_EQ(C_Encrypt(_hSession, data, sizeof(data), NULL_PTR, &ulEncryptedDataLen), CKR_OK);
+
+	std::vector<CK_BYTE> vEncryptedData;
+	vEncryptedData.resize(ulEncryptedDataLen);
+	EXPECT_EQ(C_Encrypt(_hSession, data, sizeof(data), &vEncryptedData.front(), &ulEncryptedDataLen), CKR_OK);
+
+	//AES ECB decoding
+	EXPECT_EQ(C_DecryptInit(_hSession, pMechanism, hKey), CKR_OK);
+
+	CK_ULONG ulDataLen;
+	EXPECT_EQ(C_Decrypt(_hSession, &vEncryptedData.front(), (unsigned long)vEncryptedData.size(), NULL_PTR, &ulDataLen), CKR_OK);
+
+	std::vector<CK_BYTE> vDecryptedData;
+	vDecryptedData.resize(ulDataLen);
+	EXPECT_EQ(C_Decrypt(_hSession, &vEncryptedData.front(), (unsigned long)vEncryptedData.size(), &vDecryptedData.front(), &ulDataLen), CKR_OK);
+
+	//디코딩된 결과는 원래의 데이터와 같아야 한다.
+	EXPECT_EQ(sizeof(data), ulDataLen);
+	EXPECT_EQ(memcmp(data, &vDecryptedData.front(), sizeof(data)), 0);
+
+	free(key);
+}
