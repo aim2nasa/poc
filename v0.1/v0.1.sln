@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gwKeyGen", "gwKeyGen\gwKeyGen.vcxproj", "{7C34DBFE-ED72-4E4D-9A0D-CCBBFD51F419}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gateway", "gateway\gateway.vcxproj", "{84B5D60A-D0AE-411F-837A-60068623770B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +23,12 @@ Global
 		{7C34DBFE-ED72-4E4D-9A0D-CCBBFD51F419}.Release|Win32.Build.0 = Release|x64
 		{7C34DBFE-ED72-4E4D-9A0D-CCBBFD51F419}.Release|x64.ActiveCfg = Release|x64
 		{7C34DBFE-ED72-4E4D-9A0D-CCBBFD51F419}.Release|x64.Build.0 = Release|x64
+		{84B5D60A-D0AE-411F-837A-60068623770B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{84B5D60A-D0AE-411F-837A-60068623770B}.Debug|Win32.Build.0 = Debug|Win32
+		{84B5D60A-D0AE-411F-837A-60068623770B}.Debug|x64.ActiveCfg = Debug|x64
+		{84B5D60A-D0AE-411F-837A-60068623770B}.Release|Win32.ActiveCfg = Release|Win32
+		{84B5D60A-D0AE-411F-837A-60068623770B}.Release|Win32.Build.0 = Release|Win32
+		{84B5D60A-D0AE-411F-837A-60068623770B}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
