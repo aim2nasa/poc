@@ -188,6 +188,9 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
   <ItemGroup>
     <ClInclude Include="StreamHandler.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="softhsm2.conf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
