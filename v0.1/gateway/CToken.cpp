@@ -48,6 +48,7 @@ int CToken::initToken(CK_SLOT_ID slotID, const char *soPin, CK_ULONG soPinize, c
 	}
 
 	_slotID = slotID;
+	_label = label;
 
 	CK_UTF8CHAR paddedLabel[32];
 	memset(paddedLabel, ' ', sizeof(paddedLabel));
@@ -109,4 +110,9 @@ int CToken::logout()
 CK_SLOT_ID CToken::slotID()
 {
 	return _slotID;
+}
+
+std::string CToken::label()
+{
+	return _label;
 }

@@ -2,6 +2,7 @@
 #define __CTOKEN_H__
 
 #include "cryptoki.h"
+#include <string>
 
 #define MAX_ERR_MSG 256
 
@@ -19,6 +20,7 @@ public:
 	int logout();
 
 	CK_SLOT_ID slotID();
+	std::string label();
 
 	char _message[MAX_ERR_MSG];
 
@@ -27,6 +29,7 @@ protected:
 	CK_FUNCTION_LIST_PTR _p11;
 	CK_SESSION_HANDLE _hSession;
 	CK_SLOT_ID _slotID;
+	std::string _label;
 };
 
 #endif

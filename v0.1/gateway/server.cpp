@@ -29,7 +29,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_ERROR((LM_ERROR, ACE_TEXT("prepareSession failed\n")));
 		ACE_RETURN(-1);
 	}
-	ACE_DEBUG((LM_INFO, "(%t) slot:%u token session ready\n",token.slotID()));
+	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", token.slotID(), token.label().c_str()));
 
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);
