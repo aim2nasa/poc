@@ -4,8 +4,7 @@
 #include <ace/Acceptor.h>
 #include <ace/SOCK_Acceptor.h>
 #include "StreamHandler.h"
-#include <iostream>
-#include "library.h"
+#include "CToken.h"
 
 #define SERVER_PORT 98765
 
@@ -16,20 +15,12 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	u_short server_port = argc > 1 ? ACE_OS::atoi(argv[1]) : SERVER_PORT;
 	ACE_DEBUG((LM_INFO, "(%t) gateway start at port:%d\n", server_port));
 
-	void* module;
-	CK_FUNCTION_LIST_PTR p11;
-	if (loadLibOnly(&module, &p11) == -1) {
-		cout << "ERROR: loadLib" << endl;
+	CToken token;
+	if (token.initialize() != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
 		ACE_RETURN(-1);
 	}
-	cout << "HSM library loaded" << endl;
-
-	CK_RV rv;
-	if ((rv = p11->C_Initialize(NULL_PTR)) != CKR_OK) {
-		cout << "ERROR: C_Initialize" << endl;
-		ACE_RETURN(-1);
-	}
-	cout << "HSM library initialized" << endl;
+	ACE_DEBUG((LM_INFO, "(%t) HSM library initialized\n"));
 
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);
@@ -37,7 +28,6 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	acceptor.open(listen);
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
-	unloadLib(module);
 	ACE_DEBUG((LM_INFO, "(%t) gateway end\n"));
 	ACE_RETURN(0);
 }
