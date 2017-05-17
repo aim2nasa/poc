@@ -116,3 +116,15 @@ std::string CToken::label()
 {
 	return _label;
 }
+
+int CToken::createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG keySize, CK_OBJECT_HANDLE &hKey)
+{
+	hKey = CK_INVALID_HANDLE;
+	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
+	CK_RV rv = C_GenerateKey(_hSession, &mechanism, keyAttrib, keyAttribNo, &hKey);
+	if (rv != CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Logout: 0x", rv);
+		return -1;
+	}
+	return 0;
+}

@@ -7,6 +7,7 @@
 #include "CToken.h"
 
 int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin);
+int gatewayKey(CToken &token, CK_ULONG keySize, CK_OBJECT_HANDLE &hGw);
 
 #define SERVER_PORT 9876
 
@@ -30,6 +31,15 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_RETURN(-1);
 	}
 	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", token.slotID(), token.label().c_str()));
+
+	//GwKey(AES虐甫 积己)
+	CK_ULONG keySize = 32;
+	CK_OBJECT_HANDLE hGw = CK_INVALID_HANDLE;
+	if (gatewayKey(token, keySize, hGw) != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("gatewayKey creation failed\n")));
+		ACE_RETURN(-1);
+	}
+	ACE_DEBUG((LM_INFO, "(%t) AES key for gateway created\n"));
 
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);
@@ -86,5 +96,30 @@ int prepareSession(CToken &token, const char *label, const char *soPin, const ch
 		ACE_RETURN(-1);
 	}
 
+	ACE_RETURN(0);
+}
+
+//GwKey(AES虐甫 积己)
+int gatewayKey(CToken &token, CK_ULONG keySize, CK_OBJECT_HANDLE &hGw)
+{
+	hGw = CK_INVALID_HANDLE;
+	CK_BBOOL bTrue = CK_TRUE;
+	CK_BBOOL bFalse = CK_FALSE;
+	CK_ATTRIBUTE keyAttribs[] = {
+		{ CKA_TOKEN, &bTrue, sizeof(bTrue) },
+		{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
+		{ CKA_EXTRACTABLE, &bTrue, sizeof(bTrue) },
+		{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) },
+		{ CKA_DERIVE, &bTrue, sizeof(bTrue) },
+		{ CKA_ENCRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_DECRYPT, &bTrue, sizeof(bTrue) },
+		{ CKA_WRAP, &bTrue, sizeof(bTrue) },
+		{ CKA_UNWRAP, &bTrue, sizeof(bTrue) },
+		{ CKA_VALUE_LEN, &keySize, sizeof(keySize) }
+	};
+	if (token.createAesKey(keyAttribs, sizeof(keyAttribs), keySize, hGw) != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("createAesKey failed\n")));
+		ACE_RETURN(-1);
+	}
 	ACE_RETURN(0);
 }

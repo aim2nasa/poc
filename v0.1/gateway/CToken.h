@@ -22,6 +22,8 @@ public:
 	CK_SLOT_ID slotID();
 	std::string label();
 
+	int createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG keySize, CK_OBJECT_HANDLE &hKey);
+
 	char _message[MAX_ERR_MSG];
 
 protected:
