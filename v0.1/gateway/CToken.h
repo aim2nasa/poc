@@ -12,6 +12,7 @@ public:
 
 	int initialize();
 	int slotCount(CK_ULONG &ulSlotCount);
+	int initToken(CK_ULONG ulSlotCount, const char *soPin, const char *label);
 
 	char _message[MAX_ERR_MSG];
 
