@@ -15,6 +15,7 @@ public:
 	int initToken(CK_SLOT_ID slotID, const char *soPin, const char *label);
 	int openSession(CK_FLAGS flags = CKF_SERIAL_SESSION | CKF_RW_SESSION);
 	int login(CK_USER_TYPE userType, const char *pin, CK_ULONG pinSize);
+	int initPin(const char *userPin, CK_ULONG userPinSize);
 
 	char _message[MAX_ERR_MSG];
 

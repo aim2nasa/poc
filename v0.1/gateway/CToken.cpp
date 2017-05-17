@@ -86,3 +86,13 @@ int CToken::login(CK_USER_TYPE userType, const char *pin, CK_ULONG pinSize)
 	}
 	return 0;
 }
+
+int CToken::initPin(const char *userPin, CK_ULONG userPinSize)
+{
+	CK_RV rv;
+	if ((rv = _p11->C_InitPIN(_hSession, (CK_UTF8CHAR_PTR)userPin, userPinSize)) != CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_InitPIN: 0x", rv);
+		return -1;
+	}
+	return 0;
+}
