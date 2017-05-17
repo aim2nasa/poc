@@ -117,7 +117,7 @@ int gatewayKey(CToken &token, CK_ULONG keySize, CK_OBJECT_HANDLE &hGw)
 		{ CKA_UNWRAP, &bTrue, sizeof(bTrue) },
 		{ CKA_VALUE_LEN, &keySize, sizeof(keySize) }
 	};
-	if (token.createAesKey(keyAttribs, sizeof(keyAttribs), keySize, hGw) != 0) {
+	if (token.createAesKey(keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), keySize, hGw) != 0) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("createAesKey failed\n")));
 		ACE_RETURN(-1);
 	}
