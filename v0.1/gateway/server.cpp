@@ -25,7 +25,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	cout << "HSM library loaded" << endl;
 
 	ACE_INET_Addr listen;
-	listen.set(SERVER_PORT);
+	listen.set((u_short)SERVER_PORT);
 	ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR> acceptor;
 	acceptor.open(listen);
 	ACE_Reactor::instance()->run_reactor_event_loop();
