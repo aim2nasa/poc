@@ -8,7 +8,7 @@
 
 int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin);
 
-#define SERVER_PORT 98765
+#define SERVER_PORT 9876
 
 using namespace std;
 
@@ -22,7 +22,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	u_short server_port;
 	ACE_OS::atoi(argv[1]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[1]);
-	ACE_DEBUG((LM_INFO, "(%t) gateway start at port:%d\n", server_port));
+	ACE_DEBUG((LM_INFO, "(%t) gateway start at port:%u\n", server_port));
 
 	CToken token;
 	if (prepareSession(token, argv[2], argv[3], argv[4]) != 0) {
