@@ -11,6 +11,7 @@ public:
 	virtual ~CToken();
 
 	int initialize();
+	int slotCount(CK_ULONG &ulSlotCount);
 
 	char _message[MAX_ERR_MSG];
 

@@ -26,3 +26,13 @@ int CToken::initialize()
 	}
 	return 0;
 }
+
+int CToken::slotCount(CK_ULONG &ulSlotCount)
+{
+	CK_RV rv;
+	if ((rv=_p11->C_GetSlotList(CK_FALSE, NULL_PTR, &ulSlotCount))!= CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: Couldn't get the number of slots: 0x",rv);
+		return -1;
+	}
+	return 0;
+}

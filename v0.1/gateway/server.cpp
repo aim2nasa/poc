@@ -22,6 +22,13 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	}
 	ACE_DEBUG((LM_INFO, "(%t) HSM library initialized\n"));
 
+	CK_ULONG ulSlotCount;
+	if (token.slotCount(ulSlotCount) != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+	ACE_DEBUG((LM_INFO, "(%t) number of slots:%d\n",ulSlotCount));
+
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);
 	ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR> acceptor;
