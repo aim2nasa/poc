@@ -77,10 +77,10 @@ int CToken::openSession(CK_FLAGS flags)
 	return 0;
 }
 
-int CToken::login(const char *pin, CK_ULONG pinSize)
+int CToken::login(CK_USER_TYPE userType, const char *pin, CK_ULONG pinSize)
 {
 	CK_RV rv;
-	if ((rv = _p11->C_Login(_hSession, CKU_SO, (CK_UTF8CHAR_PTR)pin, pinSize)) != CKR_OK) {
+	if ((rv = _p11->C_Login(_hSession, userType, (CK_UTF8CHAR_PTR)pin, pinSize)) != CKR_OK) {
 		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Login: 0x", rv);
 		return -1;
 	}
