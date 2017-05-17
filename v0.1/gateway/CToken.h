@@ -12,8 +12,8 @@ public:
 
 	int initialize();
 	int slotCount(CK_ULONG &ulSlotCount);
-	int initToken(CK_ULONG ulSlotCount, const char *soPin, const char *label);
-	int openSession(CK_SLOT_ID slotID, CK_FLAGS flags = CKF_SERIAL_SESSION | CKF_RW_SESSION);
+	int initToken(CK_SLOT_ID slotID, const char *soPin, const char *label);
+	int openSession(CK_FLAGS flags = CKF_SERIAL_SESSION | CKF_RW_SESSION);
 
 	char _message[MAX_ERR_MSG];
 
@@ -21,6 +21,7 @@ protected:
 	void *_module;
 	CK_FUNCTION_LIST_PTR _p11;
 	CK_SESSION_HANDLE _hSession;
+	CK_SLOT_ID _slotID;
 };
 
 #endif
