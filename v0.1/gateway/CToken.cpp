@@ -106,3 +106,8 @@ int CToken::logout()
 	}
 	return 0;
 }
+
+CK_SLOT_ID CToken::slotID()
+{
+	return _slotID;
+}

@@ -18,6 +18,8 @@ public:
 	int initPin(const char *userPin, CK_ULONG userPinSize);
 	int logout();
 
+	CK_SLOT_ID slotID();
+
 	char _message[MAX_ERR_MSG];
 
 protected:
