@@ -2,7 +2,6 @@
 #include "library.h"
 #include <stdio.h>
 #include <memory.h>
-#include <string.h>
 
 #define INVALID_SLOT_ID		-1
 
@@ -41,7 +40,7 @@ int CToken::slotCount(CK_ULONG &ulSlotCount)
 	return 0;
 }
 
-int CToken::initToken(CK_SLOT_ID slotID, const char *soPin, const char *label)
+int CToken::initToken(CK_SLOT_ID slotID, const char *soPin, CK_ULONG soPinize, const char *label, CK_ULONG labelSize)
 {
 	if (slotID == INVALID_SLOT_ID || soPin == NULL || label == NULL) {
 		sprintf_s(_message, MAX_ERR_MSG, "%s", "ERROR: wrong argument");
@@ -52,10 +51,10 @@ int CToken::initToken(CK_SLOT_ID slotID, const char *soPin, const char *label)
 
 	CK_UTF8CHAR paddedLabel[32];
 	memset(paddedLabel, ' ', sizeof(paddedLabel));
-	memcpy(paddedLabel, label, strlen(label));
+	memcpy(paddedLabel, label, labelSize);
 
 	CK_RV rv;
-	if ((rv = _p11->C_InitToken(_slotID, (CK_UTF8CHAR_PTR)soPin, (CK_ULONG)strlen(soPin), paddedLabel) != CKR_OK)) {
+	if ((rv = _p11->C_InitToken(_slotID, (CK_UTF8CHAR_PTR)soPin, soPinize, paddedLabel) != CKR_OK)) {
 		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_InitToken: 0x",rv);
 		return -1;
 	}

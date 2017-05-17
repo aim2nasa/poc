@@ -56,7 +56,7 @@ int prepareSession(CToken &token, const char *label, const char *soPin, const ch
 	}
 	ACE_DEBUG((LM_INFO, "(%t) number of slots:%d\n", ulSlotCount));
 
-	if (token.initToken(ulSlotCount - 1, soPin, label) != 0) { //slotID: 디폴트로 들어가는 한개의 카운트를 제외한다. 슬롯이 하나도 없을때도 카운트는 1로 나오므로
+	if (token.initToken(ulSlotCount - 1, soPin, (CK_ULONG)strlen(soPin), label, (CK_ULONG)strlen(label)) != 0) { //slotID: 디폴트로 들어가는 한개의 카운트를 제외한다. 슬롯이 하나도 없을때도 카운트는 1로 나오므로
 		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
 		ACE_RETURN(-1);
 	}

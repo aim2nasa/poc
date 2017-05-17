@@ -12,7 +12,7 @@ public:
 
 	int initialize();
 	int slotCount(CK_ULONG &ulSlotCount);
-	int initToken(CK_SLOT_ID slotID, const char *soPin, const char *label);
+	int initToken(CK_SLOT_ID slotID, const char *soPin, CK_ULONG soPinize, const char *label, CK_ULONG labelSize);
 	int openSession(CK_FLAGS flags = CKF_SERIAL_SESSION | CKF_RW_SESSION);
 	int login(CK_USER_TYPE userType, const char *pin, CK_ULONG pinSize);
 	int initPin(const char *userPin, CK_ULONG userPinSize);
