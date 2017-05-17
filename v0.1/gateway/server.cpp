@@ -24,6 +24,13 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	}
 	cout << "HSM library loaded" << endl;
 
+	CK_RV rv;
+	if ((rv = p11->C_Initialize(NULL_PTR)) != CKR_OK) {
+		cout << "ERROR: C_Initialize" << endl;
+		ACE_RETURN(-1);
+	}
+	cout << "HSM library initialized" << endl;
+
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);
 	ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR> acceptor;
