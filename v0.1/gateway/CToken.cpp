@@ -5,7 +5,7 @@
 #include <string.h>
 
 CToken::CToken()
-:_module(NULL), _p11(NULL)
+:_module(NULL), _p11(NULL), _hSession(CK_INVALID_HANDLE)
 {
 
 }
@@ -55,6 +55,16 @@ int CToken::initToken(CK_ULONG ulSlotCount, const char *soPin, const char *label
 	CK_RV rv;
 	if ((rv = _p11->C_InitToken(slotID, (CK_UTF8CHAR_PTR)soPin, (CK_ULONG)strlen(soPin), paddedLabel) != CKR_OK)) {
 		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_InitToken: 0x",rv);
+		return -1;
+	}
+	return 0;
+}
+
+int CToken::openSession(CK_SLOT_ID slotID, CK_FLAGS flags)
+{
+	CK_RV rv;
+	if ((rv = _p11->C_OpenSession(slotID, flags, NULL_PTR, NULL_PTR, &_hSession) != CKR_OK)) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_OpenSession: 0x", rv);
 		return -1;
 	}
 	return 0;
