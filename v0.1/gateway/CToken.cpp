@@ -96,3 +96,13 @@ int CToken::initPin(const char *userPin, CK_ULONG userPinSize)
 	}
 	return 0;
 }
+
+int CToken::logout()
+{
+	CK_RV rv;
+	if ((rv = _p11->C_Logout(_hSession)) != CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Logout: 0x", rv);
+		return -1;
+	}
+	return 0;
+}
