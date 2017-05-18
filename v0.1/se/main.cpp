@@ -143,6 +143,8 @@ int createSerialNo(CToken &token, unsigned char *sn, unsigned int snSize)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "SE serialNo creation failed"), -1);
 
 	ACE_DEBUG((LM_INFO, "(%t) serialNo:"));
-	for (unsigned long i = 0; i < snSize; i++) ACE_DEBUG((LM_INFO, "%0x ", serialNo[i]));
+	for (unsigned long i = 0; i < snSize; i++) ACE_DEBUG((LM_INFO, "%0x ", sn[i]));
 	ACE_DEBUG((LM_INFO, "\n"));
+
+	ACE_RETURN(0);
 }
