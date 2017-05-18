@@ -21,8 +21,16 @@
     <ClCompile Include="..\..\common\library.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\gateway\CToken.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="softhsm2.conf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gateway\CToken.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

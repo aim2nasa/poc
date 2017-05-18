@@ -7,27 +7,37 @@
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_stdlib.h"
 #include "library.h"
+#include "CToken.h"
 
 #define SIZE_BUF 256
 
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
 
+int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin);
+
 int main(int argc, char *argv[])
 {
-	const char *server_host = argc > 1 ? argv[1] : SERVER_HOST;
-	u_short server_port = argc > 2 ? ACE_OS::atoi(argv[2]) : SERVER_PORT;
+	if (argc<6) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:se <host> <post> <label> <soPin> <userPin>\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9876)\n")));
+		ACE_RETURN(-1);
+	}
+
+	const char *server_host;
+	ACE_OS::atoi(argv[1]) == 0 ? server_host = SERVER_HOST : server_host = argv[1];
+
+	u_short server_port;
+	ACE_OS::atoi(argv[2]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[2]);
 	ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n", server_host, server_port));
 
-	void *module;
-	CK_FUNCTION_LIST_PTR p11;
-	if (loadLibOnly(&module, &p11) == -1)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "ERROR: loadLib"), -1);
-
-	if (p11->C_Initialize(NULL_PTR) != CKR_OK)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "ERROR: C_Initialize"), -1);
-
-	ACE_DEBUG((LM_INFO, "(%P|%t) HSM library initialized\n"));
+	CToken token;
+	if (prepareSession(token, argv[3], argv[4], argv[5]) != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("prepareSession failed\n")));
+		ACE_RETURN(-1);
+	}
+	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", token.slotID(), token.label().c_str()));
 
 	ACE_SOCK_Stream client_stream;
 	ACE_INET_Addr remote_addr(server_port, server_host);
@@ -69,6 +79,53 @@ int main(int argc, char *argv[])
 	if (client_stream.close() == -1)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
 
-	unloadLib(module);
 	return 0;
+}
+
+int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin)
+{
+	if (token.initialize() != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+	ACE_DEBUG((LM_INFO, "(%t) HSM library initialized\n"));
+
+	CK_ULONG ulSlotCount;
+	if (token.slotCount(ulSlotCount) != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+	ACE_DEBUG((LM_INFO, "(%t) number of slots:%d\n", ulSlotCount));
+
+	if (token.initToken(ulSlotCount - 1, soPin, (CK_ULONG)strlen(soPin), label, (CK_ULONG)strlen(label)) != 0) { //slotID: 디폴트로 들어가는 한개의 카운트를 제외한다. 슬롯이 하나도 없을때도 카운트는 1로 나오므로
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+
+	if (token.openSession() != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+
+	if (token.login(CKU_SO, soPin, (CK_ULONG)strlen(soPin)) != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+
+	if (token.initPin(userPin, (CK_ULONG)strlen(userPin)) != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+
+	if (token.logout() != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+
+	if (token.login(CKU_USER, userPin, (CK_ULONG)strlen(userPin)) != 0) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
+		ACE_RETURN(-1);
+	}
+
+	ACE_RETURN(0);
 }
