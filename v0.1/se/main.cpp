@@ -6,6 +6,7 @@
 #include "ace/OS_NS_string.h" 
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_stdlib.h"
+#include "library.h"
 
 #define SIZE_BUF 256
 
@@ -17,6 +18,16 @@ int main(int argc, char *argv[])
 	const char *server_host = argc > 1 ? argv[1] : SERVER_HOST;
 	u_short server_port = argc > 2 ? ACE_OS::atoi(argv[2]) : SERVER_PORT;
 	ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n", server_host, server_port));
+
+	void *module;
+	CK_FUNCTION_LIST_PTR p11;
+	if (loadLibOnly(&module, &p11) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "ERROR: loadLib"), -1);
+
+	if (p11->C_Initialize(NULL_PTR) != CKR_OK)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "ERROR: C_Initialize"), -1);
+
+	ACE_DEBUG((LM_INFO, "(%P|%t) HSM library initialized\n"));
 
 	ACE_SOCK_Stream client_stream;
 	ACE_INET_Addr remote_addr(server_port, server_host);
@@ -58,5 +69,6 @@ int main(int argc, char *argv[])
 	if (client_stream.close() == -1)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
 
+	unloadLib(module);
 	return 0;
 }
