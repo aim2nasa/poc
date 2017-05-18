@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 	else
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
 
-	int nRtn = 0;
+	size_t nRtn = 0;
 	char buffer[SIZE_BUF];
 	std::cout << "press q and enter to finish" << std::endl;
 	while (true){
