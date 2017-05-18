@@ -4,10 +4,12 @@
 #include <ace/Acceptor.h>
 #include <ace/SOCK_Acceptor.h>
 #include "StreamHandler.h"
+#include "CCtrlProxy.h"
 #include "CToken.h"
 #include "Helper.h"
 
 #define SERVER_PORT 9876
+#define CONTRL_PORT 9875
 
 using namespace std;
 
@@ -43,6 +45,12 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	listen.set((u_short)SERVER_PORT);
 	ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR> acceptor;
 	acceptor.open(listen);
+
+	ACE_INET_Addr ctrlListen;
+	ctrlListen.set((u_short)CONTRL_PORT);
+	ACE_Acceptor<CCtrlProxy, ACE_SOCK_ACCEPTOR> ctrlAcceptor;
+	ctrlAcceptor.open(ctrlListen);
+
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
 	ACE_DEBUG((LM_INFO, "(%t) gateway end\n"));
