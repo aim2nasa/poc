@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	//{prefix, 8바이트}:{data size,바이트}:{data}
 
 	//접속 직후 자신의 시리얼 넘버를 전송한다
-	sprintf_s(buffer, SIZE_BUF, "SERIALNO:%d:",SERIAL_NO_SIZE);
+	sprintf_s(buffer, SIZE_BUF, "SERIALNO:%x:", ACE_HTONS(SERIAL_NO_SIZE));
 	memcpy(buffer + HEADER_SIZE, serialNo, SERIAL_NO_SIZE);
 
 	if ((nRtn = client_stream.send_n(buffer, HEADER_SIZE + SERIAL_NO_SIZE)) == -1) {
