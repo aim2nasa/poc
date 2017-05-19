@@ -8,6 +8,7 @@
 #include "ace/OS_NS_stdlib.h"
 #include "library.h"
 #include "CToken.h"
+#include "protocol.h"
 
 #define SIZE_BUF 256
 #define SERIAL_NO_SIZE	32
@@ -58,6 +59,19 @@ int main(int argc, char *argv[])
 
 	size_t nRtn = 0;
 	char buffer[SIZE_BUF];
+
+	//프로토콜 포맷 정의
+	//':'는 구분자로 사용됨
+	//{prefix, 8바이트}:{data size,바이트}:{data}
+
+	//접속 직후 자신의 시리얼 넘버를 전송한다
+	sprintf_s(buffer, SIZE_BUF, "SERIALNO:%d:",SERIAL_NO_SIZE);
+	memcpy(buffer + HEADER_SIZE, serialNo, SERIAL_NO_SIZE);
+
+	if ((nRtn = client_stream.send_n(buffer, HEADER_SIZE + SERIAL_NO_SIZE)) == -1) {
+		ACE_DEBUG((LM_DEBUG, "(%P|%t) Error send_n(%d), serialNo\n", nRtn));
+	}
+
 	std::cout << "press q and enter to finish" << std::endl;
 	while (true){
 		std::cout << ": ";
