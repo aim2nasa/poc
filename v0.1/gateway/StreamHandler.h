@@ -5,15 +5,20 @@
 #include <ace/SOCK_Stream.h>
 #include <ace/Reactor_Notification_Strategy.h>
 
+typedef unsigned int CID;	//Connection ID
+
 class StreamHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
 private:
 	typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> super;
 
 	ACE_INET_Addr remote_addr_;
 	ACE_Reactor_Notification_Strategy noti_;
+	static CID sCounter_;
+	CID id_;
 
 public:
 	StreamHandler();
+	CID id();
 
 	virtual int open(void * = 0);
 	virtual int handle_input(ACE_HANDLE handle = ACE_INVALID_HANDLE);

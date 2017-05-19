@@ -190,9 +190,11 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCtrlProxy.h" />
+    <ClInclude Include="CSeAcceptor.h" />
     <ClInclude Include="CToken.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="StreamHandler.h" />
+    <ClInclude Include="CGwData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="softhsm2.conf" />

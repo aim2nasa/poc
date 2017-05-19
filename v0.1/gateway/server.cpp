@@ -7,6 +7,7 @@
 #include "CCtrlProxy.h"
 #include "CToken.h"
 #include "Helper.h"
+#include "CSeAcceptor.h"
 
 #define SERVER_PORT 9876
 #define CONTRL_PORT 9875
@@ -43,7 +44,8 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);
-	ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR> acceptor;
+	CSeAcceptor acceptor;	//CSeAcceptor는 CGwData를 자료구조로 갖는 ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR>에서 상속받은 클래스이다
+							//새로운 접속이 생기면 StreamHandler의 open과정에서 이 자료구조에 접속번호화 StreamHandler의 포인터를 등록한다.
 	acceptor.open(listen);
 
 	ACE_INET_Addr ctrlListen;

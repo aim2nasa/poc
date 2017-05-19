@@ -1,12 +1,15 @@
 #include "StreamHandler.h"
+#include "CSeAcceptor.h"
+
+CID StreamHandler::sCounter_ = 0;
 
 StreamHandler::StreamHandler()
-:noti_(0, this, ACE_Event_Handler::WRITE_MASK)
+:noti_(0, this, ACE_Event_Handler::WRITE_MASK), id_(++sCounter_)
 {
 
 }
 
-int StreamHandler::open(void *)
+int StreamHandler::open(void *p)
 {
 	ACE_TRACE("StreamHandler::open");
 	if (super::open() == -1)
@@ -19,6 +22,9 @@ int StreamHandler::open(void *)
 		ACE_DEBUG((LM_INFO, "New client accepted: %s:%u\n",
 			remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	}
+
+	CSeAcceptor *pAcceptor = static_cast<CSeAcceptor*>(p);
+	pAcceptor->data.con_.insert(std::pair<CID, StreamHandler*>(id_,this));
 	return 0;
 }
 
@@ -77,4 +83,9 @@ int StreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 	ACE_TRACE("StreamHandler::handle_close");
 	ACE_DEBUG((LM_INFO, "Connection close %s:%u\n", remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	return super::handle_close(handle, close_mask);
+}
+
+CID StreamHandler::id()
+{
+	return id_;
 }
