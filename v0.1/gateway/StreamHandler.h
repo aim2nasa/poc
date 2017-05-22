@@ -24,6 +24,8 @@ public:
 	StreamHandler();
 	CID id();
 
+	static void printArray(const unsigned char *buf, size_t dataSize);
+
 	virtual int open(void * = 0);
 	virtual int handle_input(ACE_HANDLE handle = ACE_INVALID_HANDLE);
 	virtual int handle_output(ACE_HANDLE handle = ACE_INVALID_HANDLE);

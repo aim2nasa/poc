@@ -111,9 +111,13 @@ int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
 
 	const unsigned char *pSn = (const unsigned char*)buf;
 	memcpy(serialNo_, pSn, dataSize);
-	for (size_t i = 0; i < dataSize; i++) 
-		ACE_DEBUG((LM_INFO, "%0x ", pSn[i]));
+	printArray(pSn,dataSize);
 	ACE_DEBUG((LM_INFO, "\n"));
-
 	return 0;
+}
+
+void StreamHandler::printArray(const unsigned char *buf, size_t dataSize)
+{
+	for (size_t i = 0; i < dataSize; i++)
+		ACE_DEBUG((LM_INFO, "%0x ", buf[i]));
 }
