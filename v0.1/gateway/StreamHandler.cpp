@@ -112,12 +112,15 @@ unsigned char* StreamHandler::serialNo()
 int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
 {
 	ACE_ASSERT(dataSize == SERIAL_NO_SIZE);
-	ACE_DEBUG((LM_INFO, "(%t) serialNo:"));
 
 	const unsigned char *pSn = (const unsigned char*)buf;
 	memcpy(serialNo_, pSn, dataSize);
-	printArray(pSn,dataSize);
-	ACE_DEBUG((LM_INFO, "\n"));
+	ACE_DEBUG((LM_INFO, "* List of all connections\n"));
+	for (std::map<CID, StreamHandler*>::iterator it = seAcceptor_->data.con_.begin(); it != seAcceptor_->data.con_.end(); ++it) {
+		ACE_DEBUG((LM_INFO, " CID:%u,SerialNo:", it->first));
+		printArray(reinterpret_cast<const unsigned char*>(it->second->serialNo()), 6);	//앞에서 6자리만 표시
+		ACE_DEBUG((LM_INFO, "\n"));
+	}
 	return 0;
 }
 
