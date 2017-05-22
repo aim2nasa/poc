@@ -106,6 +106,7 @@ CID StreamHandler::id()
 
 int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
 {
+	ACE_ASSERT(dataSize == SERIAL_NO_SIZE);
 	ACE_DEBUG((LM_INFO, "(%t) serialNo:"));
 
 	const unsigned char *pSn = (const unsigned char*)buf;
