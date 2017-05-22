@@ -100,6 +100,7 @@ int StreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 	it = seAcceptor_->data.con_.find(id_);
 	ACE_ASSERT(it != seAcceptor_->data.con_.end());
 	seAcceptor_->data.con_.erase(it);
+	showAllConnections();
 
 	ACE_DEBUG((LM_INFO, "Connection close %s:%u\n", remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	return super::handle_close(handle, close_mask);
@@ -121,12 +122,7 @@ int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
 
 	const unsigned char *pSn = (const unsigned char*)buf;
 	memcpy(serialNo_, pSn, dataSize);
-	ACE_DEBUG((LM_INFO, "* List of all connections\n"));
-	for (std::map<CID, StreamHandler*>::iterator it = seAcceptor_->data.con_.begin(); it != seAcceptor_->data.con_.end(); ++it) {
-		ACE_DEBUG((LM_INFO, " CID:%u,SerialNo:", it->first));
-		printArray(reinterpret_cast<const unsigned char*>(it->second->serialNo()), 6);	//앞에서 6자리만 표시
-		ACE_DEBUG((LM_INFO, "\n"));
-	}
+	showAllConnections();
 	return 0;
 }
 
@@ -134,4 +130,14 @@ void StreamHandler::printArray(const unsigned char *buf, size_t dataSize)
 {
 	for (size_t i = 0; i < dataSize; i++)
 		ACE_DEBUG((LM_INFO, "%0x ", buf[i]));
+}
+
+void StreamHandler::showAllConnections()
+{
+	ACE_DEBUG((LM_INFO, "* List of all connections\n"));
+	for (std::map<CID, StreamHandler*>::iterator it = seAcceptor_->data.con_.begin(); it != seAcceptor_->data.con_.end(); ++it) {
+		ACE_DEBUG((LM_INFO, " CID:%u,SerialNo:", it->first));
+		printArray(reinterpret_cast<const unsigned char*>(it->second->serialNo()), 6);	//앞에서 6자리만 표시
+		ACE_DEBUG((LM_INFO, "\n"));
+	}
 }

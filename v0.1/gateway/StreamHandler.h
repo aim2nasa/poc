@@ -29,6 +29,7 @@ public:
 	unsigned char* serialNo();
 
 	static void printArray(const unsigned char *buf, size_t dataSize);
+	void showAllConnections();
 
 	virtual int open(void * = 0);
 	virtual int handle_input(ACE_HANDLE handle = ACE_INVALID_HANDLE);
