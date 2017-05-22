@@ -16,7 +16,7 @@ private:
 	ACE_Reactor_Notification_Strategy noti_;
 	static CID sCounter_;
 	CID id_;
-	unsigned char * serialNo_[SERIAL_NO_SIZE];
+	unsigned char serialNo_[SERIAL_NO_SIZE];
 
 	int onSerialNo(const char *buf, size_t dataSize);
 
