@@ -1,5 +1,6 @@
 #include "StreamHandler.h"
 #include "CSeAcceptor.h"
+#include "protocol.h"
 
 CID StreamHandler::sCounter_ = 0;
 
@@ -30,19 +31,32 @@ int StreamHandler::open(void *p)
 
 int StreamHandler::handle_input(ACE_HANDLE handle)
 {
-	ACE_DEBUG((LM_INFO, "(%t) StreamHandler::handle_input start\n"));
+	ACE_DEBUG((LM_INFO, "(%t) StreamHandler::handle_input\n"));
+
 	char buf[1024];
 	ssize_t recv_cnt;
-	if ((recv_cnt = this->peer().recv(buf, 1024)) <= 0) {
-		return -1;
-	}
-	ACE_DEBUG((LM_INFO, "(%t) StreamHandler::handle_input received(%d)\n", recv_cnt));
 
-	ACE_Message_Block *mb;
-	ACE_NEW_RETURN(mb, ACE_Message_Block(recv_cnt), -1);
-	mb->copy(buf, recv_cnt);
-	this->putq(mb);
-	ACE_DEBUG((LM_INFO, "(%t) StreamHandler::handle_input end\n"));
+	//prefix
+	if ((recv_cnt = this->peer().recv_n(buf, PREFIX_SIZE)) <= 0)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "prefix receive error (%d)", recv_cnt), -1);
+
+	ACE_ASSERT(PREFIX_SIZE == recv_cnt);
+
+	buf[PREFIX_SIZE] = 0;
+	ACE_DEBUG((LM_INFO, "(%t) StreamHandler::handle_input, prefix:%s",buf));
+
+	//dataSize
+	ACE_INT32 len;
+	if ((recv_cnt = this->peer().recv_n(&len, sizeof(ACE_INT32))) <= 0)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "dataSize receive error (%d)", recv_cnt), -1);
+	ACE_INT32 dataSize = ACE_NTOHL(len);
+
+	//serialNo
+	if ((recv_cnt = this->peer().recv_n(buf, dataSize)) <= 0)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "serialNo receive error (%d)", recv_cnt), -1);
+	
+	ACE_ASSERT(dataSize == recv_cnt);
+	ACE_DEBUG((LM_INFO, ", %d bytes\n", recv_cnt));
 	return 0;
 }
 

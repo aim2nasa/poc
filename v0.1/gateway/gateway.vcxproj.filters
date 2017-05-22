@@ -53,6 +53,9 @@
     <ClInclude Include="CSeAcceptor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\protocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="softhsm2.conf" />

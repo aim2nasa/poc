@@ -6,18 +6,19 @@
 #include "ace/OS_NS_string.h" 
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_stdlib.h"
+#include "ace/Truncate.h"
 #include "library.h"
 #include "CToken.h"
 #include "protocol.h"
 
 #define SIZE_BUF 256
-#define SERIAL_NO_SIZE	32
 
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
 
 int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin);
 int createSerialNo(CToken &token, unsigned char *sn, unsigned int snSize);
+size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len);
 
 int main(int argc, char *argv[])
 {
@@ -61,16 +62,20 @@ int main(int argc, char *argv[])
 	char buffer[SIZE_BUF];
 
 	//프로토콜 포맷 정의
-	//':'는 구분자로 사용됨
-	//{prefix, 8바이트}:{data size,바이트}:{data}
+	//{prefix, 8바이트} {dataSize,바이트} {data}
 
-	//접속 직후 자신의 시리얼 넘버를 전송한다
-	sprintf_s(buffer, SIZE_BUF, "SERIALNO:%x:", ACE_HTONS(SERIAL_NO_SIZE));
-	memcpy(buffer + HEADER_SIZE, serialNo, SERIAL_NO_SIZE);
+	//prefix
+	if ((nRtn = send(client_stream, "SERIALNO", PREFIX_SIZE)) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send_n(%d), prefix",nRtn), -1);
 
-	if ((nRtn = client_stream.send_n(buffer, HEADER_SIZE + SERIAL_NO_SIZE)) == -1) {
-		ACE_DEBUG((LM_DEBUG, "(%P|%t) Error send_n(%d), serialNo\n", nRtn));
-	}
+	//dataSize
+	ACE_INT32 dataSize = ACE_HTONL(ACE_Utils::truncate_cast<ACE_INT32> (SERIAL_NO_SIZE));
+	if ((nRtn = send(client_stream, reinterpret_cast<const char*>(&dataSize), sizeof(ACE_INT32))) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send_n(%d), dataSize", nRtn), -1);
+
+	//serialNo
+	if ((nRtn = send(client_stream, reinterpret_cast<const char*>(serialNo), SERIAL_NO_SIZE)) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send_n(%d), serialNo", nRtn), -1);
 
 	std::cout << "press q and enter to finish" << std::endl;
 	while (true){
@@ -161,4 +166,9 @@ int createSerialNo(CToken &token, unsigned char *sn, unsigned int snSize)
 	ACE_DEBUG((LM_INFO, "\n"));
 
 	ACE_RETURN(0);
+}
+
+size_t send(ACE_SOCK_Stream &sock, const char *buffer,size_t len)
+{
+	return sock.send_n(buffer,len);
 }
