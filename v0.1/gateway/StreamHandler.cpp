@@ -95,6 +95,12 @@ int StreamHandler::handle_output(ACE_HANDLE handle)
 int StreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 {
 	ACE_TRACE("StreamHandler::handle_close");
+
+	std::map<CID, StreamHandler*>::iterator it;
+	it = seAcceptor_->data.con_.find(id_);
+	ACE_ASSERT(it != seAcceptor_->data.con_.end());
+	seAcceptor_->data.con_.erase(it);
+
 	ACE_DEBUG((LM_INFO, "Connection close %s:%u\n", remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	return super::handle_close(handle, close_mask);
 }
