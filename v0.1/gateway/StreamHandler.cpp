@@ -7,7 +7,7 @@ CID StreamHandler::sCounter_ = 0;
 StreamHandler::StreamHandler()
 :noti_(0, this, ACE_Event_Handler::WRITE_MASK), id_(++sCounter_)
 {
-
+	memset(serialNo_, 0, sizeof(serialNo_));
 }
 
 int StreamHandler::open(void *p)
@@ -109,6 +109,7 @@ int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
 	ACE_DEBUG((LM_INFO, "(%t) serialNo:"));
 
 	const unsigned char *pSn = (const unsigned char*)buf;
+	memcpy(serialNo_, pSn, dataSize);
 	for (size_t i = 0; i < dataSize; i++) 
 		ACE_DEBUG((LM_INFO, "%0x ", pSn[i]));
 	ACE_DEBUG((LM_INFO, "\n"));

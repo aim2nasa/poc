@@ -4,6 +4,7 @@
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
 #include <ace/Reactor_Notification_Strategy.h>
+#include "protocol.h"
 
 typedef unsigned int CID;	//Connection ID
 
@@ -15,6 +16,7 @@ private:
 	ACE_Reactor_Notification_Strategy noti_;
 	static CID sCounter_;
 	CID id_;
+	unsigned char * serialNo_[SERIAL_NO_SIZE];
 
 	int onSerialNo(const char *buf, size_t dataSize);
 
