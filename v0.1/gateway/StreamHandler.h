@@ -8,6 +8,8 @@
 
 typedef unsigned int CID;	//Connection ID
 
+class CSeAcceptor;
+
 class StreamHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
 private:
 	typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> super;
@@ -17,6 +19,7 @@ private:
 	static CID sCounter_;
 	CID id_;
 	unsigned char serialNo_[SERIAL_NO_SIZE];
+	CSeAcceptor	*seAcceptor_;
 
 	int onSerialNo(const char *buf, size_t dataSize);
 

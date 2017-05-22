@@ -5,7 +5,7 @@
 CID StreamHandler::sCounter_ = 0;
 
 StreamHandler::StreamHandler()
-:noti_(0, this, ACE_Event_Handler::WRITE_MASK), id_(++sCounter_)
+:noti_(0, this, ACE_Event_Handler::WRITE_MASK), id_(++sCounter_), seAcceptor_(0)
 {
 	memset(serialNo_, 0, sizeof(serialNo_));
 }
@@ -24,8 +24,8 @@ int StreamHandler::open(void *p)
 			remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	}
 
-	CSeAcceptor *pAcceptor = static_cast<CSeAcceptor*>(p);
-	pAcceptor->data.con_.insert(std::pair<CID, StreamHandler*>(id_,this));
+	seAcceptor_ = static_cast<CSeAcceptor*>(p);
+	seAcceptor_->data.con_.insert(std::pair<CID, StreamHandler*>(id_, this));
 	return 0;
 }
 
