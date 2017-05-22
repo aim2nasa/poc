@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	//{prefix, 8바이트} {dataSize,바이트} {data}
 
 	//prefix
-	if ((nRtn = send(client_stream, "SERIALNO", PREFIX_SIZE)) == -1)
+	if ((nRtn = send(client_stream, PRF_SERIALNO, PREFIX_SIZE)) == -1)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send_n(%d), prefix",nRtn), -1);
 
 	//dataSize

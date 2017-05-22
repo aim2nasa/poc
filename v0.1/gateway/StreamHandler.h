@@ -16,6 +16,8 @@ private:
 	static CID sCounter_;
 	CID id_;
 
+	int onSerialNo(const char *buf, size_t dataSize);
+
 public:
 	StreamHandler();
 	CID id();

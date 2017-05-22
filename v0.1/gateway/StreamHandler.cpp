@@ -43,7 +43,7 @@ int StreamHandler::handle_input(ACE_HANDLE handle)
 	ACE_ASSERT(PREFIX_SIZE == recv_cnt);
 
 	buf[PREFIX_SIZE] = 0;
-	ACE_DEBUG((LM_INFO, "(%t) StreamHandler::handle_input, prefix:%s",buf));
+	std::string prefix = buf;
 
 	//dataSize
 	ACE_INT32 len;
@@ -51,12 +51,12 @@ int StreamHandler::handle_input(ACE_HANDLE handle)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "dataSize receive error (%d)", recv_cnt), -1);
 	ACE_INT32 dataSize = ACE_NTOHL(len);
 
-	//serialNo
+	//data
 	if ((recv_cnt = this->peer().recv_n(buf, dataSize)) <= 0)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "serialNo receive error (%d)", recv_cnt), -1);
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "data receive error (%d)", recv_cnt), -1);
 	
 	ACE_ASSERT(dataSize == recv_cnt);
-	ACE_DEBUG((LM_INFO, ", %d bytes\n", recv_cnt));
+	if (prefix == PRF_SERIALNO) onSerialNo(buf, dataSize);
 	return 0;
 }
 
@@ -102,4 +102,16 @@ int StreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 CID StreamHandler::id()
 {
 	return id_;
+}
+
+int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
+{
+	ACE_DEBUG((LM_INFO, "(%t) serialNo:"));
+
+	const unsigned char *pSn = (const unsigned char*)buf;
+	for (size_t i = 0; i < dataSize; i++) 
+		ACE_DEBUG((LM_INFO, "%0x ", pSn[i]));
+	ACE_DEBUG((LM_INFO, "\n"));
+
+	return 0;
 }
