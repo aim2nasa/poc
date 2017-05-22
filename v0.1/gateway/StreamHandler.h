@@ -23,6 +23,7 @@ private:
 public:
 	StreamHandler();
 	CID id();
+	unsigned char* serialNo();
 
 	static void printArray(const unsigned char *buf, size_t dataSize);
 

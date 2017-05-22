@@ -104,6 +104,11 @@ CID StreamHandler::id()
 	return id_;
 }
 
+unsigned char* StreamHandler::serialNo()
+{
+	return serialNo_;
+}
+
 int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
 {
 	ACE_ASSERT(dataSize == SERIAL_NO_SIZE);
