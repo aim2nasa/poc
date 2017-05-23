@@ -1,11 +1,11 @@
 #include "StreamHandler.h"
-#include "CSeAcceptor.h"
+#include "CGwData.h"
 #include "protocol.h"
 
 CID StreamHandler::sCounter_ = 0;
 
 StreamHandler::StreamHandler()
-:noti_(0, this, ACE_Event_Handler::WRITE_MASK), id_(++sCounter_), seAcceptor_(0)
+:noti_(0, this, ACE_Event_Handler::WRITE_MASK), id_(++sCounter_)
 {
 	memset(serialNo_, 0, sizeof(serialNo_));
 }
@@ -23,9 +23,7 @@ int StreamHandler::open(void *p)
 		ACE_DEBUG((LM_INFO, "New client accepted: %s:%u\n",
 			remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	}
-
-	seAcceptor_ = static_cast<CSeAcceptor*>(p);
-	seAcceptor_->data.con_.insert(std::pair<CID, StreamHandler*>(id_, this));
+	CGwData::getInstance()->con_.insert(std::pair<CID, StreamHandler*>(id_, this));
 	return 0;
 }
 
@@ -97,9 +95,9 @@ int StreamHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 	ACE_TRACE("StreamHandler::handle_close");
 
 	std::map<CID, StreamHandler*>::iterator it;
-	it = seAcceptor_->data.con_.find(id_);
-	ACE_ASSERT(it != seAcceptor_->data.con_.end());
-	seAcceptor_->data.con_.erase(it);
+	it = CGwData::getInstance()->con_.find(id_);
+	ACE_ASSERT(it != CGwData::getInstance()->con_.end());
+	CGwData::getInstance()->con_.erase(it);
 	showAllConnections();
 
 	ACE_DEBUG((LM_INFO, "Connection close %s:%u\n", remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
@@ -135,7 +133,7 @@ void StreamHandler::printArray(const unsigned char *buf, size_t dataSize)
 void StreamHandler::showAllConnections()
 {
 	ACE_DEBUG((LM_INFO, "* List of all connections\n"));
-	for (std::map<CID, StreamHandler*>::iterator it = seAcceptor_->data.con_.begin(); it != seAcceptor_->data.con_.end(); ++it) {
+	for (std::map<CID, StreamHandler*>::iterator it = CGwData::getInstance()->con_.begin(); it != CGwData::getInstance()->con_.end(); ++it) {
 		ACE_DEBUG((LM_INFO, " CID:%u,SerialNo:", it->first));
 		printArray(reinterpret_cast<const unsigned char*>(it->second->serialNo()), 6);	//앞에서 6자리만 표시
 		ACE_DEBUG((LM_INFO, "\n"));

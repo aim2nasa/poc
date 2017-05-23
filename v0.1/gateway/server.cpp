@@ -8,6 +8,7 @@
 #include "CToken.h"
 #include "Helper.h"
 #include "CSeAcceptor.h"
+#include "CGwData.h"
 
 #define SERVER_PORT 9876
 #define CONTRL_PORT 9875
@@ -55,6 +56,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
+	CGwData::delInstance();
 	ACE_DEBUG((LM_INFO, "(%t) gateway end\n"));
 	ACE_RETURN(0);
 }
