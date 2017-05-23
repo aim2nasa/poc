@@ -70,7 +70,7 @@ BEGIN_MESSAGE_MAP(CgatewayCtrlDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CgatewayCtrlDlg::OnBnClickedConnectButton)
 	ON_WM_DESTROY()
-	ON_BN_CLICKED(IDC_READ_STATUS_BUTTON, &CgatewayCtrlDlg::OnBnClickedReadStatusButton)
+	ON_BN_CLICKED(IDC_STATUS_BUTTON, &CgatewayCtrlDlg::OnBnClickedReadStatusButton)
 END_MESSAGE_MAP()
 
 
