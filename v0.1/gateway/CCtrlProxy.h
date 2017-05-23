@@ -14,6 +14,7 @@ private:
 
 public:
 	CCtrlProxy();
+	int onReqStat();
 
 	virtual int open(void * = 0);
 	virtual int handle_input(ACE_HANDLE handle = ACE_INVALID_HANDLE);
