@@ -7,6 +7,7 @@
 #include "gatewayCtrlDlg.h"
 #include "afxdialogex.h"
 #include "ace\Init_ACE.h"
+#include "protocol.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -69,6 +70,7 @@ BEGIN_MESSAGE_MAP(CgatewayCtrlDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CgatewayCtrlDlg::OnBnClickedConnectButton)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_READ_STATUS_BUTTON, &CgatewayCtrlDlg::OnBnClickedReadStatusButton)
 END_MESSAGE_MAP()
 
 
@@ -184,4 +186,22 @@ void CgatewayCtrlDlg::OnBnClickedConnectButton()
 		m_ctrlLog.AddString(_T("Connection failed"));
 	else
 		m_ctrlLog.AddString(_T("Connected"));
+}
+
+int CgatewayCtrlDlg::reqStatus()
+{
+	int nRtn = 0;
+	CString str;
+
+	//prefix
+	if ((nRtn = m_stream.send_n(PRF_REQ_STAT, PREFIX_SIZE)) == -1)
+		str.Format(_T("reqStatus, prefix send error:%d"),nRtn);
+
+	if(!str.IsEmpty()) m_ctrlLog.AddString(str);
+	return 0;
+}
+
+void CgatewayCtrlDlg::OnBnClickedReadStatusButton()
+{
+	if (reqStatus() == 0) m_ctrlLog.AddString(_T("status request sent"));
 }

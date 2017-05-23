@@ -37,6 +37,9 @@ protected:
 	afx_msg void OnBnClickedConnectButton();
 	DECLARE_MESSAGE_MAP()
 
+	int reqStatus();
+	afx_msg void OnBnClickedReadStatusButton();
+
 public:
 	UINT m_uPort;
 	CIPAddressCtrl m_ctrlIpAddress;

@@ -7,5 +7,6 @@
 
 //prefix
 #define PRF_SERIALNO	"SERIALNO"
+#define PRF_REQ_STAT	"REQ_STAT"
 
 #endif
