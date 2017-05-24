@@ -204,10 +204,19 @@ int CgatewayCtrlDlg::reqStatus()
 	CString str;
 
 	//prefix
-	if ((nRtn = m_stream.send_n(PRF_REQ_STAT, PREFIX_SIZE)) == -1)
-		str.Format(_T("reqStatus, prefix send error:%d"),nRtn);
+	if ((nRtn = m_stream.send_n(PRF_REQ_STAT, PREFIX_SIZE)) == -1) {
+		str.Format(_T("reqStatus, prefix send error:%d"), nRtn);
+		log(str);
+		return -1;
+	}
 
-	if(!str.IsEmpty()) log(str);
+	//dataSize
+	ACE_UINT32 dataSize = 0;
+	if ((nRtn = m_stream.send_n(&dataSize, sizeof(ACE_UINT32)) == -1)) {
+		str.Format(_T("reqStatus, dataSize send error:%d"), nRtn);
+		log(str);
+		return -1;
+	}
 	return 0;
 }
 

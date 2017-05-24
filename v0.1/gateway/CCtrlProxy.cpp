@@ -40,6 +40,20 @@ int CCtrlProxy::handle_input(ACE_HANDLE handle)
 	buf[PREFIX_SIZE] = 0;
 	std::string prefix = buf;
 
+	//dataSize
+	ACE_INT32 len;
+	if ((recv_cnt = this->peer().recv_n(&len, sizeof(ACE_INT32))) <= 0)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "CCtrlProxy, dataSize receive error (%d)", recv_cnt), -1);
+	ACE_INT32 dataSize = len;
+
+	//data
+	if (dataSize > 0) {
+		if ((recv_cnt = this->peer().recv_n(buf, dataSize)) <= 0)
+			ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "data receive error (%d)", recv_cnt), -1);
+
+		ACE_ASSERT(dataSize == recv_cnt);
+	}
+
 	if (prefix == PRF_REQ_STAT) onReqStat();
 	return 0;
 }
