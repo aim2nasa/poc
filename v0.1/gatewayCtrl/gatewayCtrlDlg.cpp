@@ -112,8 +112,6 @@ BOOL CgatewayCtrlDlg::OnInitDialog()
 	m_ctrlIpAddress.SetAddress(127, 0, 0, 1);
 	m_uPort = CONTRL_PORT;
 
-	ACE_Thread_Manager::instance()->spawn(recvThread, this);
-
 	UpdateData(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -187,8 +185,10 @@ void CgatewayCtrlDlg::OnBnClickedConnectButton()
 
 	if (m_connector.connect(m_stream, remote_addr) == -1)
 		m_ctrlLog.AddString(_T("Connection failed"));
-	else
+	else {
+		ACE_Thread_Manager::instance()->spawn(recvThread, this);
 		m_ctrlLog.AddString(_T("Connected"));
+	}
 }
 
 int CgatewayCtrlDlg::reqStatus()
@@ -216,6 +216,25 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 
 	pDlg->m_ctrlLog.AddString(_T("recvThread started"));
 
+	size_t nRtn = 0;
+	char buffer[1024];
+	for (;;)
+	{
+		if ((nRtn = pDlg->m_stream.recv_n(buffer, PREFIX_SIZE)) == -1) {
+			pDlg->m_ctrlLog.AddString(_T("prefix receive error"));
+			break;
+		}
+		buffer[PREFIX_SIZE] = 0;
+		std::string prefix = buffer;
+
+		if (prefix == PRF_ACK_STAT) pDlg->onAckStat();
+	}
+
 	pDlg->m_ctrlLog.AddString(_T("recvThread terminated"));
+	return 0;
+}
+
+int CgatewayCtrlDlg::onAckStat()
+{
 	return 0;
 }
