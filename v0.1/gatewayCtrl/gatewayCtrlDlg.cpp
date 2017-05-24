@@ -258,6 +258,8 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 
 int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 {
+	m_ctrlList.DeleteAllItems();
+
 	int row = 0;
 	unsigned int count = len / (sizeof(ACE_UINT32)+SERIAL_NO_SIZE);
 	for (unsigned int i = 0; i < count; i++) {
