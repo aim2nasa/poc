@@ -216,25 +216,43 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 
 	pDlg->m_ctrlLog.AddString(_T("recvThread started"));
 
-	size_t nRtn = 0;
+	size_t recv_cnt = 0;
 	char buffer[1024];
 	for (;;)
 	{
-		if ((nRtn = pDlg->m_stream.recv_n(buffer, PREFIX_SIZE)) == -1) {
+		//prefix
+		if ((recv_cnt = pDlg->m_stream.recv_n(buffer, PREFIX_SIZE)) == -1) {
 			pDlg->m_ctrlLog.AddString(_T("prefix receive error"));
 			break;
 		}
+		ACE_ASSERT(PREFIX_SIZE == recv_cnt);
+
 		buffer[PREFIX_SIZE] = 0;
 		std::string prefix = buffer;
 
-		if (prefix == PRF_ACK_STAT) pDlg->onAckStat();
+		//dataSize
+		ACE_INT32 dataSize;
+		if ((recv_cnt = pDlg->m_stream.recv_n(&dataSize, sizeof(ACE_INT32))) <= 0) {
+			pDlg->m_ctrlLog.AddString(_T("dataSize receive error"));
+			break;
+		}
+		ACE_ASSERT(sizeof(ACE_INT32) == recv_cnt);
+
+		//data
+		if ((recv_cnt = pDlg->m_stream.recv_n(buffer, dataSize)) <= 0) {
+			pDlg->m_ctrlLog.AddString(_T("data receive error"));
+			break;
+		}
+		ACE_ASSERT(dataSize == recv_cnt);
+
+		if (prefix == PRF_ACK_STAT) pDlg->onAckStat(buffer,dataSize);
 	}
 
 	pDlg->m_ctrlLog.AddString(_T("recvThread terminated"));
 	return 0;
 }
 
-int CgatewayCtrlDlg::onAckStat()
+int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 {
 	return 0;
 }
