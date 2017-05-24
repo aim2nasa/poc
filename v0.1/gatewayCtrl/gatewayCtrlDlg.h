@@ -42,6 +42,7 @@ protected:
 	int reqStatus();
 	static ACE_THR_FUNC_RETURN recvThread(void *arg);
 	int onAckStat(const char *buffer, unsigned int len);
+	int log(LPCTSTR lpszItem);
 public:
 	UINT m_uPort;
 	CIPAddressCtrl m_ctrlIpAddress;

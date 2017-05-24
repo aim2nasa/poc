@@ -183,16 +183,16 @@ void CgatewayCtrlDlg::OnBnClickedConnectButton()
 	CString strIp,strPort;
 	strIp.Format(_T("%d.%d.%d.%d"), f1, f2, f3, f4);
 	strPort.Format(_T("%u"), m_uPort);
-	m_ctrlLog.AddString(_T("IP address:") + strIp + _T(",Port:")+strPort);
+	log(_T("IP address:") + strIp + _T(",Port:")+strPort);
 
 	//ACE_INET_Addr remote_addr(m_uPort, strIp.GetBuffer(strIp.GetLength()));
 	ACE_INET_Addr remote_addr(m_uPort, "127.0.0.1");
 
 	if (m_connector.connect(m_stream, remote_addr) == -1)
-		m_ctrlLog.AddString(_T("Connection failed"));
+		log(_T("Connection failed"));
 	else {
 		ACE_Thread_Manager::instance()->spawn(recvThread, this);
-		m_ctrlLog.AddString(_T("Connected"));
+		log(_T("Connected"));
 	}
 }
 
@@ -205,13 +205,13 @@ int CgatewayCtrlDlg::reqStatus()
 	if ((nRtn = m_stream.send_n(PRF_REQ_STAT, PREFIX_SIZE)) == -1)
 		str.Format(_T("reqStatus, prefix send error:%d"),nRtn);
 
-	if(!str.IsEmpty()) m_ctrlLog.AddString(str);
+	if(!str.IsEmpty()) log(str);
 	return 0;
 }
 
 void CgatewayCtrlDlg::OnBnClickedReadStatusButton()
 {
-	if (reqStatus() == 0) m_ctrlLog.AddString(_T("status request sent"));
+	if (reqStatus() == 0) log(_T("status request sent"));
 }
 
 ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
@@ -219,7 +219,7 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 	CgatewayCtrlDlg *pDlg = static_cast<CgatewayCtrlDlg*>(arg);
 	ACE_ASSERT(pDlg);
 
-	pDlg->m_ctrlLog.AddString(_T("recvThread started"));
+	pDlg->log(_T("recvThread started"));
 
 	size_t recv_cnt = 0;
 	char buffer[1024];
@@ -227,7 +227,7 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 	{
 		//prefix
 		if ((recv_cnt = pDlg->m_stream.recv_n(buffer, PREFIX_SIZE)) == -1) {
-			pDlg->m_ctrlLog.AddString(_T("prefix receive error"));
+			pDlg->log(_T("prefix receive error"));
 			break;
 		}
 		ACE_ASSERT(PREFIX_SIZE == recv_cnt);
@@ -238,14 +238,14 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 		//dataSize
 		ACE_INT32 dataSize;
 		if ((recv_cnt = pDlg->m_stream.recv_n(&dataSize, sizeof(ACE_INT32))) <= 0) {
-			pDlg->m_ctrlLog.AddString(_T("dataSize receive error"));
+			pDlg->log(_T("dataSize receive error"));
 			break;
 		}
 		ACE_ASSERT(sizeof(ACE_INT32) == recv_cnt);
 
 		//data
 		if ((recv_cnt = pDlg->m_stream.recv_n(buffer, dataSize)) <= 0) {
-			pDlg->m_ctrlLog.AddString(_T("data receive error"));
+			pDlg->log(_T("data receive error"));
 			break;
 		}
 		ACE_ASSERT(dataSize == recv_cnt);
@@ -253,7 +253,7 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 		if (prefix == PRF_ACK_STAT) pDlg->onAckStat(buffer,dataSize);
 	}
 
-	pDlg->m_ctrlLog.AddString(_T("recvThread terminated"));
+	pDlg->log(_T("recvThread terminated"));
 	return 0;
 }
 
@@ -287,10 +287,16 @@ int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 void CgatewayCtrlDlg::OnBnClickedDisconnectButton()
 {
 	if (m_stream.close() == -1) {
-		m_ctrlLog.AddString(_T("connection close error"));
+		log(_T("connection close error"));
 		return;
 	}
 
 	m_ctrlList.DeleteAllItems();
-	m_ctrlLog.AddString(_T("connection closed"));
+	log(_T("connection closed"));
+}
+
+int CgatewayCtrlDlg::log(LPCTSTR lpszItem)
+{
+	m_ctrlLog.AddString(lpszItem);
+	return m_ctrlLog.SetTopIndex(m_ctrlLog.GetCount() - 1);
 }
