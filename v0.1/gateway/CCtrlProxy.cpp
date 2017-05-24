@@ -84,11 +84,18 @@ int CCtrlProxy::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask)
 
 int CCtrlProxy::onReqStat()
 {
+	//{prefix, 8바이트} {dataSize,바이트} {data}
+
+	//ACK_STAT data
 	ACE_Message_Block *mb;
-	ACE_NEW_RETURN(mb, ACE_Message_Block(PREFIX_SIZE + CGwData::getInstance()->con_.size()*(sizeof(ACE_UINT32)+SERIAL_NO_SIZE)), -1);
+	ACE_UINT32 dataSize = CGwData::getInstance()->con_.size()*(sizeof(ACE_UINT32)+SERIAL_NO_SIZE);
+	ACE_NEW_RETURN(mb, ACE_Message_Block(PREFIX_SIZE + sizeof(ACE_UINT32) + dataSize), -1);
 
 	ACE_OS::memcpy(mb->wr_ptr(), PRF_ACK_STAT, PREFIX_SIZE);
 	mb->wr_ptr(PREFIX_SIZE);
+
+	ACE_OS::memcpy(mb->wr_ptr(), &dataSize, sizeof(ACE_UINT32));
+	mb->wr_ptr(sizeof(ACE_UINT32));
 
 	for (std::map<CID, StreamHandler*>::iterator it = CGwData::getInstance()->con_.begin(); it != CGwData::getInstance()->con_.end(); ++it) {
 		ACE_UINT32 cid = it->first;
