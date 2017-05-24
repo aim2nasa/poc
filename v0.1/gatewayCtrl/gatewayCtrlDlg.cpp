@@ -7,6 +7,7 @@
 #include "gatewayCtrlDlg.h"
 #include "afxdialogex.h"
 #include "ace\Init_ACE.h"
+#include "ace\Thread_Manager.h"
 #include "protocol.h"
 
 #ifdef _DEBUG
@@ -111,6 +112,8 @@ BOOL CgatewayCtrlDlg::OnInitDialog()
 	m_ctrlIpAddress.SetAddress(127, 0, 0, 1);
 	m_uPort = CONTRL_PORT;
 
+	ACE_Thread_Manager::instance()->spawn(recvThread, this);
+
 	UpdateData(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -204,4 +207,15 @@ int CgatewayCtrlDlg::reqStatus()
 void CgatewayCtrlDlg::OnBnClickedReadStatusButton()
 {
 	if (reqStatus() == 0) m_ctrlLog.AddString(_T("status request sent"));
+}
+
+ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
+{
+	CgatewayCtrlDlg *pDlg = static_cast<CgatewayCtrlDlg*>(arg);
+	ACE_ASSERT(pDlg);
+
+	pDlg->m_ctrlLog.AddString(_T("recvThread started"));
+
+	pDlg->m_ctrlLog.AddString(_T("recvThread terminated"));
+	return 0;
 }

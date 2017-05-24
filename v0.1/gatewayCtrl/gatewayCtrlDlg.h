@@ -39,6 +39,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	int reqStatus();
+	static ACE_THR_FUNC_RETURN recvThread(void *arg);
 public:
 	UINT m_uPort;
 	CIPAddressCtrl m_ctrlIpAddress;
