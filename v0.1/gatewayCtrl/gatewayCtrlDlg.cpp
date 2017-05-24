@@ -254,5 +254,14 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 
 int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 {
+	unsigned int count = len / (sizeof(ACE_UINT32)+SERIAL_NO_SIZE);
+	for (unsigned int i = 0; i < count; i++) {
+		ACE_UINT32 *cid;
+		cid = (ACE_UINT32*)buffer[i*(sizeof(ACE_UINT32)+SERIAL_NO_SIZE)];
+
+		CString str;
+		str.Format(_T("%x"),cid);
+		m_ctrlLog.AddString(str);
+	}
 	return 0;
 }
