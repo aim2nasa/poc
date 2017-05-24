@@ -75,6 +75,7 @@ BEGIN_MESSAGE_MAP(CgatewayCtrlDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_STATUS_BUTTON, &CgatewayCtrlDlg::OnBnClickedReadStatusButton)
 	ON_BN_CLICKED(IDC_DISCONNECT_BUTTON, &CgatewayCtrlDlg::OnBnClickedDisconnectButton)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST, &CgatewayCtrlDlg::OnNMRClickList)
+	ON_COMMAND(ID_GENERATE_KEY, &CgatewayCtrlDlg::OnGenerateKey)
 END_MESSAGE_MAP()
 
 
@@ -306,17 +307,6 @@ void CgatewayCtrlDlg::OnNMRClickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CString strSelected;
-	strSelected.Format(_T("selected:"));
-	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
-	while (pos)
-	{
-		int nSelected = m_ctrlList.GetNextSelectedItem(pos);
-		CString str;
-		str.Format(_T("%d "),nSelected);
-		strSelected += str;
-	}
-	TRACE(_T("%s\n"), strSelected.GetBuffer(strSelected.GetLength()));
 
 	CPoint CurrentPosition;
 	::GetCursorPos(&CurrentPosition);
@@ -329,4 +319,21 @@ void CgatewayCtrlDlg::OnNMRClickList(NMHDR *pNMHDR, LRESULT *pResult)
 	pContextMenu->TrackPopupMenu(TPM_LEFTALIGN, CurrentPosition.x, CurrentPosition.y, this);
 
 	*pResult = 0;
+}
+
+void CgatewayCtrlDlg::OnGenerateKey()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CString strSelected;
+	strSelected.Format(_T("selected:"));
+	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
+	while (pos)
+	{
+		int nSelected = m_ctrlList.GetNextSelectedItem(pos);
+
+		CString str;
+		str.Format(_T("(%d:%s) "), nSelected, m_ctrlList.GetItemText(nSelected, 0));
+		strSelected += str;
+	}
+	TRACE(_T("%s\n"), strSelected.GetBuffer(strSelected.GetLength()));
 }

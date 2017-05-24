@@ -38,6 +38,7 @@ protected:
 	afx_msg void OnBnClickedReadStatusButton();
 	afx_msg void OnBnClickedDisconnectButton();
 	afx_msg void OnNMRClickList(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnGenerateKey();
 	DECLARE_MESSAGE_MAP()
 
 	int reqStatus();
@@ -49,6 +50,7 @@ public:
 	CIPAddressCtrl m_ctrlIpAddress;
 	CListBox m_ctrlLog;
 	CListCtrl m_ctrlList;
+	
 
 	ACE_SOCK_Stream m_stream;
 	ACE_SOCK_Connector m_connector;
