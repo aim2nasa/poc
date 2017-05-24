@@ -15,6 +15,7 @@ private:
 public:
 	CCtrlProxy();
 	int onReqStat();
+	int onReqKeyG(const char *buf, size_t dataSize);
 
 	virtual int open(void * = 0);
 	virtual int handle_input(ACE_HANDLE handle = ACE_INVALID_HANDLE);

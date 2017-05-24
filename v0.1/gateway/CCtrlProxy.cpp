@@ -55,6 +55,7 @@ int CCtrlProxy::handle_input(ACE_HANDLE handle)
 	}
 
 	if (prefix == PRF_REQ_STAT) onReqStat();
+	if (prefix == PRF_REQ_KEYG) onReqKeyG(buf,dataSize);
 	return 0;
 }
 
@@ -120,4 +121,18 @@ int CCtrlProxy::onReqStat()
 		mb->wr_ptr(SERIAL_NO_SIZE);
 	}
 	return this->putq(mb);
+}
+
+int CCtrlProxy::onReqKeyG(const char *buf, size_t dataSize)
+{
+	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::onReqKeyG ["));
+	size_t count = dataSize / sizeof(ACE_UINT32);
+
+	for (size_t i = 0; i < count; i++) {
+		ACE_UINT32 cid;
+		ACE_OS::memcpy(&cid, buf + i*sizeof(ACE_UINT32), sizeof(ACE_UINT32));
+		ACE_DEBUG((LM_INFO, "%d ",cid));
+	}
+	ACE_DEBUG((LM_INFO, "]\n"));
+	return 0;
 }
