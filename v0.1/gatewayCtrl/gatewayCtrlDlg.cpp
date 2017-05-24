@@ -306,15 +306,27 @@ void CgatewayCtrlDlg::OnNMRClickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString strSelected;
+	strSelected.Format(_T("selected:"));
 	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
 	while (pos)
 	{
 		int nSelected = m_ctrlList.GetNextSelectedItem(pos);
-
 		CString str;
-		str.Format(_T("selected %d"),nSelected);
-		log(str);
+		str.Format(_T("%d "),nSelected);
+		strSelected += str;
 	}
+	TRACE(_T("%s\n"), strSelected.GetBuffer(strSelected.GetLength()));
+
+	CPoint CurrentPosition;
+	::GetCursorPos(&CurrentPosition);
+	CMenu MenuTemp;
+	CMenu *pContextMenu = NULL;
+	MenuTemp.LoadMenu(IDR_COMMAND_MENU);
+	pContextMenu = MenuTemp.GetSubMenu(0);
+
+	SetForegroundWindow();
+	pContextMenu->TrackPopupMenu(TPM_LEFTALIGN, CurrentPosition.x, CurrentPosition.y, this);
 
 	*pResult = 0;
 }
