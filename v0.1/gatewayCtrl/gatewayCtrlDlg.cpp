@@ -74,6 +74,7 @@ BEGIN_MESSAGE_MAP(CgatewayCtrlDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_STATUS_BUTTON, &CgatewayCtrlDlg::OnBnClickedReadStatusButton)
 	ON_BN_CLICKED(IDC_DISCONNECT_BUTTON, &CgatewayCtrlDlg::OnBnClickedDisconnectButton)
+	ON_NOTIFY(NM_RCLICK, IDC_LIST, &CgatewayCtrlDlg::OnNMRClickList)
 END_MESSAGE_MAP()
 
 
@@ -299,4 +300,21 @@ int CgatewayCtrlDlg::log(LPCTSTR lpszItem)
 {
 	m_ctrlLog.AddString(lpszItem);
 	return m_ctrlLog.SetTopIndex(m_ctrlLog.GetCount() - 1);
+}
+
+void CgatewayCtrlDlg::OnNMRClickList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
+	while (pos)
+	{
+		int nSelected = m_ctrlList.GetNextSelectedItem(pos);
+
+		CString str;
+		str.Format(_T("selected %d"),nSelected);
+		log(str);
+	}
+
+	*pResult = 0;
 }
