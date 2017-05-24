@@ -35,11 +35,10 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedConnectButton();
+	afx_msg void OnBnClickedReadStatusButton();
 	DECLARE_MESSAGE_MAP()
 
 	int reqStatus();
-	afx_msg void OnBnClickedReadStatusButton();
-
 public:
 	UINT m_uPort;
 	CIPAddressCtrl m_ctrlIpAddress;
