@@ -45,6 +45,7 @@ public:
 	UINT m_uPort;
 	CIPAddressCtrl m_ctrlIpAddress;
 	CListBox m_ctrlLog;
+	CListCtrl m_ctrlList;
 
 	ACE_SOCK_Stream m_stream;
 	ACE_SOCK_Connector m_connector;

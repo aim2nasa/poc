@@ -63,6 +63,7 @@ void CgatewayCtrlDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_PORT_EDIT, m_uPort);
 	DDX_Control(pDX, IDC_IPADDRESS, m_ctrlIpAddress);
 	DDX_Control(pDX, IDC_LOG_LIST, m_ctrlLog);
+	DDX_Control(pDX, IDC_LIST, m_ctrlList);
 }
 
 BEGIN_MESSAGE_MAP(CgatewayCtrlDlg, CDialogEx)
@@ -113,6 +114,9 @@ BOOL CgatewayCtrlDlg::OnInitDialog()
 	m_uPort = CONTRL_PORT;
 
 	UpdateData(FALSE);
+	m_ctrlList.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
+	m_ctrlList.InsertColumn(0, _T("CID"), LVCFMT_LEFT, 140, -1);
+	m_ctrlList.InsertColumn(1, _T("SerialNo"), LVCFMT_LEFT, 320, -1);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -254,14 +258,25 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 
 int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 {
+	int row = 0;
 	unsigned int count = len / (sizeof(ACE_UINT32)+SERIAL_NO_SIZE);
 	for (unsigned int i = 0; i < count; i++) {
-		ACE_UINT32 *cid;
-		cid = (ACE_UINT32*)buffer[i*(sizeof(ACE_UINT32)+SERIAL_NO_SIZE)];
+		const char *pOffset = &buffer[i*(sizeof(ACE_UINT32)+SERIAL_NO_SIZE)];
 
-		CString str;
-		str.Format(_T("%x"),cid);
-		m_ctrlLog.AddString(str);
+		ACE_UINT32 cid;
+		memcpy(&cid, pOffset, sizeof(ACE_UINT32));
+
+		CString strCid, strSerialNo;
+		strCid.Format(_T("%x"), cid);
+		m_ctrlList.InsertItem(count, strCid);
+
+		for (int i = 0; i < SERIAL_NO_SIZE; i++) {
+			CString strTmp;
+			strTmp.Format(_T("%x "), (unsigned char)pOffset[sizeof(ACE_UINT32)+i]);
+			strSerialNo += strTmp;
+		}
+		m_ctrlList.SetItem(row, 1, LVIF_TEXT, strSerialNo,0,0,0,NULL);
+		row++;
 	}
 	return 0;
 }
