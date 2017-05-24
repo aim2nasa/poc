@@ -36,6 +36,7 @@ protected:
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedConnectButton();
 	afx_msg void OnBnClickedReadStatusButton();
+	afx_msg void OnBnClickedDisconnectButton();
 	DECLARE_MESSAGE_MAP()
 
 	int reqStatus();

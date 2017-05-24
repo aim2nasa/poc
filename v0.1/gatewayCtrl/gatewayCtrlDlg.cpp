@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CgatewayCtrlDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CONNECT_BUTTON, &CgatewayCtrlDlg::OnBnClickedConnectButton)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_STATUS_BUTTON, &CgatewayCtrlDlg::OnBnClickedReadStatusButton)
+	ON_BN_CLICKED(IDC_DISCONNECT_BUTTON, &CgatewayCtrlDlg::OnBnClickedDisconnectButton)
 END_MESSAGE_MAP()
 
 
@@ -281,4 +282,15 @@ int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 		row++;
 	}
 	return 0;
+}
+
+void CgatewayCtrlDlg::OnBnClickedDisconnectButton()
+{
+	if (m_stream.close() == -1) {
+		m_ctrlLog.AddString(_T("connection close error"));
+		return;
+	}
+
+	m_ctrlList.DeleteAllItems();
+	m_ctrlLog.AddString(_T("connection closed"));
 }
