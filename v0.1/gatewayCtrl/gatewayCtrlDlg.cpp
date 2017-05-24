@@ -324,6 +324,29 @@ void CgatewayCtrlDlg::OnNMRClickList(NMHDR *pNMHDR, LRESULT *pResult)
 void CgatewayCtrlDlg::OnGenerateKey()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	int nSelected = selectedCount();	//선택된 아이템들의 갯수
+	if (nSelected == 0) {
+		log(_T("select CID to generate key"));
+		return;
+	}
+
+	int nRtn = 0;
+	CString strErr;
+	//prefix
+	if ((nRtn = m_stream.send_n(PRF_REQ_KEYG, PREFIX_SIZE)) == -1) {
+		strErr.Format(_T("reqKeyGen, prefix send error:%d"), nRtn);
+		log(strErr);
+		return;
+	}
+
+	//dataSize
+	ACE_UINT32 dataSize = sizeof(ACE_UINT32)*nSelected;
+	if ((nRtn = m_stream.send_n(&dataSize, sizeof(ACE_UINT32)) == -1)) {
+		strErr.Format(_T("reqKeyGen, dataSize send error:%d"), nRtn);
+		log(strErr);
+		return;
+	}
+
 	CString strSelected;
 	strSelected.Format(_T("selected:"));
 	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
@@ -331,9 +354,29 @@ void CgatewayCtrlDlg::OnGenerateKey()
 	{
 		int nSelected = m_ctrlList.GetNextSelectedItem(pos);
 
-		CString str;
-		str.Format(_T("(%d:%s) "), nSelected, m_ctrlList.GetItemText(nSelected, 0));
+		CString str,strCID;
+		strCID = m_ctrlList.GetItemText(nSelected, 0);
+		str.Format(_T("(%d:%s) "), nSelected, strCID);
 		strSelected += str;
+
+		ACE_UINT32 cid = ACE_OS::atoi(strCID);
+		if ((nRtn = m_stream.send_n(&cid, sizeof(ACE_UINT32)) == -1)) {
+			strErr.Format(_T("reqKeyGen, data send error:%d"), nRtn);
+			log(strErr);
+			return;
+		}
 	}
 	TRACE(_T("%s\n"), strSelected.GetBuffer(strSelected.GetLength()));
+}
+
+int CgatewayCtrlDlg::selectedCount()
+{
+	int nCount = 0;
+	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
+	while (pos)
+	{
+		m_ctrlList.GetNextSelectedItem(pos);
+		nCount++;
+	}
+	return nCount;
 }
