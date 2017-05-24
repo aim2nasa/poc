@@ -115,8 +115,8 @@ BOOL CgatewayCtrlDlg::OnInitDialog()
 
 	UpdateData(FALSE);
 	m_ctrlList.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
-	m_ctrlList.InsertColumn(0, _T("CID"), LVCFMT_LEFT, 140, -1);
-	m_ctrlList.InsertColumn(1, _T("SerialNo"), LVCFMT_LEFT, 320, -1);
+	m_ctrlList.InsertColumn(0, _T("CID"), LVCFMT_LEFT, 50, -1);
+	m_ctrlList.InsertColumn(1, _T("SerialNo"), LVCFMT_LEFT, 470, -1);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
