@@ -184,6 +184,7 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
     <ClCompile Include="..\..\common\library.cpp" />
     <ClCompile Include="CCtrlProxy.cpp" />
     <ClCompile Include="CGwData.cpp" />
+    <ClCompile Include="CSe.cpp" />
     <ClCompile Include="CToken.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="server.cpp" />

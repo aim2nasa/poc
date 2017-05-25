@@ -36,6 +36,9 @@
     <ClCompile Include="CGwData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="CSe.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StreamHandler.h">

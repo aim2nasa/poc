@@ -6,7 +6,7 @@
 
 class CSe{
 public:
-	CSe() :h_(CK_INVALID_HANDLE){}
+	CSe();
 
 	unsigned char serialNo[SERIAL_NO_SIZE];
 	unsigned int cid_;
