@@ -223,6 +223,7 @@
     <ClInclude Include="..\common\protocol.h" />
     <ClInclude Include="gatewayCtrl.h" />
     <ClInclude Include="gatewayCtrlDlg.h" />
+    <ClInclude Include="GroupName.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -230,6 +231,7 @@
   <ItemGroup>
     <ClCompile Include="gatewayCtrl.cpp" />
     <ClCompile Include="gatewayCtrlDlg.cpp" />
+    <ClCompile Include="GroupName.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

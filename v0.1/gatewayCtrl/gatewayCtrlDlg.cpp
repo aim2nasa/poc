@@ -9,6 +9,7 @@
 #include "ace\Init_ACE.h"
 #include "ace\Thread_Manager.h"
 #include "protocol.h"
+#include "GroupName.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -339,6 +340,13 @@ void CgatewayCtrlDlg::OnGenerateKey()
 		return;
 	}
 
+	CString strGroupName;
+	CGroupName gn;
+	if (gn.DoModal() == IDOK) {
+		strGroupName = gn.m_strGroupName;
+	}else
+		return;
+
 	int nRtn = 0;
 	CString strErr;
 	//prefix
@@ -356,7 +364,7 @@ void CgatewayCtrlDlg::OnGenerateKey()
 		return;
 	}
 
-	CString strSelected;
+	CString strSelected,strGroupMsg(_T("GroupName:")+strGroupName+_T(" { "));
 	strSelected.Format(_T("selected:"));
 	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
 	while (pos)
@@ -367,6 +375,7 @@ void CgatewayCtrlDlg::OnGenerateKey()
 		strCID = m_ctrlList.GetItemText(nSelected, 0);
 		str.Format(_T("(%d:%s) "), nSelected, strCID);
 		strSelected += str;
+		strGroupMsg += (strCID + _T(" "));
 
 		ACE_UINT32 cid = ACE_OS::atoi(strCID);
 		if ((nRtn = m_stream.send_n(&cid, sizeof(ACE_UINT32)) == -1)) {
@@ -375,7 +384,9 @@ void CgatewayCtrlDlg::OnGenerateKey()
 			return;
 		}
 	}
+	strGroupMsg += _T("}");
 	TRACE(_T("%s\n"), strSelected.GetBuffer(strSelected.GetLength()));
+	log(strGroupMsg);
 }
 
 int CgatewayCtrlDlg::selectedCount()
