@@ -4,6 +4,7 @@
 #include <map>
 #include "StreamHandler.h"
 #include "pkcs11.h"
+#include "CGroup.h"
 
 class CGwData{
 private:
@@ -15,6 +16,7 @@ public:
 
 	std::map<CID, StreamHandler*> con_;
 	CK_OBJECT_HANDLE hGw_;
+	std::list<CGroup> groupList_;
 private:
 	static CGwData *gwData_;
 };
