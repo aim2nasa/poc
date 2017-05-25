@@ -1,6 +1,8 @@
 #include "CCtrlProxy.h"
 #include "CGwData.h"
 #include "CGroup.h"
+#include "Helper.h"
+#include "CToken.h"
 
 CCtrlProxy::CCtrlProxy()
 :noti_(0, this, ACE_Event_Handler::WRITE_MASK)
@@ -154,6 +156,15 @@ int CCtrlProxy::onReqKeyG(const char *buf, size_t dataSize)
 
 int CCtrlProxy::generateKey(CGroup &group)
 {
+	ACE_ASSERT(CGwData::getInstance()->token_);
+
+	CK_BYTE salt[GROUP_NAME_SIZE];
+	ACE_OS::memset(salt, 0, GROUP_NAME_SIZE);
+	ACE_OS::memcpy(salt, group.groupName_.c_str(), group.groupName_.size());
+	
+	if (deriveGroup(CGwData::getInstance()->token_->session(), group.hGroup_, CGwData::getInstance()->hGw_, salt, GROUP_NAME_SIZE) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup failed\n")), -1);
+
 	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::generateKey\n"));
 	CGwData::getInstance()->groupList_.push_back(group);
 	return 0;
