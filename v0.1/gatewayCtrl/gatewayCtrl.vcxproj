@@ -221,6 +221,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\protocol.h" />
+    <ClInclude Include="CConTable.h" />
     <ClInclude Include="gatewayCtrl.h" />
     <ClInclude Include="gatewayCtrlDlg.h" />
     <ClInclude Include="GroupName.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CConTable.cpp" />
     <ClCompile Include="gatewayCtrl.cpp" />
     <ClCompile Include="gatewayCtrlDlg.cpp" />
     <ClCompile Include="GroupName.cpp" />
