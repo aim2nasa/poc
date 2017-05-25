@@ -4,13 +4,8 @@
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
 #include <ace/Reactor_Notification_Strategy.h>
-#include <list>
 
-class CGroup{
-public:
-	std::string groupName_;
-	std::list<unsigned int> cidList_;
-};
+class CGroup;
 
 class CCtrlProxy : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
 private:

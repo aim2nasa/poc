@@ -1,5 +1,6 @@
 #include "CCtrlProxy.h"
 #include "CGwData.h"
+#include "CGroup.h"
 
 CCtrlProxy::CCtrlProxy()
 :noti_(0, this, ACE_Event_Handler::WRITE_MASK)

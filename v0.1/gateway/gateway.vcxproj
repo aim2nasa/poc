@@ -192,6 +192,7 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
   <ItemGroup>
     <ClInclude Include="..\common\protocol.h" />
     <ClInclude Include="CCtrlProxy.h" />
+    <ClInclude Include="CGroup.h" />
     <ClInclude Include="CSeAcceptor.h" />
     <ClInclude Include="CToken.h" />
     <ClInclude Include="Helper.h" />
