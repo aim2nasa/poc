@@ -117,6 +117,11 @@ std::string CToken::label()
 	return _label;
 }
 
+CK_SESSION_HANDLE CToken::session()
+{
+	return _hSession;
+}
+
 int CToken::createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG keySize, CK_OBJECT_HANDLE &hKey)
 {
 	hKey = CK_INVALID_HANDLE;
