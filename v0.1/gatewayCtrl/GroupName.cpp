@@ -26,6 +26,7 @@ void CGroupName::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_NAME_EDIT, m_strGroupName);
+	DDV_MaxChars(pDX, m_strGroupName, 16);
 }
 
 
