@@ -4,6 +4,13 @@
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
 #include <ace/Reactor_Notification_Strategy.h>
+#include <list>
+
+class CGroup{
+public:
+	std::string groupName_;
+	std::list<unsigned int> cidList_;
+};
 
 class CCtrlProxy : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
 private:
@@ -16,6 +23,7 @@ public:
 	CCtrlProxy();
 	int onReqStat();
 	int onReqKeyG(const char *buf, size_t dataSize);
+	int generateKey(CGroup &group);
 
 	virtual int open(void * = 0);
 	virtual int handle_input(ACE_HANDLE handle = ACE_INVALID_HANDLE);
