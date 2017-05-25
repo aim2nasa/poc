@@ -41,6 +41,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_RETURN(-1);
 	}
 	ACE_DEBUG((LM_INFO, "(%t) AES key for gateway created\n"));
+	CGwData::getInstance()->token_ = &token;
 
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);

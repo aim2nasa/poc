@@ -6,6 +6,8 @@
 #include "pkcs11.h"
 #include "CGroup.h"
 
+class CToken;
+
 class CGwData{
 private:
 	CGwData();
@@ -17,6 +19,7 @@ public:
 	std::map<CID, StreamHandler*> con_;
 	CK_OBJECT_HANDLE hGw_;
 	std::list<CGroup> groupList_;
+	CToken *token_;
 private:
 	static CGwData *gwData_;
 };
