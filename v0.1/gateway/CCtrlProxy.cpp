@@ -125,9 +125,16 @@ int CCtrlProxy::onReqStat()
 
 int CCtrlProxy::onReqKeyG(const char *buf, size_t dataSize)
 {
-	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::onReqKeyG ["));
-	size_t count = dataSize / sizeof(ACE_UINT32);
+	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::onReqKeyG "));
 
+	//GroupName
+	char groupName[GROUP_NAME_SIZE];
+	ACE_OS::memcpy(groupName, buf, GROUP_NAME_SIZE);
+	ACE_DEBUG((LM_INFO, ACE_TEXT("GroupName:%s ["), groupName));
+
+	//CIDs
+	size_t count = (dataSize-GROUP_NAME_SIZE) / sizeof(ACE_UINT32);
+	buf += GROUP_NAME_SIZE;
 	for (size_t i = 0; i < count; i++) {
 		ACE_UINT32 cid;
 		ACE_OS::memcpy(&cid, buf + i*sizeof(ACE_UINT32), sizeof(ACE_UINT32));

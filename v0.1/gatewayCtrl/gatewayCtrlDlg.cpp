@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "ace\Init_ACE.h"
 #include "ace\Thread_Manager.h"
+#include "ace\OS_NS_string.h"
 #include "protocol.h"
 #include "GroupName.h"
 
@@ -357,13 +358,25 @@ void CgatewayCtrlDlg::OnGenerateKey()
 	}
 
 	//dataSize
-	ACE_UINT32 dataSize = sizeof(ACE_UINT32)*nSelected;
+	ACE_UINT32 dataSize = GROUP_NAME_SIZE + sizeof(ACE_UINT32)*nSelected;
 	if ((nRtn = m_stream.send_n(&dataSize, sizeof(ACE_UINT32)) == -1)) {
 		strErr.Format(_T("reqKeyGen, dataSize send error:%d"), nRtn);
 		log(strErr);
 		return;
 	}
 
+	//data (GroupName+CIDs)
+	//GroupName
+	char groupName[GROUP_NAME_SIZE];
+	ACE_OS::memset(groupName, 0, GROUP_NAME_SIZE);
+	ACE_OS::memcpy(groupName, CT2A(strGroupName), strGroupName.GetLength()>GROUP_NAME_SIZE ? GROUP_NAME_SIZE : strGroupName.GetLength());
+	if ((nRtn = m_stream.send_n(groupName, GROUP_NAME_SIZE) == -1)) {
+		strErr.Format(_T("reqKeyGen, data(GroupName) send error:%d"), nRtn);
+		log(strErr);
+		return;
+	}
+
+	//CIDs
 	CString strSelected,strGroupMsg(_T("GroupName:")+strGroupName+_T(" { "));
 	strSelected.Format(_T("selected:"));
 	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
