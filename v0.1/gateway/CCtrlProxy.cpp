@@ -142,7 +142,10 @@ int CCtrlProxy::onReqKeyG(const char *buf, size_t dataSize)
 		ACE_UINT32 cid;
 		ACE_OS::memcpy(&cid, buf + i*sizeof(ACE_UINT32), sizeof(ACE_UINT32));
 		ACE_DEBUG((LM_INFO, "%d ",cid));
-		group.cidList_.push_back(cid);
+
+		CSe se;
+		se.cid_ = cid;
+		group.cidList_.push_back(se);
 	}
 	ACE_DEBUG((LM_INFO, "]\n"));
 	generateKey(group);

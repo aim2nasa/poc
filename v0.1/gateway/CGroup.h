@@ -2,13 +2,14 @@
 #define __CGROUP_H__
 
 #include <list>
+#include "CSe.h"
 
 class CGroup{
 public:
 	CGroup() :hGroup_(CK_INVALID_HANDLE), hTag_(CK_INVALID_HANDLE){}
 
 	std::string groupName_;
-	std::list<unsigned int> cidList_;
+	std::list<CSe> cidList_;
 	CK_OBJECT_HANDLE hGroup_;
 	CK_OBJECT_HANDLE hTag_;
 };
