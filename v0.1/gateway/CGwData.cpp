@@ -3,6 +3,7 @@
 CGwData* CGwData::gwData_ = NULL;
 
 CGwData::CGwData()
+:hGw_(CK_INVALID_HANDLE)
 {
 
 }

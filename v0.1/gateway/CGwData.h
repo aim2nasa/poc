@@ -3,6 +3,7 @@
 
 #include <map>
 #include "StreamHandler.h"
+#include "pkcs11.h"
 
 class CGwData{
 private:
@@ -13,7 +14,7 @@ public:
 	static void delInstance();
 
 	std::map<CID, StreamHandler*> con_;
-
+	CK_OBJECT_HANDLE hGw_;
 private:
 	static CGwData *gwData_;
 };

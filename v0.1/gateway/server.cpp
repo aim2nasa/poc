@@ -36,8 +36,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	//GwKey(AES키를 생성)
 	CK_ULONG keySize = 32;
-	CK_OBJECT_HANDLE hGw = CK_INVALID_HANDLE;
-	if (gatewayKey(token, keySize, hGw) != 0) {
+	if (gatewayKey(token, keySize, CGwData::getInstance()->hGw_) != 0) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("gatewayKey creation failed\n")));
 		ACE_RETURN(-1);
 	}
