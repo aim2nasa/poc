@@ -145,7 +145,7 @@ int CCtrlProxy::onReqKeyG(const char *buf, size_t dataSize)
 
 		CSe se;
 		se.cid_ = cid;
-		group.cidList_.push_back(se);
+		group.seList_.push_back(se);
 	}
 	ACE_DEBUG((LM_INFO, "]\n"));
 	generateKey(group);
