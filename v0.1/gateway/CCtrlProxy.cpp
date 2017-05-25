@@ -165,6 +165,9 @@ int CCtrlProxy::generateKey(CGroup &group)
 	if (deriveGroup(CGwData::getInstance()->token_->session(), group.hGroup_, CGwData::getInstance()->hGw_, salt, GROUP_NAME_SIZE) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup failed\n")), -1);
 
+	if (deriveTagFromGroup(CGwData::getInstance()->token_->session(), group.hTag_, group.hGroup_) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveTagFromGroup failed\n")), -1);
+
 	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::generateKey\n"));
 	CGwData::getInstance()->groupList_.push_back(group);
 	return 0;
