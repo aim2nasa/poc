@@ -168,6 +168,11 @@ int CCtrlProxy::generateKey(CGroup &group)
 	if (deriveTagFromGroup(CGwData::getInstance()->token_->session(), group.hTag_, group.hGroup_) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveTagFromGroup failed\n")), -1);
 
+	for (std::list<CSe>::iterator it = group.seList_.begin(); it != group.seList_.end(); it++) {
+		if (deriveGroup(CGwData::getInstance()->token_->session(), it->h_, group.hGroup_, it->serialNo, SERIAL_NO_SIZE) != 0)
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup(cid:%d) failed\n"),it->cid_), -1);
+	}
+
 	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::generateKey\n"));
 	CGwData::getInstance()->groupList_.push_back(group);
 	return 0;
