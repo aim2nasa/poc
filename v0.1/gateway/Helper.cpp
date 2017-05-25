@@ -137,3 +137,21 @@ int deriveGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_
 
 	ACE_RETURN(0);
 }
+
+//Derive Tag from Group
+int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup)
+{
+	hTag = CK_INVALID_HANDLE;
+
+	CK_BYTE keyValue[64];
+	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &keyValue, sizeof(keyValue) };
+	CK_RV rv = C_GetAttributeValue(hSession, hGroup, &valAttrib, 1);
+	if (rv != CKR_OK)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("ERROR: C_GetAttributeValue:0x%x\n"), rv), -1);
+
+	int nRtn;
+	if ((nRtn = aesDerive(hSession, hGroup, hTag, CKM_AES_ECB_ENCRYPT_DATA, (CK_BYTE*)valAttrib.pValue, valAttrib.ulValueLen)) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("ERROR: aesDerive:0x%x\n"), nRtn), -2);
+	
+	ACE_RETURN(0);
+}
