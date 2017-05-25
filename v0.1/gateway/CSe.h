@@ -8,7 +8,7 @@ class CSe{
 public:
 	CSe();
 
-	unsigned char serialNo[SERIAL_NO_SIZE];
+	unsigned char serialNo_[SERIAL_NO_SIZE];
 	unsigned int cid_;
 	CK_OBJECT_HANDLE h_;
 };
