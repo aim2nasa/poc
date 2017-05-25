@@ -148,6 +148,7 @@ int CCtrlProxy::onReqKeyG(const char *buf, size_t dataSize)
 		group.seList_.push_back(se);
 	}
 	ACE_DEBUG((LM_INFO, "]\n"));
+	CGwData::getInstance()->groupList_.push_back(group);
 	generateKey(group);
 	return 0;
 }
