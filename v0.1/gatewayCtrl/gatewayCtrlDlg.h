@@ -47,6 +47,8 @@ protected:
 	int onAckKeyG(const char *buffer, unsigned int len);
 	int log(LPCTSTR lpszItem);
 	int selectedCount();
+
+	BOOL m_bConnect;
 public:
 	UINT m_uPort;
 	CIPAddressCtrl m_ctrlIpAddress;

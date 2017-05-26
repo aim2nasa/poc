@@ -122,6 +122,7 @@ BOOL CgatewayCtrlDlg::OnInitDialog()
 	m_ctrlList.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 	m_ctrlList.InsertColumn(0, _T("CID"), LVCFMT_LEFT, 50, -1);
 	m_ctrlList.InsertColumn(1, _T("SerialNo"), LVCFMT_LEFT, 470, -1);
+	m_bConnect = FALSE;
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -192,9 +193,11 @@ void CgatewayCtrlDlg::OnBnClickedConnectButton()
 	//ACE_INET_Addr remote_addr(m_uPort, strIp.GetBuffer(strIp.GetLength()));
 	ACE_INET_Addr remote_addr(m_uPort, "127.0.0.1");
 
-	if (m_connector.connect(m_stream, remote_addr) == -1)
+	if (m_connector.connect(m_stream, remote_addr) == -1) {
+		m_bConnect = FALSE;
 		log(_T("Connection failed"));
-	else {
+	} else {
+		m_bConnect = TRUE;
 		ACE_Thread_Manager::instance()->spawn(recvThread, this);
 		log(_T("Connected"));
 	}
@@ -323,6 +326,7 @@ int CgatewayCtrlDlg::onAckKeyG(const char *buffer, unsigned int len)
 
 void CgatewayCtrlDlg::OnBnClickedDisconnectButton()
 {
+	m_bConnect = FALSE;
 	if (m_stream.close() == -1) {
 		log(_T("connection close error"));
 		return;
