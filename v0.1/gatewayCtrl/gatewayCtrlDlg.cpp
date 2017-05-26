@@ -78,6 +78,7 @@ BEGIN_MESSAGE_MAP(CgatewayCtrlDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_DISCONNECT_BUTTON, &CgatewayCtrlDlg::OnBnClickedDisconnectButton)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST, &CgatewayCtrlDlg::OnNMRClickList)
 	ON_COMMAND(ID_GENERATE_KEY, &CgatewayCtrlDlg::OnGenerateKey)
+	ON_BN_CLICKED(IDC_LOG_CLEAR_BUTTON, &CgatewayCtrlDlg::OnBnClickedLogClearButton)
 END_MESSAGE_MAP()
 
 
@@ -458,4 +459,9 @@ int CgatewayCtrlDlg::selectedCount()
 		nCount++;
 	}
 	return nCount;
+}
+
+void CgatewayCtrlDlg::OnBnClickedLogClearButton()
+{
+	m_ctrlLog.ResetContent();
 }

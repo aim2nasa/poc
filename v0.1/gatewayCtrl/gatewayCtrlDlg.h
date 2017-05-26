@@ -39,6 +39,7 @@ protected:
 	afx_msg void OnBnClickedDisconnectButton();
 	afx_msg void OnNMRClickList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGenerateKey();
+	afx_msg void OnBnClickedLogClearButton();
 	DECLARE_MESSAGE_MAP()
 
 	int reqStatus();
