@@ -312,6 +312,7 @@ int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 		m_ctrlList.SetItem(row, 1, LVIF_TEXT, strSerialNo,0,0,0,NULL);
 		row++;
 	}
+	log(_T("status updated"));
 	return 0;
 }
 
