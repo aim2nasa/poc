@@ -121,7 +121,7 @@ BOOL CgatewayCtrlDlg::OnInitDialog()
 	UpdateData(FALSE);
 	m_ctrlList.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 	m_ctrlList.InsertColumn(0, _T("CID"), LVCFMT_LEFT, 50, -1);
-	m_ctrlList.InsertColumn(1, _T("SerialNo"), LVCFMT_LEFT, 470, -1);
+	m_ctrlList.InsertColumn(1, _T("SerialNo"), LVCFMT_LEFT, 570, -1);
 	m_bConnect = FALSE;
 
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
