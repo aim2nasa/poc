@@ -190,7 +190,6 @@ void CgatewayCtrlDlg::OnBnClickedConnectButton()
 	strPort.Format(_T("%u"), m_uPort);
 	log(_T("IP address:") + strIp + _T(",Port:")+strPort);
 
-	//ACE_INET_Addr remote_addr(m_uPort, strIp.GetBuffer(strIp.GetLength()));
 	ACE_INET_Addr remote_addr(m_uPort, "127.0.0.1");
 
 	if (m_connector.connect(m_stream, remote_addr) == -1) {
