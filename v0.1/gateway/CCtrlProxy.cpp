@@ -57,8 +57,10 @@ int CCtrlProxy::handle_input(ACE_HANDLE handle)
 		ACE_ASSERT(dataSize == recv_cnt);
 	}
 
-	if (prefix == PRF_REQ_STAT) onReqStat();
-	if (prefix == PRF_REQ_KEYG) onReqKeyG(buf,dataSize);
+	if (prefix == PRF_REQ_STAT)
+		onReqStat();
+	else if (prefix == PRF_REQ_KEYG)
+		onReqKeyG(buf,dataSize);
 	return 0;
 }
 

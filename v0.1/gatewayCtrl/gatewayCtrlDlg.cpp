@@ -278,8 +278,10 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 		}
 		ACE_ASSERT(dataSize == recv_cnt);
 
-		if (prefix == PRF_ACK_STAT) pDlg->onAckStat(buffer,dataSize);
-		if (prefix == PRF_ACK_KEYG) pDlg->onAckKeyG(buffer, dataSize);
+		if (prefix == PRF_ACK_STAT) 
+			pDlg->onAckStat(buffer,dataSize);
+		else if (prefix == PRF_ACK_KEYG)
+			pDlg->onAckKeyG(buffer, dataSize);
 	}
 
 	pDlg->log(_T("recvThread terminated"));
