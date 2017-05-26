@@ -172,8 +172,7 @@ int CCtrlProxy::generateKey(CGroup &group)
 		if (deriveGroup(CGwData::getInstance()->token_->session(), it->h_, group.hGroup_, reinterpret_cast<CK_BYTE_PTR>(CGwData::getInstance()->con_.at(it->cid_)->serialNo()), SERIAL_NO_SIZE) != 0)
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup(cid:%d) failed\n"),it->cid_), -1);
 	}
-
-	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::generateKey\n"));
 	CGwData::getInstance()->groupList_.push_back(group);
+	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::generateKey\n"));
 	return 0;
 }
