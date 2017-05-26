@@ -1,5 +1,6 @@
 #include "Helper.h"
 #include "CToken.h"
+#include "common.h"
 #include <ace/Log_Msg.h>
 
 int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin)
@@ -153,5 +154,20 @@ int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OB
 	if ((nRtn = aesDerive(hSession, hGroup, hTag, CKM_AES_ECB_ENCRYPT_DATA, (CK_BYTE*)valAttrib.pValue, valAttrib.ulValueLen)) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("ERROR: aesDerive:0x%x\n"), nRtn), -2);
 	
+	ACE_RETURN(0);
+}
+
+int showKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey,const char *name)
+{
+	CK_BYTE key[AES_KEY_SIZE];
+	CK_ATTRIBUTE keyAttribs[] = { { CKA_VALUE, key, sizeof(key) } };
+	CK_RV rv = C_GetAttributeValue(hSession, hKey, keyAttribs, 1);
+	if (rv != CKR_OK)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in showKey(%d,%d)\n"),hSession,hKey), -1);
+
+	ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) %s key:"), name));
+	for (unsigned long i = 0; i < sizeof(key); i++) ACE_DEBUG((LM_INFO, ACE_TEXT("%0x "), key[i]));
+	ACE_DEBUG((LM_INFO, ACE_TEXT("\n")));
+
 	ACE_RETURN(0);
 }

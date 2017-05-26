@@ -9,5 +9,6 @@ int gatewayKey(CToken &token, CK_ULONG keySize, CK_OBJECT_HANDLE &hGw);
 int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv = NULL);
 int deriveGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_HANDLE hParent, CK_BYTE_PTR data, CK_ULONG dataSize);
 int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup);
+int showKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, const char *name);
 
 #endif
