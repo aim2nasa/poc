@@ -19,6 +19,7 @@ public:
 	int onReqStat();
 	int onReqKeyG(const char *buf, size_t dataSize);
 	int generateKey(CGroup &group);
+	int sendAckKeyG(CGroup &group);
 
 	virtual int open(void * = 0);
 	virtual int handle_input(ACE_HANDLE handle = ACE_INVALID_HANDLE);

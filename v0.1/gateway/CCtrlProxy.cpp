@@ -173,6 +173,27 @@ int CCtrlProxy::generateKey(CGroup &group)
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup(cid:%d) failed\n"),it->cid_), -1);
 	}
 	CGwData::getInstance()->groupList_.push_back(group);
+	sendAckKeyG(group);
 	ACE_DEBUG((LM_INFO, "(%t) CCtrlProxy::generateKey\n"));
 	return 0;
+}
+
+int CCtrlProxy::sendAckKeyG(CGroup &group)
+{
+	ACE_Message_Block *mb;
+	ACE_UINT32 dataSize = CGwData::getInstance()->con_.size()*(sizeof(ACE_UINT32));
+	ACE_NEW_RETURN(mb, ACE_Message_Block(PREFIX_SIZE + sizeof(ACE_UINT32)+dataSize), -1);
+
+	ACE_OS::memcpy(mb->wr_ptr(), PRF_ACK_KEYG, PREFIX_SIZE);
+	mb->wr_ptr(PREFIX_SIZE);
+
+	ACE_OS::memcpy(mb->wr_ptr(), &dataSize, sizeof(ACE_UINT32));
+	mb->wr_ptr(sizeof(ACE_UINT32));
+
+	for (std::list<CSe>::iterator it = group.seList_.begin(); it != group.seList_.end(); it++) {
+		ACE_UINT32 cid = it->cid_;
+		ACE_OS::memcpy(mb->wr_ptr(), &cid, sizeof(ACE_UINT32));
+		mb->wr_ptr(sizeof(ACE_UINT32));
+	}
+	return this->putq(mb);
 }

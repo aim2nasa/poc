@@ -264,6 +264,7 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 		ACE_ASSERT(dataSize == recv_cnt);
 
 		if (prefix == PRF_ACK_STAT) pDlg->onAckStat(buffer,dataSize);
+		if (prefix == PRF_ACK_KEYG) pDlg->onAckKeyG(buffer, dataSize);
 	}
 
 	pDlg->log(_T("recvThread terminated"));
@@ -294,6 +295,23 @@ int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 		m_ctrlList.SetItem(row, 1, LVIF_TEXT, strSerialNo,0,0,0,NULL);
 		row++;
 	}
+	return 0;
+}
+
+int CgatewayCtrlDlg::onAckKeyG(const char *buffer, unsigned int len)
+{
+	CString str(_T("Key generated: {"));
+	unsigned int count = len / sizeof(ACE_UINT32);
+	for (unsigned int i = 0; i < count; i++) {
+		const char *pOffset = &buffer[i*(sizeof(ACE_UINT32)+SERIAL_NO_SIZE)];
+
+		ACE_UINT32 cid;
+		memcpy(&cid, pOffset, sizeof(ACE_UINT32));
+		CString strTmp;
+		strTmp.Format(_T("%u "), cid);
+		str += strTmp;
+	}
+	log(str+_T("}"));
 	return 0;
 }
 

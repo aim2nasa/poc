@@ -11,5 +11,6 @@
 #define PRF_REQ_STAT	"REQ_STAT"
 #define PRF_REQ_KEYG	"REQ_KEYG"
 #define PRF_ACK_STAT	"ACK_STAT"
+#define PRF_ACK_KEYG	"ACK_KEYG"
 
 #endif
