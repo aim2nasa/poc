@@ -132,7 +132,8 @@ int CCtrlProxy::onReqKeyG(const char *buf, size_t dataSize)
 
 	CGroup group;
 	//GroupName
-	char groupName[GROUP_NAME_SIZE];
+	char groupName[GROUP_NAME_SIZE+1];
+	ACE_OS::memset(groupName, 0, sizeof(groupName));
 	ACE_OS::memcpy(groupName, buf, GROUP_NAME_SIZE);
 	ACE_DEBUG((LM_INFO, ACE_TEXT("GroupName:%s ["), groupName));
 	group.groupName_ = groupName;
