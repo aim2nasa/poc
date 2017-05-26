@@ -181,7 +181,7 @@ int CCtrlProxy::generateKey(CGroup &group)
 int CCtrlProxy::sendAckKeyG(CGroup &group)
 {
 	ACE_Message_Block *mb;
-	ACE_UINT32 dataSize = CGwData::getInstance()->con_.size()*(sizeof(ACE_UINT32));
+	ACE_UINT32 dataSize = GROUP_NAME_SIZE + CGwData::getInstance()->con_.size()*(sizeof(ACE_UINT32));
 	ACE_NEW_RETURN(mb, ACE_Message_Block(PREFIX_SIZE + sizeof(ACE_UINT32)+dataSize), -1);
 
 	ACE_OS::memcpy(mb->wr_ptr(), PRF_ACK_KEYG, PREFIX_SIZE);
@@ -189,6 +189,12 @@ int CCtrlProxy::sendAckKeyG(CGroup &group)
 
 	ACE_OS::memcpy(mb->wr_ptr(), &dataSize, sizeof(ACE_UINT32));
 	mb->wr_ptr(sizeof(ACE_UINT32));
+
+	char groupName[GROUP_NAME_SIZE];
+	ACE_OS::memset(groupName, 0, GROUP_NAME_SIZE);
+	ACE_OS::memcpy(groupName, group.groupName_.c_str(), group.groupName_.size());
+	ACE_OS::memcpy(mb->wr_ptr(), groupName, GROUP_NAME_SIZE);
+	mb->wr_ptr(GROUP_NAME_SIZE);
 
 	for (std::list<CSe>::iterator it = group.seList_.begin(); it != group.seList_.end(); it++) {
 		ACE_UINT32 cid = it->cid_;

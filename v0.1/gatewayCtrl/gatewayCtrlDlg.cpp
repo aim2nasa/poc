@@ -300,10 +300,16 @@ int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 
 int CgatewayCtrlDlg::onAckKeyG(const char *buffer, unsigned int len)
 {
-	CString str(_T("Key generated: {"));
-	unsigned int count = len / sizeof(ACE_UINT32);
+	char groupName[GROUP_NAME_SIZE + 1];
+	ACE_OS::memset(groupName, 0, sizeof(groupName));
+	ACE_OS::memcpy(groupName, buffer, GROUP_NAME_SIZE);
+
+	CString str(_T("Key generated:"));
+	str += (CString(groupName) + CString(_T(" {")));
+	buffer += GROUP_NAME_SIZE;
+	unsigned int count = (len-GROUP_NAME_SIZE) / sizeof(ACE_UINT32);
 	for (unsigned int i = 0; i < count; i++) {
-		const char *pOffset = &buffer[i*(sizeof(ACE_UINT32)+SERIAL_NO_SIZE)];
+		const char *pOffset = &buffer[i*sizeof(ACE_UINT32)];
 
 		ACE_UINT32 cid;
 		memcpy(&cid, pOffset, sizeof(ACE_UINT32));
