@@ -181,7 +181,7 @@ int CCtrlProxy::generateKey(CGroup &group)
 int CCtrlProxy::sendAckKeyG(CGroup &group)
 {
 	ACE_Message_Block *mb;
-	ACE_UINT32 dataSize = GROUP_NAME_SIZE + CGwData::getInstance()->con_.size()*(sizeof(ACE_UINT32));
+	ACE_UINT32 dataSize = GROUP_NAME_SIZE + group.seList_.size()*(sizeof(ACE_UINT32));
 	ACE_NEW_RETURN(mb, ACE_Message_Block(PREFIX_SIZE + sizeof(ACE_UINT32)+dataSize), -1);
 
 	ACE_OS::memcpy(mb->wr_ptr(), PRF_ACK_KEYG, PREFIX_SIZE);
