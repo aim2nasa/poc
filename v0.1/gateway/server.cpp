@@ -9,6 +9,7 @@
 #include "Helper.h"
 #include "CSeAcceptor.h"
 #include "CGwData.h"
+#include "common.h"
 
 #define SERVER_PORT 9876
 #define CONTRL_PORT 9875
@@ -17,6 +18,7 @@ using namespace std;
 
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
+	ACE_ASSERT(AES_KEY_SIZE <= AES_MAX_KEY_SIZE);
 	if (argc<5) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:gateway <port> <label> <soPin> <userPin>\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(98765)\n")));
@@ -35,8 +37,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", token.slotID(), token.label().c_str()));
 
 	//GwKey(AES키를 생성)
-	CK_ULONG keySize = 32;
-	if (gatewayKey(token, keySize, CGwData::getInstance()->hGw_) != 0) {
+	if (gatewayKey(token, AES_KEY_SIZE, CGwData::getInstance()->hGw_) != 0) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("gatewayKey creation failed\n")));
 		ACE_RETURN(-1);
 	}

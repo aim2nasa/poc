@@ -1,10 +1,12 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
+#include "common.h"
+
 #define PREFIX_SIZE 8
 #define HEADER_SIZE	(PREFIX_SIZE+6)	//2ea : and SERIAL_NO_SIZE:4bytes
-#define SERIAL_NO_SIZE	16
-#define GROUP_NAME_SIZE	16
+#define SERIAL_NO_SIZE	AES_KEY_SIZE
+#define GROUP_NAME_SIZE	AES_KEY_SIZE
 
 //prefix
 #define PRF_SERIALNO	"SERIALNO"

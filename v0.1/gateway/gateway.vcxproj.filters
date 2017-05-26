@@ -68,6 +68,9 @@
     <ClInclude Include="CSe.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\common.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="softhsm2.conf" />

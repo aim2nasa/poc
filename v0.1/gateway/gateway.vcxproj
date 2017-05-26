@@ -191,6 +191,7 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
     <ClCompile Include="StreamHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\common.h" />
     <ClInclude Include="..\common\protocol.h" />
     <ClInclude Include="CCtrlProxy.h" />
     <ClInclude Include="CGroup.h" />

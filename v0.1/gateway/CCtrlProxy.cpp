@@ -3,6 +3,7 @@
 #include "CGroup.h"
 #include "Helper.h"
 #include "CToken.h"
+#include "common.h"
 
 CCtrlProxy::CCtrlProxy()
 :noti_(0, this, ACE_Event_Handler::WRITE_MASK)
@@ -161,18 +162,20 @@ int CCtrlProxy::generateKey(CGroup &group)
 {
 	ACE_ASSERT(CGwData::getInstance()->token_);
 
-	CK_BYTE salt[GROUP_NAME_SIZE];
-	ACE_OS::memset(salt, 0, GROUP_NAME_SIZE);
+	CK_BYTE salt[AES_KEY_SIZE];
+	ACE_OS::memset(salt, 0, AES_KEY_SIZE);
 	ACE_OS::memcpy(salt, group.groupName_.c_str(), group.groupName_.size());
 	
-	if (deriveGroup(CGwData::getInstance()->token_->session(), group.hGroup_, CGwData::getInstance()->hGw_, salt, GROUP_NAME_SIZE) != 0)
+	if (deriveGroup(CGwData::getInstance()->token_->session(), group.hGroup_, CGwData::getInstance()->hGw_, salt, sizeof(salt)) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup failed\n")), -1);
 
 	if (deriveTagFromGroup(CGwData::getInstance()->token_->session(), group.hTag_, group.hGroup_) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveTagFromGroup failed\n")), -1);
 
 	for (std::list<CSe>::iterator it = group.seList_.begin(); it != group.seList_.end(); it++) {
-		if (deriveGroup(CGwData::getInstance()->token_->session(), it->h_, group.hGroup_, reinterpret_cast<CK_BYTE_PTR>(CGwData::getInstance()->con_.at(it->cid_)->serialNo()), SERIAL_NO_SIZE) != 0)
+		ACE_OS::memset(salt, 0, AES_KEY_SIZE);
+		ACE_OS::memcpy(salt, CGwData::getInstance()->con_.at(it->cid_)->serialNo(), SERIAL_NO_SIZE);
+		if (deriveGroup(CGwData::getInstance()->token_->session(), it->h_, group.hGroup_, salt, sizeof(salt)) != 0)
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup(cid:%d) failed\n"),it->cid_), -1);
 	}
 	CGwData::getInstance()->groupList_.push_back(group);

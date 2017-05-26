@@ -5,6 +5,7 @@
 #include "gatewayCtrl.h"
 #include "GroupName.h"
 #include "afxdialogex.h"
+#include "protocol.h"
 
 
 // CGroupName 대화 상자입니다.
@@ -26,7 +27,7 @@ void CGroupName::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_NAME_EDIT, m_strGroupName);
-	DDV_MaxChars(pDX, m_strGroupName, 16);
+	DDV_MaxChars(pDX, m_strGroupName, GROUP_NAME_SIZE);
 }
 
 
