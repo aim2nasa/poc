@@ -123,6 +123,10 @@ BOOL CgatewayCtrlDlg::OnInitDialog()
 	m_ctrlList.InsertColumn(0, _T("CID"), LVCFMT_LEFT, 50, -1);
 	m_ctrlList.InsertColumn(1, _T("SerialNo"), LVCFMT_LEFT, 470, -1);
 	m_bConnect = FALSE;
+
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -194,10 +198,16 @@ void CgatewayCtrlDlg::OnBnClickedConnectButton()
 
 	if (m_connector.connect(m_stream, remote_addr) == -1) {
 		m_bConnect = FALSE;
+		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(FALSE);
 		log(_T("Connection failed"));
 	} else {
 		m_bConnect = TRUE;
 		ACE_Thread_Manager::instance()->spawn(recvThread, this);
+		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(TRUE);
 		log(_T("Connected"));
 	}
 }
@@ -226,6 +236,9 @@ int CgatewayCtrlDlg::reqStatus()
 
 void CgatewayCtrlDlg::OnBnClickedReadStatusButton()
 {
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(TRUE);
 	if (reqStatus() == 0) log(_T("status request sent"));
 }
 
@@ -326,6 +339,9 @@ int CgatewayCtrlDlg::onAckKeyG(const char *buffer, unsigned int len)
 void CgatewayCtrlDlg::OnBnClickedDisconnectButton()
 {
 	m_bConnect = FALSE;
+	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(FALSE);
 	if (m_stream.close() == -1) {
 		log(_T("connection close error"));
 		return;
