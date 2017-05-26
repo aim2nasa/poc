@@ -256,7 +256,7 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 		//prefix
 		if ((recv_cnt = pDlg->m_stream.recv_n(buffer, PREFIX_SIZE)) == -1) {
 			pDlg->log(_T("prefix receive error"));
-			continue;
+			break;
 		}
 		ACE_ASSERT(PREFIX_SIZE == recv_cnt);
 
@@ -267,14 +267,14 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 		ACE_INT32 dataSize;
 		if ((recv_cnt = pDlg->m_stream.recv_n(&dataSize, sizeof(ACE_INT32))) <= 0) {
 			pDlg->log(_T("dataSize receive error"));
-			continue;
+			break;
 		}
 		ACE_ASSERT(sizeof(ACE_INT32) == recv_cnt);
 
 		//data
 		if ((recv_cnt = pDlg->m_stream.recv_n(buffer, dataSize)) <= 0) {
 			pDlg->log(_T("data receive error"));
-			continue;
+			break;
 		}
 		ACE_ASSERT(dataSize == recv_cnt);
 
