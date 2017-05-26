@@ -133,7 +133,7 @@ void StreamHandler::showAllConnections()
 	ACE_DEBUG((LM_INFO, "* List of all connections\n"));
 	for (std::map<CID, StreamHandler*>::iterator it = CGwData::getInstance()->con_.begin(); it != CGwData::getInstance()->con_.end(); ++it) {
 		ACE_DEBUG((LM_INFO, " CID:%u,SerialNo:", it->first));
-		printArray(it->second->serialNo(), 6);	//앞에서 6자리만 표시
+		printArray(it->second->serialNo(), SERIAL_NO_SIZE);
 		ACE_DEBUG((LM_INFO, "\n"));
 	}
 }
