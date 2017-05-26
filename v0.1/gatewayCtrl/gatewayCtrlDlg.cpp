@@ -128,6 +128,7 @@ BOOL CgatewayCtrlDlg::OnInitDialog()
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_LOG_CLEAR_BUTTON)->EnableWindow(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -202,6 +203,7 @@ void CgatewayCtrlDlg::OnBnClickedConnectButton()
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 		GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(FALSE);
 		GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(FALSE);
+		GetDlgItem(IDC_LOG_CLEAR_BUTTON)->EnableWindow(TRUE);
 		log(_T("Connection failed"));
 	} else {
 		m_bConnect = TRUE;
@@ -209,6 +211,7 @@ void CgatewayCtrlDlg::OnBnClickedConnectButton()
 		GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 		GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(TRUE);
 		GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(TRUE);
+		GetDlgItem(IDC_LOG_CLEAR_BUTTON)->EnableWindow(TRUE);
 		log(_T("Connected"));
 	}
 }
@@ -240,6 +243,7 @@ void CgatewayCtrlDlg::OnBnClickedReadStatusButton()
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(TRUE);
+	GetDlgItem(IDC_LOG_CLEAR_BUTTON)->EnableWindow(TRUE);
 	if (reqStatus() == 0) log(_T("status request sent"));
 }
 
@@ -346,6 +350,7 @@ void CgatewayCtrlDlg::OnBnClickedDisconnectButton()
 	GetDlgItem(IDC_CONNECT_BUTTON)->EnableWindow(TRUE);
 	GetDlgItem(IDC_DISCONNECT_BUTTON)->EnableWindow(FALSE);
 	GetDlgItem(IDC_STATUS_BUTTON)->EnableWindow(FALSE);
+	GetDlgItem(IDC_LOG_CLEAR_BUTTON)->EnableWindow(FALSE);
 	if (m_stream.close() == -1) {
 		log(_T("connection close error"));
 		return;
