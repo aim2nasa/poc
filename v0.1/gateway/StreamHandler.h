@@ -18,7 +18,7 @@ private:
 	ACE_Reactor_Notification_Strategy noti_;
 	static CID sCounter_;
 	CID id_;
-	unsigned char serialNo_[SERIAL_NO_SIZE];
+	char serialNo_[SERIAL_NO_SIZE];
 	CSeAcceptor	*seAcceptor_;
 
 	int onSerialNo(const char *buf, size_t dataSize);
@@ -26,9 +26,9 @@ private:
 public:
 	StreamHandler();
 	CID id();
-	unsigned char* serialNo();
+	char* serialNo();
 
-	static void printArray(const unsigned char *buf, size_t dataSize);
+	static void printArray(const char *buf, size_t dataSize);
 	void showAllConnections();
 
 	virtual int open(void * = 0);

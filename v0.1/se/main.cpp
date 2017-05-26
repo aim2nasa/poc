@@ -17,7 +17,7 @@ static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
 
 int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin);
-int createSerialNo(CToken &token, unsigned char *sn, unsigned int snSize);
+int createSerialNo(CToken &token, char *sn, unsigned int snSize);
 size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len);
 
 int main(int argc, char *argv[])
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", token.slotID(), token.label().c_str()));
 
 	//SE자신의 가상의 시리얼 넘버를 생성
-	unsigned char serialNo[SERIAL_NO_SIZE];
+	char serialNo[SERIAL_NO_SIZE];
 	if (createSerialNo(token,serialNo, SERIAL_NO_SIZE) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "SE serialNo creation failed"), -1);
 
@@ -156,13 +156,13 @@ int prepareSession(CToken &token, const char *label, const char *soPin, const ch
 	ACE_RETURN(0);
 }
 
-int createSerialNo(CToken &token, unsigned char *sn, unsigned int snSize)
+int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 {
 	if (token.genRandom(sn, snSize) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "SE serialNo creation failed"), -1);
 
 	ACE_DEBUG((LM_INFO, "(%t) serialNo:"));
-	for (unsigned long i = 0; i < snSize; i++) ACE_DEBUG((LM_INFO, "%0x ", sn[i]));
+	for (unsigned long i = 0; i < snSize; i++) ACE_DEBUG((LM_INFO, ACE_TEXT("%0x "), static_cast<unsigned char>(sn[i])));
 	ACE_DEBUG((LM_INFO, "\n"));
 
 	ACE_RETURN(0);

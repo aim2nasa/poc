@@ -134,10 +134,10 @@ int CToken::createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG
 	return 0;
 }
 
-int CToken::genRandom(unsigned char *randomData, unsigned long randomDataSize)
+int CToken::genRandom(char *randomData, unsigned long randomDataSize)
 {
 	CK_RV rv;
-	if ((rv = _p11->C_GenerateRandom(_hSession, randomData, randomDataSize)) != CKR_OK) {
+	if ((rv = _p11->C_GenerateRandom(_hSession, reinterpret_cast<unsigned char*>(randomData), randomDataSize)) != CKR_OK) {
 		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GenerateRandom: 0x", rv);
 		return -1;
 	}

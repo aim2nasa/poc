@@ -4,5 +4,5 @@
 CSe::CSe()
 :h_(CK_INVALID_HANDLE), cid_(-1)
 {
-	ACE_OS::memset(serialNo_, 0, SERIAL_NO_SIZE);
+
 }

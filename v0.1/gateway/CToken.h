@@ -18,7 +18,7 @@ public:
 	int login(CK_USER_TYPE userType, const char *pin, CK_ULONG pinSize);
 	int initPin(const char *userPin, CK_ULONG userPinSize);
 	int logout();
-	int genRandom(unsigned char *randomData, unsigned long randomDataSize);
+	int genRandom(char *randomData, unsigned long randomDataSize);
 
 	CK_SLOT_ID slotID();
 	std::string label();

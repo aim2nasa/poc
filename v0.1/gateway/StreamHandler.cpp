@@ -109,7 +109,7 @@ CID StreamHandler::id()
 	return id_;
 }
 
-unsigned char* StreamHandler::serialNo()
+char* StreamHandler::serialNo()
 {
 	return serialNo_;
 }
@@ -117,17 +117,15 @@ unsigned char* StreamHandler::serialNo()
 int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
 {
 	ACE_ASSERT(dataSize == SERIAL_NO_SIZE);
-
-	const unsigned char *pSn = (const unsigned char*)buf;
-	memcpy(serialNo_, pSn, dataSize);
+	memcpy(serialNo_, buf, dataSize);
 	showAllConnections();
 	return 0;
 }
 
-void StreamHandler::printArray(const unsigned char *buf, size_t dataSize)
+void StreamHandler::printArray(const char *buf, size_t dataSize)
 {
 	for (size_t i = 0; i < dataSize; i++)
-		ACE_DEBUG((LM_INFO, "%0x ", buf[i]));
+		ACE_DEBUG((LM_INFO, "%0x ", static_cast<unsigned char>(buf[i])));
 }
 
 void StreamHandler::showAllConnections()
@@ -135,7 +133,7 @@ void StreamHandler::showAllConnections()
 	ACE_DEBUG((LM_INFO, "* List of all connections\n"));
 	for (std::map<CID, StreamHandler*>::iterator it = CGwData::getInstance()->con_.begin(); it != CGwData::getInstance()->con_.end(); ++it) {
 		ACE_DEBUG((LM_INFO, " CID:%u,SerialNo:", it->first));
-		printArray(reinterpret_cast<const unsigned char*>(it->second->serialNo()), 6);	//앞에서 6자리만 표시
+		printArray(it->second->serialNo(), 6);	//앞에서 6자리만 표시
 		ACE_DEBUG((LM_INFO, "\n"));
 	}
 }
