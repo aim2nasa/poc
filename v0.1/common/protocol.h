@@ -14,5 +14,6 @@
 #define PRF_REQ_KEYG	"REQ_KEYG"
 #define PRF_ACK_STAT	"ACK_STAT"
 #define PRF_ACK_KEYG	"ACK_KEYG"
+#define PRF_NTF_TAGS	"NTF_TAGS"	//Notify메세지로 Tag키와 와 SE의 키가 전달됨을 알려줌
 
 #endif

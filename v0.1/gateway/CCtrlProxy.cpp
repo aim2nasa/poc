@@ -224,6 +224,32 @@ int CCtrlProxy::sendAckKeyG(CGroup &group)
 		ACE_UINT32 cid = it->cid_;
 		ACE_OS::memcpy(mb->wr_ptr(), &cid, sizeof(ACE_UINT32));
 		mb->wr_ptr(sizeof(ACE_UINT32));
+
+		ACE_Message_Block *kb;
+		ACE_NEW_RETURN(kb, ACE_Message_Block(PREFIX_SIZE + sizeof(ACE_UINT32) + 2*AES_KEY_SIZE), -1);
+		if (0 != msgBlockForSE(kb, 2*AES_KEY_SIZE, it->tagKey(), it->seKey())) ACE_RETURN(-1);
+
+		//StreamHandler의 큐에다 생성된 메모리 블럭을 넣어줌
+		CGwData::getInstance()->con_.at(static_cast<CID>(cid))->putq(kb);
 	}
 	return this->putq(mb);
+}
+
+int CCtrlProxy::msgBlockForSE(ACE_Message_Block *mb, unsigned int dataSize, unsigned char *tagKey, unsigned char *seKey)
+{
+	//prefix "NTF_TAGS"
+	ACE_OS::memcpy(mb->wr_ptr(), PRF_NTF_TAGS, PREFIX_SIZE);
+	mb->wr_ptr(PREFIX_SIZE);
+
+	ACE_OS::memcpy(mb->wr_ptr(), &dataSize, sizeof(ACE_UINT32));
+	mb->wr_ptr(sizeof(ACE_UINT32));
+
+	//Tag키
+	ACE_OS::memcpy(mb->wr_ptr(), tagKey, AES_KEY_SIZE);
+	mb->wr_ptr(AES_KEY_SIZE);
+
+	//SE키
+	ACE_OS::memcpy(mb->wr_ptr(), seKey, AES_KEY_SIZE);
+	mb->wr_ptr(AES_KEY_SIZE);
+	return 0;
 }
