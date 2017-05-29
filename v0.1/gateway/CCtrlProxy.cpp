@@ -166,25 +166,35 @@ int CCtrlProxy::generateKey(CGroup &group)
 	ACE_OS::memset(salt, 0, AES_KEY_SIZE);
 	ACE_OS::memcpy(salt, group.groupName_.c_str(), group.groupName_.size());
 	
+	//Gateway의 GW키로 부터 Group에 대한 키를 derive한다
 	if (deriveGroup(CGwData::getInstance()->token_->session(), group.hGroup_, CGwData::getInstance()->hGw_, salt, sizeof(salt)) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup failed\n")), -1);
 
 	std::string groupName = std::string("Group(") + group.groupName_ + std::string(")");
 	showKey(CGwData::getInstance()->token_->session(), CGwData::getInstance()->hGw_, groupName.c_str());
 
+	//Group에 대한 키로 부터 Tag키를 derive한다
 	if (deriveTagFromGroup(CGwData::getInstance()->token_->session(), group.hTag_, group.hGroup_) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveTagFromGroup failed\n")), -1);
 
-	showKey(CGwData::getInstance()->token_->session(), group.hTag_, std::string("GroupTag").c_str());
+	if (0 != getKey(CGwData::getInstance()->token_->session(), group.hTag_, group.tagKey(), AES_KEY_SIZE)) ACE_RETURN(-1);
+	displayKey(group.tagKey(), AES_KEY_SIZE, std::string("GroupTag").c_str());
 
 	for (std::list<CSe>::iterator it = group.seList_.begin(); it != group.seList_.end(); it++) {
 		ACE_OS::memset(salt, 0, AES_KEY_SIZE);
 		ACE_OS::memcpy(salt, CGwData::getInstance()->con_.at(it->cid_)->serialNo(), SERIAL_NO_SIZE);
+
+		//Group키로 부터 Group에 속한 SE들의 키들을 derive한다
 		if (deriveGroup(CGwData::getInstance()->token_->session(), it->h_, group.hGroup_, salt, sizeof(salt)) != 0)
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup(cid:%d) failed\n"),it->cid_), -1);
 
+		//Group에 대한 Tag키를 Group에 속한 SE들에게 복사 (그룹에 속한 SE들은 모두 같은 Tag키를 갖게 된다)
+		it->tagKey(group.tagKey(), AES_KEY_SIZE);
+
+		//Group에 속한 SE에 derive된 SE의 키를 복사 (SE들은 각자 고유의 Group으로 부터 derive된 키를 갖게 된다)
+		if (0 != getKey(CGwData::getInstance()->token_->session(), it->h_, it->seKey(), AES_KEY_SIZE)) ACE_RETURN(-1);
 		std::string seName = std::string("SE") + std::to_string(it->cid_);
-		showKey(CGwData::getInstance()->token_->session(), it->h_, seName.c_str());
+		displayKey(it->seKey(), AES_KEY_SIZE, seName.c_str());
 	}
 	CGwData::getInstance()->groupList_.push_back(group);
 	sendAckKeyG(group);
