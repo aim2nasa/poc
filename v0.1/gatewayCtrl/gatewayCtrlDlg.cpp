@@ -277,11 +277,13 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 		ACE_ASSERT(sizeof(ACE_INT32) == recv_cnt);
 
 		//data
-		if ((recv_cnt = pDlg->m_stream.recv_n(buffer, dataSize)) <= 0) {
-			pDlg->log(_T("data receive error"));
-			break;
+		if (dataSize > 0) {
+			if ((recv_cnt = pDlg->m_stream.recv_n(buffer, dataSize)) <= 0) {
+				pDlg->log(_T("data receive error"));
+				break;
+			}
+			ACE_ASSERT(dataSize == recv_cnt);
 		}
-		ACE_ASSERT(dataSize == recv_cnt);
 
 		if (prefix == PRF_ACK_STAT) 
 			pDlg->onAckStat(buffer,dataSize);
