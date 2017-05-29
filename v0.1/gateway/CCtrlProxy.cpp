@@ -169,14 +169,22 @@ int CCtrlProxy::generateKey(CGroup &group)
 	if (deriveGroup(CGwData::getInstance()->token_->session(), group.hGroup_, CGwData::getInstance()->hGw_, salt, sizeof(salt)) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup failed\n")), -1);
 
+	std::string groupName = std::string("Group(") + group.groupName_ + std::string(")");
+	showKey(CGwData::getInstance()->token_->session(), CGwData::getInstance()->hGw_, groupName.c_str());
+
 	if (deriveTagFromGroup(CGwData::getInstance()->token_->session(), group.hTag_, group.hGroup_) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveTagFromGroup failed\n")), -1);
+
+	showKey(CGwData::getInstance()->token_->session(), group.hTag_, std::string("GroupTag").c_str());
 
 	for (std::list<CSe>::iterator it = group.seList_.begin(); it != group.seList_.end(); it++) {
 		ACE_OS::memset(salt, 0, AES_KEY_SIZE);
 		ACE_OS::memcpy(salt, CGwData::getInstance()->con_.at(it->cid_)->serialNo(), SERIAL_NO_SIZE);
 		if (deriveGroup(CGwData::getInstance()->token_->session(), it->h_, group.hGroup_, salt, sizeof(salt)) != 0)
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup(cid:%d) failed\n"),it->cid_), -1);
+
+		std::string seName = std::string("SE") + std::to_string(it->cid_);
+		showKey(CGwData::getInstance()->token_->session(), it->h_, seName.c_str());
 	}
 	CGwData::getInstance()->groupList_.push_back(group);
 	sendAckKeyG(group);
