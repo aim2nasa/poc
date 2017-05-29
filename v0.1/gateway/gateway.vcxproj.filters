@@ -39,6 +39,9 @@
     <ClCompile Include="CSe.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="CGroup.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StreamHandler.h">

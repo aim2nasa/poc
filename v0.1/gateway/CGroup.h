@@ -6,12 +6,19 @@
 
 class CGroup{
 public:
-	CGroup() :hGroup_(CK_INVALID_HANDLE), hTag_(CK_INVALID_HANDLE){}
+	CGroup();
+	virtual ~CGroup();
+
+	void tagKey(CK_BYTE_PTR tKey, CK_ULONG size);
+	CK_BYTE_PTR tagKey();
 
 	std::string groupName_;
 	std::list<CSe> seList_;
 	CK_OBJECT_HANDLE hGroup_;
 	CK_OBJECT_HANDLE hTag_;
+
+private:
+	CK_BYTE tagKey_[AES_KEY_SIZE];
 };
 
 #endif
