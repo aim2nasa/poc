@@ -6,6 +6,7 @@ CSe::CSe()
 :h_(CK_INVALID_HANDLE), cid_(-1)
 {
 	ACE_OS::memset(tagKey_, 0, AES_KEY_SIZE);
+	ACE_OS::memset(seKey_, 0, AES_KEY_SIZE);
 }
 
 void CSe::tagKey(CK_BYTE_PTR tKey, CK_ULONG size)
