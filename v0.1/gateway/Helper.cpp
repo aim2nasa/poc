@@ -160,14 +160,25 @@ int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OB
 int showKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey,const char *name)
 {
 	CK_BYTE key[AES_KEY_SIZE];
-	CK_ATTRIBUTE keyAttribs[] = { { CKA_VALUE, key, sizeof(key) } };
+	if (getKey(hSession, hKey, key, sizeof(key)) != 0) ACE_RETURN(-1);
+
+	displayKey(key, sizeof(key), name);
+	ACE_RETURN(0);
+}
+
+int getKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_BYTE_PTR key, CK_ULONG keySize)
+{
+	CK_ATTRIBUTE keyAttribs[] = { { CKA_VALUE, key, keySize } };
 	CK_RV rv = C_GetAttributeValue(hSession, hKey, keyAttribs, 1);
 	if (rv != CKR_OK)
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in showKey(%d,%d)\n"),hSession,hKey), -1);
-
-	ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) %s key:"), name));
-	for (unsigned long i = 0; i < sizeof(key); i++) ACE_DEBUG((LM_INFO, ACE_TEXT("%0x "), key[i]));
-	ACE_DEBUG((LM_INFO, ACE_TEXT("\n")));
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in getKey(%d,%d)\n"), hSession, hKey), -1);
 
 	ACE_RETURN(0);
+}
+
+void displayKey(CK_BYTE_PTR key, CK_ULONG keySize, const char *name)
+{
+	ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) %s key:"), name));
+	for (unsigned long i = 0; i < keySize; i++) ACE_DEBUG((LM_INFO, ACE_TEXT("%0x "), key[i]));
+	ACE_DEBUG((LM_INFO, ACE_TEXT("\n")));
 }
