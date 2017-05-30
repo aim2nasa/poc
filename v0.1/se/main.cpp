@@ -214,6 +214,7 @@ int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	if (aesKeyInjection((CK_BYTE_PTR)(buffer) ,len, hSession, hTagKey)!=0) 
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hSession), -1);
 
+	ACE_ASSERT(hTagKey != CK_INVALID_HANDLE);
 	ACE_RETURN(0);
 }
 
@@ -225,6 +226,7 @@ int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	if (aesKeyInjection((CK_BYTE_PTR)(buffer), len, hSession, hSeKey) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hSession), -1);
 
+	ACE_ASSERT(hSeKey != CK_INVALID_HANDLE);
 	ACE_RETURN(0);
 }
 
