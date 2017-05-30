@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "se", "se\se.vcxproj", "{286
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gatewayCtrl", "gatewayCtrl\gatewayCtrl.vcxproj", "{5B4F3875-1FB0-4ECC-9589-95789F0CFC45}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unitTest", "unitTest\unitTest.vcxproj", "{87FF08DC-3369-48AF-8C9C-C162D321E247}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -45,6 +47,12 @@ Global
 		{5B4F3875-1FB0-4ECC-9589-95789F0CFC45}.Release|Win32.ActiveCfg = Release|Win32
 		{5B4F3875-1FB0-4ECC-9589-95789F0CFC45}.Release|Win32.Build.0 = Release|Win32
 		{5B4F3875-1FB0-4ECC-9589-95789F0CFC45}.Release|x64.ActiveCfg = Release|Win32
+		{87FF08DC-3369-48AF-8C9C-C162D321E247}.Debug|Win32.ActiveCfg = Debug|Win32
+		{87FF08DC-3369-48AF-8C9C-C162D321E247}.Debug|Win32.Build.0 = Debug|Win32
+		{87FF08DC-3369-48AF-8C9C-C162D321E247}.Debug|x64.ActiveCfg = Debug|x64
+		{87FF08DC-3369-48AF-8C9C-C162D321E247}.Release|Win32.ActiveCfg = Release|Win32
+		{87FF08DC-3369-48AF-8C9C-C162D321E247}.Release|Win32.Build.0 = Release|Win32
+		{87FF08DC-3369-48AF-8C9C-C162D321E247}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
