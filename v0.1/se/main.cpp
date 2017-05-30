@@ -11,7 +11,7 @@
 #include "CToken.h"
 #include "protocol.h"
 
-#define SIZE_BUF 256
+#define SIZE_BUF (1024*8)
 
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
@@ -19,6 +19,9 @@ static u_short SERVER_PORT = 9876;
 int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin);
 int createSerialNo(CToken &token, char *sn, unsigned int snSize);
 size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len);
+int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo);
+int registerKeys(ACE_SOCK_Stream &sock);
+int onNtfTags(const char *buffer, unsigned int len);
 
 int main(int argc, char *argv[])
 {
@@ -48,6 +51,8 @@ int main(int argc, char *argv[])
 	if (createSerialNo(token,serialNo, SERIAL_NO_SIZE) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "SE serialNo creation failed"), -1);
 
+	ACE_DEBUG((LM_INFO, "(%t) serial number created\n"));
+
 	ACE_SOCK_Stream client_stream;
 	ACE_INET_Addr remote_addr(server_port, server_host);
 	ACE_SOCK_Connector connector;
@@ -58,53 +63,16 @@ int main(int argc, char *argv[])
 	else
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
 
-	size_t nRtn = 0;
-	char buffer[SIZE_BUF];
+	if (sendSerialNo(client_stream, serialNo) != 0) ACE_RETURN(-1);
+	ACE_DEBUG((LM_INFO, "(%t) serial number sent to gateway\n"));
 
-	//프로토콜 포맷 정의
-	//{prefix, 8바이트} {dataSize,바이트} {data}
-
-	//prefix
-	if ((nRtn = send(client_stream, PRF_SERIALNO, PREFIX_SIZE)) == -1)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send_n(%d), prefix",nRtn), -1);
-
-	//dataSize
-	ACE_INT32 dataSize = ACE_HTONL(ACE_Utils::truncate_cast<ACE_INT32> (SERIAL_NO_SIZE));
-	if ((nRtn = send(client_stream, reinterpret_cast<const char*>(&dataSize), sizeof(ACE_INT32))) == -1)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send_n(%d), dataSize", nRtn), -1);
-
-	//serialNo
-	if ((nRtn = send(client_stream, reinterpret_cast<const char*>(serialNo), SERIAL_NO_SIZE)) == -1)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send_n(%d), serialNo", nRtn), -1);
-
-	std::cout << "press q and enter to finish" << std::endl;
-	while (true){
-		std::cout << ": ";
-		fgets(buffer, sizeof(buffer), stdin);
-
-		if (ACE_OS::strcmp(buffer, "q\n") == 0)
-			break;
-
-		if ((nRtn = client_stream.send_n(buffer, SIZE_BUF)) == -1) {
-			ACE_DEBUG((LM_DEBUG, "(%P|%t) Error send_n(%d)\n", nRtn));
-			break;
-		}
-
-		ACE_DEBUG((LM_DEBUG, "(%P|%t) %dbytes sent\n", nRtn));
-
-		// recv
-		char recv_buff[SIZE_BUF] = { 0 };
-		if ((nRtn = client_stream.recv_n(recv_buff, sizeof(recv_buff))) == -1) {
-			ACE_ERROR((LM_ERROR, "(%P|%t) Error recv_n(%d)\n", nRtn));
-			break;
-		}
-		else
-			ACE_DEBUG((LM_DEBUG, "(%P|%t) %dbytes received:%s\n", nRtn, recv_buff));
-	}
+	if (registerKeys(client_stream) != 0) ACE_RETURN(-1);
+	ACE_DEBUG((LM_INFO, "(%t) SE key registered\n"));
 
 	if (client_stream.close() == -1)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
 
+	ACE_DEBUG((LM_INFO, "(%t) SE successfully initialized\n"));
 	return 0;
 }
 
@@ -171,4 +139,59 @@ int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 size_t send(ACE_SOCK_Stream &sock, const char *buffer,size_t len)
 {
 	return sock.send_n(buffer,len);
+}
+
+int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo)
+{
+	size_t send_cnt = 0;
+
+	//프로토콜 포맷 정의
+	//{prefix, 8바이트} {dataSize,바이트} {data}
+
+	//prefix
+	if ((send_cnt = send(sock, PRF_SERIALNO, PREFIX_SIZE)) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send(%d), prefix", send_cnt), -1);
+
+	//dataSize
+	ACE_INT32 dataSize = ACE_HTONL(ACE_Utils::truncate_cast<ACE_INT32> (SERIAL_NO_SIZE));
+	if ((send_cnt = send(sock, reinterpret_cast<const char*>(&dataSize), sizeof(ACE_INT32))) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send(%d), dataSize", send_cnt), -1);
+
+	//serialNo
+	if ((send_cnt = send(sock, reinterpret_cast<const char*>(serialNo), SERIAL_NO_SIZE)) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error send(%d), serialNo", send_cnt), -1);
+
+	ACE_RETURN(0);
+}
+
+int registerKeys(ACE_SOCK_Stream &sock)
+{
+	size_t recv_cnt = 0;
+	char buffer[SIZE_BUF];
+
+	//prefix
+	if ((recv_cnt = sock.recv_n(buffer, PREFIX_SIZE)) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error recv_n(%d), prefix", recv_cnt), -1);
+
+	buffer[PREFIX_SIZE] = 0;
+	std::string prefix = buffer;
+
+	//dataSize
+	ACE_INT32 dataSize;
+	if ((recv_cnt = sock.recv_n(&dataSize, sizeof(ACE_INT32))) <= 0)
+		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error recv_n(%d), dataSize", recv_cnt), -1);
+
+	//data
+	if (dataSize > 0) {
+		if ((recv_cnt = sock.recv_n(buffer, dataSize)) <= 0)
+			ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error recv_n(%d), data", recv_cnt), -1);
+	}
+
+	if (prefix == PRF_NTF_TAGS) onNtfTags(buffer, dataSize);
+	ACE_RETURN(0);
+}
+
+int onNtfTags(const char *buffer, unsigned int len)
+{
+	ACE_RETURN(0);
 }
