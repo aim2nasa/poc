@@ -20,10 +20,11 @@ int prepareSession(CToken &token, const char *label, const char *soPin, const ch
 int createSerialNo(CToken &token, char *sn, unsigned int snSize);
 size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len);
 int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo);
-int registerKeys(ACE_SOCK_Stream &sock);
-int onNtfTags(const char *buffer, unsigned int len);
-int onTagKey(const char *buffer, unsigned int len);
-int onSeKey(const char *buffer, unsigned int len);
+int registerKeys(ACE_SOCK_Stream &sock, CK_SESSION_HANDLE hSession);
+int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
+int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
+int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
+int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey);
 
 int main(int argc, char *argv[])
 {
@@ -68,7 +69,7 @@ int main(int argc, char *argv[])
 	if (sendSerialNo(client_stream, serialNo) != 0) ACE_RETURN(-1);
 	ACE_DEBUG((LM_INFO, "(%t) serial number sent to gateway\n"));
 
-	if (registerKeys(client_stream) != 0) ACE_RETURN(-1);
+	if (registerKeys(client_stream,token.session()) != 0) ACE_RETURN(-1);
 	ACE_DEBUG((LM_INFO, "(%t) SE key registered\n"));
 
 	if (client_stream.close() == -1)
@@ -166,7 +167,7 @@ int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo)
 	ACE_RETURN(0);
 }
 
-int registerKeys(ACE_SOCK_Stream &sock)
+int registerKeys(ACE_SOCK_Stream &sock, CK_SESSION_HANDLE hSession)
 {
 	size_t recv_cnt = 0;
 	char buffer[SIZE_BUF];
@@ -189,32 +190,66 @@ int registerKeys(ACE_SOCK_Stream &sock)
 			ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error recv_n(%d), data", recv_cnt), -1);
 	}
 
-	if (prefix == PRF_NTF_TAGS) onNtfTags(buffer, dataSize);
+	if (prefix == PRF_NTF_TAGS) onNtfTags(buffer, dataSize, hSession);
 	ACE_RETURN(0);
 }
 
-int onNtfTags(const char *buffer, unsigned int len)
+int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 {
 	ACE_ASSERT(len%AES_KEY_SIZE == 0);
 
 	unsigned int count = len / AES_KEY_SIZE;
 	for (unsigned int i = 0; i < count; i++) {
-		(i == 0) ? onTagKey(buffer,AES_KEY_SIZE) : onSeKey(buffer,AES_KEY_SIZE);
+		(i == 0) ? onTagKey(buffer,AES_KEY_SIZE,hSession) : onSeKey(buffer,AES_KEY_SIZE,hSession);
 		buffer += AES_KEY_SIZE;
 	}
 	ACE_RETURN(0);
 }
 
-int onTagKey(const char *buffer, unsigned int len)
+int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 {
 	ACE_ASSERT(len == AES_KEY_SIZE);
+
+	CK_OBJECT_HANDLE hTagKey = CK_INVALID_HANDLE;
+	if (aesKeyInjection((CK_BYTE_PTR)(buffer) ,len, hSession, hTagKey)!=0) 
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hSession), -1);
 
 	ACE_RETURN(0);
 }
 
-int onSeKey(const char *buffer, unsigned int len)
+int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 {
 	ACE_ASSERT(len == AES_KEY_SIZE);
+
+	CK_OBJECT_HANDLE hSeKey = CK_INVALID_HANDLE;
+	if (aesKeyInjection((CK_BYTE_PTR)(buffer), len, hSession, hSeKey) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hSession), -1);
+
+	ACE_RETURN(0);
+}
+
+int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey)
+{
+	//원하는 키값으로 객체를 생성한다.
+	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
+	CK_BBOOL bTrue = CK_TRUE;
+	CK_BBOOL bFalse = CK_FALSE;
+	CK_OBJECT_CLASS secretClass = CKO_SECRET_KEY;
+	CK_KEY_TYPE keyType = CKK_GENERIC_SECRET;
+	CK_ATTRIBUTE attribs[] = {
+		{ CKA_VALUE, key, keySize },
+		{ CKA_EXTRACTABLE, &bFalse, sizeof(bFalse) },
+		{ CKA_CLASS, &secretClass, sizeof(secretClass) },
+		{ CKA_KEY_TYPE, &keyType, sizeof(keyType) },
+		{ CKA_TOKEN, &bTrue, sizeof(bTrue) },
+		{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
+		{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) }
+	};
+
+	CK_RV rv;
+	hKey = CK_INVALID_HANDLE;
+	if((rv=C_CreateObject(hSession, attribs, sizeof(attribs) / sizeof(CK_ATTRIBUTE), &hKey))!=CKR_OK)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error(0x%x) in C_CreateObject(session:%d)\n"), rv,hSession), -1);
 
 	ACE_RETURN(0);
 }
