@@ -22,6 +22,8 @@ size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len);
 int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo);
 int registerKeys(ACE_SOCK_Stream &sock);
 int onNtfTags(const char *buffer, unsigned int len);
+int onTagKey(const char *buffer, unsigned int len);
+int onSeKey(const char *buffer, unsigned int len);
 
 int main(int argc, char *argv[])
 {
@@ -193,5 +195,26 @@ int registerKeys(ACE_SOCK_Stream &sock)
 
 int onNtfTags(const char *buffer, unsigned int len)
 {
+	ACE_ASSERT(len%AES_KEY_SIZE == 0);
+
+	unsigned int count = len / AES_KEY_SIZE;
+	for (unsigned int i = 0; i < count; i++) {
+		(i == 0) ? onTagKey(buffer,AES_KEY_SIZE) : onSeKey(buffer,AES_KEY_SIZE);
+		buffer += AES_KEY_SIZE;
+	}
+	ACE_RETURN(0);
+}
+
+int onTagKey(const char *buffer, unsigned int len)
+{
+	ACE_ASSERT(len == AES_KEY_SIZE);
+
+	ACE_RETURN(0);
+}
+
+int onSeKey(const char *buffer, unsigned int len)
+{
+	ACE_ASSERT(len == AES_KEY_SIZE);
+
 	ACE_RETURN(0);
 }
