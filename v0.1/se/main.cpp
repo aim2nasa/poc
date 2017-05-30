@@ -246,7 +246,7 @@ int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSessio
 		{ CKA_CLASS, &secretClass, sizeof(secretClass) },
 		{ CKA_KEY_TYPE, &keyType, sizeof(keyType) },
 		{ CKA_TOKEN, &bTrue, sizeof(bTrue) },
-		{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
+		{ CKA_PRIVATE, &bFalse, sizeof(bFalse) },
 		{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) },
 		{ CKA_LABEL, (CK_UTF8CHAR_PTR)label, strlen(label) }
 	};
