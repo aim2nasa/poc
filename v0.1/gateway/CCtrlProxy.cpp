@@ -22,6 +22,7 @@ int CCtrlProxy::open(void *)
 	this->msg_queue()->notification_strategy(&noti_);
 	if (this->peer().get_remote_addr(remote_addr_) == 0)
 	{
+		onReqStat();
 		ACE_DEBUG((LM_INFO, "New client accepted: %s:%u\n",
 			remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	}
