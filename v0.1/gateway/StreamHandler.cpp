@@ -1,6 +1,7 @@
 #include "StreamHandler.h"
 #include "CGwData.h"
 #include "protocol.h"
+#include "CCtrlProxy.h"
 
 CID StreamHandler::sCounter_ = 0;
 
@@ -119,6 +120,7 @@ int StreamHandler::onSerialNo(const char *buf, size_t dataSize)
 	ACE_ASSERT(dataSize == SERIAL_NO_SIZE);
 	memcpy(serialNo_, buf, dataSize);
 	showAllConnections();
+	if (CGwData::getInstance()->ctrlProxy_) CGwData::getInstance()->ctrlProxy_->onReqStat();
 	return 0;
 }
 

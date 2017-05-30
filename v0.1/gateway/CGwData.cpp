@@ -3,7 +3,7 @@
 CGwData* CGwData::gwData_ = NULL;
 
 CGwData::CGwData()
-:hGw_(CK_INVALID_HANDLE), token_(NULL)
+:hGw_(CK_INVALID_HANDLE), token_(NULL), ctrlProxy_(NULL)
 {
 
 }

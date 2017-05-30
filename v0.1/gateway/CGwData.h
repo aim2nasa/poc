@@ -7,6 +7,7 @@
 #include "CGroup.h"
 
 class CToken;
+class CCtrlProxy;
 
 class CGwData{
 private:
@@ -20,6 +21,7 @@ public:
 	CK_OBJECT_HANDLE hGw_;
 	std::list<CGroup> groupList_;
 	CToken *token_;
+	CCtrlProxy *ctrlProxy_;
 private:
 	static CGwData *gwData_;
 };

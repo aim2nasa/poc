@@ -26,6 +26,7 @@ int CCtrlProxy::open(void *)
 		ACE_DEBUG((LM_INFO, "New client accepted: %s:%u\n",
 			remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	}
+	CGwData::getInstance()->ctrlProxy_ = this;
 	return 0;
 }
 
