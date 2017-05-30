@@ -12,6 +12,8 @@
 #include "protocol.h"
 
 #define SIZE_BUF (1024*8)
+#define TAG_KEY_LABEL	"GroupTagKey"	//토큰에서 Tag키를 찾기 위해 사용하는 라벨
+#define SE_KEY_LABEL	"SeKey"			//토큰에서 SE키를 찾기 위해 사용하는 라벨
 
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
@@ -24,7 +26,7 @@ int registerKeys(ACE_SOCK_Stream &sock, CK_SESSION_HANDLE hSession);
 int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
 int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
 int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
-int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey);
+int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label);
 
 int main(int argc, char *argv[])
 {
@@ -211,7 +213,7 @@ int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	ACE_ASSERT(len == AES_KEY_SIZE);
 
 	CK_OBJECT_HANDLE hTagKey = CK_INVALID_HANDLE;
-	if (aesKeyInjection((CK_BYTE_PTR)(buffer) ,len, hSession, hTagKey)!=0) 
+	if (aesKeyInjection((CK_BYTE_PTR)(buffer) ,len, hSession, hTagKey, TAG_KEY_LABEL)!=0) 
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hSession), -1);
 
 	ACE_ASSERT(hTagKey != CK_INVALID_HANDLE);
@@ -223,14 +225,14 @@ int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	ACE_ASSERT(len == AES_KEY_SIZE);
 
 	CK_OBJECT_HANDLE hSeKey = CK_INVALID_HANDLE;
-	if (aesKeyInjection((CK_BYTE_PTR)(buffer), len, hSession, hSeKey) != 0)
+	if (aesKeyInjection((CK_BYTE_PTR)(buffer), len, hSession, hSeKey, SE_KEY_LABEL) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hSession), -1);
 
 	ACE_ASSERT(hSeKey != CK_INVALID_HANDLE);
 	ACE_RETURN(0);
 }
 
-int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey)
+int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label)
 {
 	//원하는 키값으로 객체를 생성한다.
 	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
@@ -245,7 +247,8 @@ int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSessio
 		{ CKA_KEY_TYPE, &keyType, sizeof(keyType) },
 		{ CKA_TOKEN, &bTrue, sizeof(bTrue) },
 		{ CKA_PRIVATE, &bTrue, sizeof(bTrue) },
-		{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) }
+		{ CKA_SENSITIVE, &bFalse, sizeof(bTrue) },
+		{ CKA_LABEL, (CK_UTF8CHAR_PTR)label, strlen(label) }
 	};
 
 	CK_RV rv;
