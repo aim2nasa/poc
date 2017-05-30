@@ -291,6 +291,7 @@ ACE_THR_FUNC_RETURN CgatewayCtrlDlg::recvThread(void *arg)
 			pDlg->onAckKeyG(buffer, dataSize);
 	}
 
+	pDlg->OnBnClickedDisconnectButton();
 	pDlg->log(_T("recvThread terminated"));
 	return 0;
 }
