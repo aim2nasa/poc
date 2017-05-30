@@ -48,6 +48,7 @@ protected:
 	int onAckKeyG(const char *buffer, unsigned int len);
 	int log(LPCTSTR lpszItem);
 	int selectedCount();
+	int findItem(unsigned int cid);
 
 	BOOL m_bConnect;
 public:

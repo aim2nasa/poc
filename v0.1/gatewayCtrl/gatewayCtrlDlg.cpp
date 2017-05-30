@@ -338,6 +338,11 @@ int CgatewayCtrlDlg::onAckKeyG(const char *buffer, unsigned int len)
 
 		ACE_UINT32 cid;
 		memcpy(&cid, pOffset, sizeof(ACE_UINT32));
+
+		int nItem = findItem(cid);
+		ASSERT(nItem != -1);
+		m_ctrlList.DeleteItem(nItem);
+
 		CString strTmp;
 		strTmp.Format(_T("%u "), cid);
 		str += strTmp;
@@ -471,4 +476,17 @@ int CgatewayCtrlDlg::selectedCount()
 void CgatewayCtrlDlg::OnBnClickedLogClearButton()
 {
 	m_ctrlLog.ResetContent();
+}
+
+int CgatewayCtrlDlg::findItem(unsigned int cid)
+{
+	CString strCid;
+	strCid.Format(_T("%u"), cid);
+
+	for (int i = 0; i < m_ctrlList.GetItemCount(); ++i) {
+		CString szText = m_ctrlList.GetItemText(i, 0);
+		if (szText == strCid)
+			return i;
+	}
+	return -1;
 }
