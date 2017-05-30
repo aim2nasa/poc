@@ -308,7 +308,7 @@ int CgatewayCtrlDlg::onAckStat(const char *buffer,unsigned int len)
 		memcpy(&cid, pOffset, sizeof(ACE_UINT32));
 
 		CString strCid, strSerialNo;
-		strCid.Format(_T("%x"), cid);
+		strCid.Format(_T("%d"), cid);
 		m_ctrlList.InsertItem(i, strCid);
 
 		for (int i = 0; i < SERIAL_NO_SIZE; i++) {
