@@ -12,6 +12,7 @@ public:
 
 	int init(const char *soPin, const char *userPin);
 	int findKey(const char *label, unsigned int labelSize, unsigned long &hKey);	//hKey의 타입은 CK_SESSION_HANDLE이지만 pkcs11헤더를 포함하지 않기 위해서 기본형으로 표시
+	CToken& token();
 
 	char message_[MAX_ERR_MSG];
 private:

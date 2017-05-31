@@ -51,3 +51,8 @@ int CHsmProxy::findKey(const char *label, unsigned int labelSize, unsigned long 
 	C_FindObjectsFinal(token_->session());
 	return 0;
 }
+
+CToken& CHsmProxy::token()
+{
+	return *token_;
+}
