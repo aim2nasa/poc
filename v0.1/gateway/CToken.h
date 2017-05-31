@@ -4,7 +4,8 @@
 #include "cryptoki.h"
 #include <string>
 
-#define MAX_ERR_MSG 256
+#define MAX_ERR_MSG			256
+#define INVALID_SLOT_ID		-1
 
 class CToken{
 public:
@@ -23,6 +24,8 @@ public:
 	CK_SLOT_ID slotID();
 	std::string label();
 	CK_SESSION_HANDLE session();
+	void slotID(CK_SLOT_ID slotID);
+	int getSlotID();
 
 	int createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG keySize, CK_OBJECT_HANDLE &hKey);
 

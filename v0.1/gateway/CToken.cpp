@@ -2,8 +2,7 @@
 #include "library.h"
 #include <stdio.h>
 #include <memory.h>
-
-#define INVALID_SLOT_ID		-1
+#include <vector>
 
 CToken::CToken()
 :_module(NULL), _p11(NULL), _hSession(CK_INVALID_HANDLE), _slotID(INVALID_SLOT_ID)
@@ -120,6 +119,35 @@ std::string CToken::label()
 CK_SESSION_HANDLE CToken::session()
 {
 	return _hSession;
+}
+
+void CToken::slotID(CK_SLOT_ID slotID)
+{
+	_slotID = slotID;
+}
+
+int CToken::getSlotID()
+{
+	bool hasFoundInitialized(false);
+
+	CK_ULONG nrOfSlots;
+	if (C_GetSlotList(CK_TRUE, NULL_PTR, &nrOfSlots) != CKR_OK) return -1;
+
+	std::vector<CK_SLOT_ID> slotIDs(nrOfSlots);
+	if (C_GetSlotList(CK_TRUE, &slotIDs.front(), &nrOfSlots) != CKR_OK) return -2;
+
+	for (std::vector<CK_SLOT_ID>::iterator i = slotIDs.begin(); i != slotIDs.end(); i++) {
+		CK_TOKEN_INFO tokenInfo;
+
+		if (C_GetTokenInfo(*i, &tokenInfo) != CKR_OK) return -3;
+		if (tokenInfo.flags & CKF_TOKEN_INITIALIZED) {
+			if (!hasFoundInitialized) {
+				hasFoundInitialized = true;
+				_slotID = *i;
+			}
+		}
+	}
+	return 0;
 }
 
 int CToken::createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG keySize, CK_OBJECT_HANDLE &hKey)
