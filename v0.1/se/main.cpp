@@ -12,8 +12,6 @@
 #include "protocol.h"
 
 #define SIZE_BUF (1024*8)
-#define TAG_KEY_LABEL	"GroupTagKey"	//토큰에서 Tag키를 찾기 위해 사용하는 라벨
-#define SE_KEY_LABEL	"SeKey"			//토큰에서 SE키를 찾기 위해 사용하는 라벨
 
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
