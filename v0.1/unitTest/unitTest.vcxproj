@@ -94,13 +94,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\..\common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration);..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtestd.lib;hsmProxy.lib;softhsm2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtestd.lib;hsmProxy.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
@@ -115,13 +115,13 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\..\common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration);..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtestd.lib;hsmProxy.lib;softhsm2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtestd.lib;hsmProxy.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
@@ -138,15 +138,15 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\..\common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration);..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtest.lib;hsmProxy.lib;softhsm2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtest.lib;hsmProxy.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
@@ -163,15 +163,15 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\..\common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration);..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtest.lib;hsmProxy.lib;softhsm2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtest.lib;hsmProxy.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
@@ -179,8 +179,6 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\common\library.cpp" />
-    <ClCompile Include="..\gateway\CToken.cpp" />
     <ClCompile Include="hsmTest.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

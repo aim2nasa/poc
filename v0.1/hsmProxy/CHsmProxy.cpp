@@ -56,3 +56,31 @@ CToken& CHsmProxy::token()
 {
 	return *token_;
 }
+
+int CHsmProxy::encryptInit(MechanismType mType, unsigned long hKey)
+{
+	//자체의 메카니즘타입을 softhsm에서 정의된 타입으로 매핑함 (HsmProxy에서 softhsm의 사용을 완전히 숨기기 위한 일환)
+	CK_MECHANISM_TYPE mechanismType;
+	switch (mType){
+	case AES_CBC_PAD:
+		mechanismType = CKM_AES_CBC_PAD;
+		break;
+	case AES_CBC:
+		mechanismType = CKM_AES_CBC;
+		break;
+	case AES_ECB:
+		mechanismType = CKM_AES_ECB;
+		break;
+	default:
+		return -1;
+		break;
+	}
+
+	//AES ECB encoding
+	const CK_MECHANISM mechanismEnc = { mechanismType, NULL_PTR, 0 };
+	CK_MECHANISM_PTR pMechanism((CK_MECHANISM_PTR)&mechanismEnc);
+
+	CK_RV rv;
+	if ((rv = C_EncryptInit(token_->session(), pMechanism, hKey)) != CKR_OK) return rv;
+	return 0;
+}

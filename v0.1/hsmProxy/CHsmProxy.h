@@ -14,6 +14,13 @@ public:
 	int findKey(const char *label, unsigned int labelSize, unsigned long &hKey);	//hKey의 타입은 CK_SESSION_HANDLE이지만 pkcs11헤더를 포함하지 않기 위해서 기본형으로 표시
 	CToken& token();
 
+	enum MechanismType {
+		AES_CBC_PAD,
+		AES_CBC,
+		AES_ECB
+	};
+	int encryptInit(MechanismType mType, unsigned long hKey);
+
 	char message_[MAX_ERR_MSG];
 private:
 	CToken *token_;
