@@ -21,8 +21,9 @@ public:
 	};
 	static unsigned long mechanismType(MechanismType mType);
 	int encryptInit(MechanismType mType, unsigned long hKey);
-	int encrypt(unsigned char *data, unsigned long data_len, unsigned char *encrypted_data, unsigned long *encrypted_data_len);
+	int encrypt(unsigned char *data, unsigned long dataLen, unsigned char *encryptedData, unsigned long *encryptedDataLen);
 	int decryptInit(MechanismType mType, unsigned long hKey);
+	int decrypt(unsigned char *encryptedData, unsigned long encryptedDataLen, unsigned char *data, unsigned long *dataLen);
 
 	char message_[MAX_ERR_MSG];
 private:
