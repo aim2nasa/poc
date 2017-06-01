@@ -19,8 +19,10 @@ public:
 		AES_CBC,
 		AES_ECB
 	};
+	static unsigned long mechanismType(MechanismType mType);
 	int encryptInit(MechanismType mType, unsigned long hKey);
 	int encrypt(unsigned char *data, unsigned long data_len, unsigned char *encrypted_data, unsigned long *encrypted_data_len);
+	int decryptInit(MechanismType mType, unsigned long hKey);
 
 	char message_[MAX_ERR_MSG];
 private:

@@ -31,4 +31,7 @@ TEST(HsmTest, simple)
 	std::vector<unsigned char> vEncryptedData;
 	vEncryptedData.resize(ulEncryptedDataLen);
 	EXPECT_EQ(p.encrypt((unsigned char*)data, sizeof(data), &vEncryptedData.front(), &ulEncryptedDataLen), 0);
+
+	//AES ECB decoding
+	EXPECT_EQ(p.decryptInit(CHsmProxy::AES_ECB, hTagKey), 0);
 }

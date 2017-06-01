@@ -57,7 +57,7 @@ CToken& CHsmProxy::token()
 	return *token_;
 }
 
-int CHsmProxy::encryptInit(MechanismType mType, unsigned long hKey)
+unsigned long CHsmProxy::mechanismType(MechanismType mType)
 {
 	//자체의 메카니즘타입을 softhsm에서 정의된 타입으로 매핑함 (HsmProxy에서 softhsm의 사용을 완전히 숨기기 위한 일환)
 	CK_MECHANISM_TYPE mechanismType;
@@ -72,12 +72,15 @@ int CHsmProxy::encryptInit(MechanismType mType, unsigned long hKey)
 		mechanismType = CKM_AES_ECB;
 		break;
 	default:
-		return -1;
+		assert(false);	//정의되지 않은 타입이 들어옴
 		break;
 	}
+	return mechanismType;
+}
 
-	//AES ECB encoding
-	const CK_MECHANISM mechanismEnc = { mechanismType, NULL_PTR, 0 };
+int CHsmProxy::encryptInit(MechanismType mType, unsigned long hKey)
+{
+	const CK_MECHANISM mechanismEnc = { mechanismType(mType), NULL_PTR, 0 };
 	CK_MECHANISM_PTR pMechanism((CK_MECHANISM_PTR)&mechanismEnc);
 
 	CK_RV rv;
@@ -89,5 +92,15 @@ int CHsmProxy::encrypt(unsigned char *data, unsigned long dataLen, unsigned char
 {
 	CK_RV rv;
 	if ((rv = C_Encrypt(token_->session(), data, dataLen, encryptedData, encryptedDataLen)) != CKR_OK) return rv;
+	return 0;
+}
+
+int CHsmProxy::decryptInit(MechanismType mType, unsigned long hKey)
+{
+	const CK_MECHANISM mechanismEnc = { mechanismType(mType), NULL_PTR, 0 };
+	CK_MECHANISM_PTR pMechanism((CK_MECHANISM_PTR)&mechanismEnc);
+
+	CK_RV rv;
+	if ((rv = C_DecryptInit(token_->session(), pMechanism, hKey)) != CKR_OK) return rv;
 	return 0;
 }
