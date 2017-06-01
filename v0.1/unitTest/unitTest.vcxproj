@@ -103,7 +103,8 @@
       <AdditionalDependencies>gtestd.lib;hsmProxy.lib;softhsm2.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,7 +124,8 @@
       <AdditionalDependencies>gtestd.lib;hsmProxy.lib;softhsm2.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -147,7 +149,8 @@
       <AdditionalDependencies>gtest.lib;hsmProxy.lib;softhsm2.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,7 +174,8 @@
       <AdditionalDependencies>gtest.lib;hsmProxy.lib;softhsm2.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
