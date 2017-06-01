@@ -84,3 +84,10 @@ int CHsmProxy::encryptInit(MechanismType mType, unsigned long hKey)
 	if ((rv = C_EncryptInit(token_->session(), pMechanism, hKey)) != CKR_OK) return rv;
 	return 0;
 }
+
+int CHsmProxy::encrypt(unsigned char *data, unsigned long dataLen, unsigned char *encryptedData, unsigned long *encryptedDataLen)
+{
+	CK_RV rv;
+	if ((rv = C_Encrypt(token_->session(), data, dataLen, encryptedData, encryptedDataLen)) != CKR_OK) return rv;
+	return 0;
+}

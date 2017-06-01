@@ -24,4 +24,7 @@ TEST(HsmTest, simple)
 
 	//AES ECB encoding
 	EXPECT_EQ(p.encryptInit(CHsmProxy::AES_ECB,hTagKey),0);
+
+	unsigned long ulEncryptedDataLen;
+	EXPECT_EQ(p.encrypt((unsigned char*)data, sizeof(data), NULL, &ulEncryptedDataLen), 0);
 }
