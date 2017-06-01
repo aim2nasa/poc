@@ -41,4 +41,8 @@ TEST(HsmTest, simple)
 	std::vector<unsigned char> vDecryptedData;
 	vDecryptedData.resize(ulDataLen);
 	EXPECT_EQ(p.decrypt(&vEncryptedData.front(), (unsigned long)vEncryptedData.size(), &vDecryptedData.front(), &ulDataLen), 0);
+
+	//디코딩된 결과는 원래의 데이터와 같아야 한다.
+	EXPECT_EQ(sizeof(data), ulDataLen);
+	EXPECT_EQ(memcmp(data, &vDecryptedData.front(), sizeof(data)), 0);
 }
