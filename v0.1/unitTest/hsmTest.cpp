@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "CHsmProxy.h"
-#include "protocol.h"
+#include "common.h"
 
 TEST(HsmTest, simple)
 {

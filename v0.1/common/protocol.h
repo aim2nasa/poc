@@ -16,7 +16,4 @@
 #define PRF_ACK_KEYG	"ACK_KEYG"
 #define PRF_NTF_TAGS	"NTF_TAGS"	//Notify메세지로 Tag키와 와 SE의 키가 전달됨을 알려줌
 
-#define TAG_KEY_LABEL	"GroupTagKey"	//토큰에서 Tag키를 찾기 위해 사용하는 라벨
-#define SE_KEY_LABEL	"SeKey"			//토큰에서 SE키를 찾기 위해 사용하는 라벨
-
 #endif
