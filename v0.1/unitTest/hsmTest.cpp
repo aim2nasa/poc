@@ -27,4 +27,8 @@ TEST(HsmTest, simple)
 
 	unsigned long ulEncryptedDataLen;
 	EXPECT_EQ(p.encrypt((unsigned char*)data, sizeof(data), NULL, &ulEncryptedDataLen), 0);
+
+	std::vector<unsigned char> vEncryptedData;
+	vEncryptedData.resize(ulEncryptedDataLen);
+	EXPECT_EQ(p.encrypt((unsigned char*)data, sizeof(data), &vEncryptedData.front(), &ulEncryptedDataLen), 0);
 }
