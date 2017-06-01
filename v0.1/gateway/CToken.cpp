@@ -144,10 +144,11 @@ int CToken::getSlotID()
 			if (!hasFoundInitialized) {
 				hasFoundInitialized = true;
 				_slotID = *i;
+				return 0;
 			}
 		}
 	}
-	return 0;
+	return -1;
 }
 
 int CToken::createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG keySize, CK_OBJECT_HANDLE &hKey)
