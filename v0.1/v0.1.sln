@@ -20,6 +20,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hsmProxy", "hsmProxy\hsmProxy.vcxproj", "{80803290-F49B-4F73-8AF1-691FEF33D692}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testDll", "testDll\testDll.vcxproj", "{52B8CF45-00E0-4041-81EC-85BDD2063648}"
+	ProjectSection(ProjectDependencies) = postProject
+		{80803290-F49B-4F73-8AF1-691FEF33D692} = {80803290-F49B-4F73-8AF1-691FEF33D692}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

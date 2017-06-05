@@ -5,8 +5,12 @@
 
 TEST(DllTest, simple)
 {
-	CTestDll dll;
-
 	CHsmProxy p;
+	p.setenv("SOFTHSM2_CONF", ".\\se2Token.conf", 1);
 	ASSERT_EQ(p.init(SO_PIN, USER_PIN), 0);
+
+	CTestDll dll;
+	//CKR_CRYPTOKI_ALREADY_INITIALIZED	(0x191) 오류 발생
+	//결국,dll로 softhsm2를 별도의 인스턴스로 띄울 수 없다.
+	EXPECT_EQ(dll.init(SO_PIN, USER_PIN),-1);
 }
