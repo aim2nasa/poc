@@ -16,8 +16,9 @@ CHsmProxy::~CHsmProxy()
 
 int CHsmProxy::init(const char *soPin, const char *userPin)
 {
-	if (token_->initialize() != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token initialize error");
+	int nRtn;
+	if ( (nRtn=token_->initialize()) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token initialize error(%d):%s",nRtn,token_->_message);
 		return -1;
 	}
 

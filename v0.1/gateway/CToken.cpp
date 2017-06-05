@@ -22,9 +22,10 @@ int CToken::initialize()
 		return -1;
 	}
 
-	if (_p11->C_Initialize(NULL_PTR) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s", "ERROR: C_Initialize");
-		return -1;
+	CK_RV rv;
+	if ( (rv=_p11->C_Initialize(NULL_PTR)) != CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s:0x%x", "ERROR: C_Initialize",rv);
+		return -2;
 	}
 	return 0;
 }
