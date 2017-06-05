@@ -190,6 +190,9 @@ copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectNam
   <ItemGroup>
     <None Include="softhsm2.conf" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="testConf.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

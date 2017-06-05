@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 #include "CHsmProxy.h"
 #include "common.h"
-
-#define SO_PIN "123456"
-#define USER_PIN "1234"
+#include "testConf.h"
 
 TEST(HsmTest, simple)
 {
