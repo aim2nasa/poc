@@ -130,11 +130,11 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	hTagKey = hSeKey = 0;	//CK_INVALID_HANDLE = 0
 
 	ACE_ASSERT(hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey)==0);
-	ACE_ASSERT(hTagKey, 0);
+	ACE_ASSERT(hTagKey!=0);
 	ACE_DEBUG((LM_INFO, "(%t) Tag key(%d) retrieved\n", hTagKey));
 
 	ACE_ASSERT(hsm.findKey(SE_KEY_LABEL, sizeof(SE_KEY_LABEL)-1, hSeKey)==0);
-	ACE_ASSERT(hSeKey, 0);
+	ACE_ASSERT(hSeKey!=0);
 	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
 
 	ACE_Reactor::instance()->run_reactor_event_loop();
