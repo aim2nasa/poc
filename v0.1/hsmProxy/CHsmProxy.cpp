@@ -79,6 +79,18 @@ unsigned long CHsmProxy::mechanismType(MechanismType mType)
 	return mechanismType;
 }
 
+int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
+{
+	std::string vv = name;
+	vv += "=";
+	vv += value;
+
+	if (overwrite != 1)
+		return false;
+
+	return _putenv(vv.c_str()) == 0;
+}
+
 int CHsmProxy::encryptInit(MechanismType mType, unsigned long hKey)
 {
 	const CK_MECHANISM mechanismEnc = { mechanismType(mType), NULL_PTR, 0 };

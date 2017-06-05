@@ -62,3 +62,10 @@ TEST(HsmTest, twoTokens)
 	//해당 프로세스 공간에서는 인스턴스를 더이상 만들수 없으므로 아래의 초기화는 실패한다.
 	ASSERT_EQ(p2.init(SO_PIN, USER_PIN), -1);
 }
+
+TEST(HsmTest, env)
+{
+	CHsmProxy p1;
+	p1.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+	ASSERT_EQ(p1.init(SO_PIN, USER_PIN), 0);
+}

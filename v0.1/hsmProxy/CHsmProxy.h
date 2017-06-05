@@ -20,6 +20,7 @@ public:
 		AES_ECB
 	};
 	static unsigned long mechanismType(MechanismType mType);
+	int setenv(const char *name, const char *value, int overwrite);
 	int encryptInit(MechanismType mType, unsigned long hKey);
 	int encrypt(unsigned char *data, unsigned long dataLen, unsigned char *encryptedData, unsigned long *encryptedDataLen);
 	int decryptInit(MechanismType mType, unsigned long hKey);
