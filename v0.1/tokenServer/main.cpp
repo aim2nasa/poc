@@ -9,6 +9,10 @@
 #include <ace/Reactor.h>
 #include <ace/Acceptor.h>
 #include <ace/Reactor_Notification_Strategy.h>
+#include "CHsmProxy.h"
+#include "testConf.h"
+
+CHsmProxy hsm;	//전역변수
 
 class Stream_Handler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
 private:
@@ -117,6 +121,10 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	listen.set(SERVER_PORT);
 	ACE_Acceptor<Stream_Handler, ACE_SOCK_ACCEPTOR> acceptor;
 	acceptor.open(listen);
+
+	hsm.setenv("SOFTHSM2_CONF", ".\\se1Token.conf", 1);
+	ACE_ASSERT(hsm.init(SO_PIN, USER_PIN)==0);
+
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
 	ACE_DEBUG((LM_INFO, "(%t) server end\n"));

@@ -94,16 +94,17 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;hsmProxy.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,16 +115,17 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;hsmProxy.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,7 +138,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -144,11 +146,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACE.lib;hsmProxy.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -161,7 +164,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -169,11 +172,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACE.lib;hsmProxy.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
