@@ -94,7 +94,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest;..\common</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
     </ClCompile>
@@ -118,7 +118,7 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest;..\common</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
     </ClCompile>
@@ -144,7 +144,7 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest;..\common</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
@@ -173,7 +173,7 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\hsmProxy;..\unitTest;..\common</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>

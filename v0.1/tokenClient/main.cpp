@@ -8,6 +8,7 @@
 #include "ace/OS_NS_stdlib.h"
 #include "CHsmProxy.h"
 #include "testConf.h"
+#include "common.h"
 
 #define SIZE_BUF 256
 
@@ -34,6 +35,17 @@ int main(int argc, char *argv[])
 
 	hsm.setenv("SOFTHSM2_CONF", ".\\se2Token.conf", 1);
 	ACE_ASSERT(hsm.init(SO_PIN, USER_PIN) == 0);
+
+	unsigned long hTagKey, hSeKey;
+	hTagKey = hSeKey = 0;	//CK_INVALID_HANDLE = 0
+
+	ACE_ASSERT(hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey) == 0);
+	ACE_ASSERT(hTagKey != 0);
+	ACE_DEBUG((LM_INFO, "(%t) Tag key(%d) retrieved\n", hTagKey));
+
+	ACE_ASSERT(hsm.findKey(SE_KEY_LABEL, sizeof(SE_KEY_LABEL)-1, hSeKey) == 0);
+	ACE_ASSERT(hSeKey != 0);
+	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
 
 	size_t nRtn = 0;
 	char buffer[SIZE_BUF];
