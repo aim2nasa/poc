@@ -121,6 +121,10 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	listen.set(SERVER_PORT);
 	ACE_Acceptor<Stream_Handler, ACE_SOCK_ACCEPTOR> acceptor;
 	acceptor.open(listen);
+
+	hsm.setenv("SOFTHSM2_CONF", ".\\se1Token.conf", 1);
+	ACE_ASSERT(hsm.init(SO_PIN, USER_PIN) == 0);
+
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
 	ACE_DEBUG((LM_INFO, "(%t) server end\n"));
