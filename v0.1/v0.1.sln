@@ -24,6 +24,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testDll", "testDll\testDll.
 		{80803290-F49B-4F73-8AF1-691FEF33D692} = {80803290-F49B-4F73-8AF1-691FEF33D692}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tokenServer", "tokenServer\tokenServer.vcxproj", "{6153993D-3834-4D34-B864-8201D66B22C1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tokenClient", "tokenClient\tokenClient.vcxproj", "{119FB6AB-F3D7-4C20-8AC8-E089184BBF80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -78,6 +82,18 @@ Global
 		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Release|Win32.ActiveCfg = Release|Win32
 		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Release|Win32.Build.0 = Release|Win32
 		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Release|x64.ActiveCfg = Release|x64
+		{6153993D-3834-4D34-B864-8201D66B22C1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6153993D-3834-4D34-B864-8201D66B22C1}.Debug|Win32.Build.0 = Debug|Win32
+		{6153993D-3834-4D34-B864-8201D66B22C1}.Debug|x64.ActiveCfg = Debug|x64
+		{6153993D-3834-4D34-B864-8201D66B22C1}.Release|Win32.ActiveCfg = Release|Win32
+		{6153993D-3834-4D34-B864-8201D66B22C1}.Release|Win32.Build.0 = Release|Win32
+		{6153993D-3834-4D34-B864-8201D66B22C1}.Release|x64.ActiveCfg = Release|Win32
+		{119FB6AB-F3D7-4C20-8AC8-E089184BBF80}.Debug|Win32.ActiveCfg = Debug|Win32
+		{119FB6AB-F3D7-4C20-8AC8-E089184BBF80}.Debug|Win32.Build.0 = Debug|Win32
+		{119FB6AB-F3D7-4C20-8AC8-E089184BBF80}.Debug|x64.ActiveCfg = Debug|x64
+		{119FB6AB-F3D7-4C20-8AC8-E089184BBF80}.Release|Win32.ActiveCfg = Release|Win32
+		{119FB6AB-F3D7-4C20-8AC8-E089184BBF80}.Release|Win32.Build.0 = Release|Win32
+		{119FB6AB-F3D7-4C20-8AC8-E089184BBF80}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
