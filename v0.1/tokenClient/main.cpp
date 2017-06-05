@@ -33,26 +33,29 @@ int main(int argc, char *argv[])
 	std::cout << "press q and enter to finish" << std::endl;
 	while (true){
 		std::cout << ": ";
-		fgets(buffer, sizeof(buffer), stdin);
+		ACE_OS::fgets(buffer, sizeof(buffer), stdin);
+		buffer[ACE_OS::strlen(buffer)] = 0;
 
 		if (ACE_OS::strcmp(buffer, "q\n") == 0)
 			break;
 
-		if ((nRtn = client_stream.send_n(buffer, SIZE_BUF)) == -1) {
+		if ((nRtn = client_stream.send_n(buffer, ACE_OS::strlen(buffer))) == -1) {
 			ACE_DEBUG((LM_DEBUG, "(%P|%t) Error send_n(%d)\n", nRtn));
 			break;
 		}
 
-		ACE_DEBUG((LM_DEBUG, "(%P|%t) %dbytes sent\n", nRtn));
+		ACE_DEBUG((LM_DEBUG, "(%P|%t) %d bytes sent\n", nRtn));
 
 		// recv
 		char recv_buff[SIZE_BUF] = { 0 };
-		if ((nRtn = client_stream.recv_n(recv_buff, sizeof(recv_buff))) == -1) {
+		if ((nRtn = client_stream.recv(recv_buff, sizeof(recv_buff))) == -1) {
 			ACE_ERROR((LM_ERROR, "(%P|%t) Error recv_n(%d)\n", nRtn));
 			break;
 		}
 		else
-			ACE_DEBUG((LM_DEBUG, "(%P|%t) %dbytes received:%s\n", nRtn, recv_buff));
+			ACE_DEBUG((LM_DEBUG, "(%P|%t) %dbytes received\n", nRtn));
+
+		ACE_DEBUG((LM_DEBUG, "%s\n", recv_buff));
 	}
 
 	if (client_stream.close() == -1)
