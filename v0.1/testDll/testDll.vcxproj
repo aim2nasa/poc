@@ -19,32 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{87FF08DC-3369-48AF-8C9C-C162D321E247}</ProjectGuid>
+    <ProjectGuid>{52B8CF45-00E0-4041-81EC-85BDD2063648}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>unitTest</RootNamespace>
+    <RootNamespace>testDll</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -92,21 +92,13 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TESTDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common;..\testDll</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration);..\bin\testDll\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtestd.lib;hsmProxy.lib;testDll.lib</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -114,21 +106,13 @@ copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectNam
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TESTDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common;..\testDll</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration);..\bin\testDll\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtestd.lib;hsmProxy.lib;testDll.lib</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -138,23 +122,15 @@ copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectNam
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TESTDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common;..\testDll</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration);..\bin\testDll\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtest.lib;hsmProxy.lib;testDll.lib</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -164,31 +140,21 @@ copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectNam
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TESTDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\gtest\include;..\HsmProxy;..\common;..\testDll</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ext\gtest\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration);..\bin\testDll\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtest.lib;hsmProxy.lib;testDll.lib</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="dllTest.cpp" />
-    <ClCompile Include="hsmTest.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClInclude Include="CTestDll.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="softhsm2.conf" />
+    <ClCompile Include="CTestDll.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

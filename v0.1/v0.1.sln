@@ -13,10 +13,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gatewayCtrl", "gatewayCtrl\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unitTest", "unitTest\unitTest.vcxproj", "{87FF08DC-3369-48AF-8C9C-C162D321E247}"
 	ProjectSection(ProjectDependencies) = postProject
+		{52B8CF45-00E0-4041-81EC-85BDD2063648} = {52B8CF45-00E0-4041-81EC-85BDD2063648}
 		{80803290-F49B-4F73-8AF1-691FEF33D692} = {80803290-F49B-4F73-8AF1-691FEF33D692}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hsmProxy", "hsmProxy\hsmProxy.vcxproj", "{80803290-F49B-4F73-8AF1-691FEF33D692}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testDll", "testDll\testDll.vcxproj", "{52B8CF45-00E0-4041-81EC-85BDD2063648}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +69,12 @@ Global
 		{80803290-F49B-4F73-8AF1-691FEF33D692}.Release|Win32.Build.0 = Release|Win32
 		{80803290-F49B-4F73-8AF1-691FEF33D692}.Release|x64.ActiveCfg = Release|x64
 		{80803290-F49B-4F73-8AF1-691FEF33D692}.Release|x64.Build.0 = Release|x64
+		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Debug|Win32.ActiveCfg = Debug|Win32
+		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Debug|Win32.Build.0 = Debug|Win32
+		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Debug|x64.ActiveCfg = Debug|x64
+		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Release|Win32.ActiveCfg = Release|Win32
+		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Release|Win32.Build.0 = Release|Win32
+		{52B8CF45-00E0-4041-81EC-85BDD2063648}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
