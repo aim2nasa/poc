@@ -2,11 +2,14 @@
 #include "CHsmProxy.h"
 #include "common.h"
 
+#define SO_PIN "123456"
+#define USER_PIN "1234"
+
 TEST(HsmTest, simple)
 {
 	EXPECT_NE(1, 2);
 	CHsmProxy p;
-	ASSERT_EQ(p.init("123456", "1234"), 0);
+	ASSERT_EQ(p.init(SO_PIN, USER_PIN), 0);
 
 	//주의 sizeof를 하면 NULL까지 포함해서 크기가 나온다 따라서 -1을 해줘야 함
 	unsigned long hTagKey, hSeKey;
