@@ -13,7 +13,7 @@ CToken::CToken()
 CToken::~CToken()
 {
 	if (_p11) _p11->C_Finalize(NULL_PTR);
-	if (!_module) unloadLib(_module);
+	if (_module) unloadLib(_module);
 }
 
 int CToken::initialize()
