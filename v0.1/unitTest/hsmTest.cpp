@@ -49,3 +49,16 @@ TEST(HsmTest, simple)
 	EXPECT_EQ(sizeof(data), ulDataLen);
 	EXPECT_EQ(memcmp(data, &vDecryptedData.front(), sizeof(data)), 0);
 }
+
+TEST(HsmTest, twoTokens)
+{
+	EXPECT_NE(1, 2);
+	CHsmProxy p1;
+	ASSERT_EQ(p1.init(SO_PIN, USER_PIN), 0);			//편의상 p1과 p2는 사전에 동일한 SO pin,UserPin으로 세팅되어 있음
+
+	CHsmProxy p2;
+	//softhsm2라이브러리는 singleton으로 객체를 생성하여 프로세스당 한개 이상의 인스턴스가 생기지 않는다.
+	//따라서 아래와 같이 다시 라이브러리를 초기화를 하려고 하면 이미 초기화 되었다고 응답을 한다.
+	//해당 프로세스 공간에서는 인스턴스를 더이상 만들수 없으므로 아래의 초기화는 실패한다.
+	ASSERT_EQ(p2.init(SO_PIN, USER_PIN), -1);
+}
