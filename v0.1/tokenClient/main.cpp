@@ -6,11 +6,15 @@
 #include "ace/OS_NS_string.h" 
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_stdlib.h"
+#include "CHsmProxy.h"
+#include "testConf.h"
 
 #define SIZE_BUF 256
 
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9870;
+
+CHsmProxy hsm;	//전역변수
 
 int main(int argc, char *argv[])
 {
@@ -27,6 +31,9 @@ int main(int argc, char *argv[])
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "connection failed"), -1);
 	else
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
+
+	hsm.setenv("SOFTHSM2_CONF", ".\\se2Token.conf", 1);
+	ACE_ASSERT(hsm.init(SO_PIN, USER_PIN) == 0);
 
 	size_t nRtn = 0;
 	char buffer[SIZE_BUF];
