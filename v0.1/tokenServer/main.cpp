@@ -14,6 +14,7 @@
 #include "common.h"
 
 CHsmProxy hsm;	//전역변수
+unsigned long hTagKey, hSeKey;
 
 class Stream_Handler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
 private:
@@ -48,22 +49,47 @@ public:
 	virtual int handle_input(ACE_HANDLE handle = ACE_INVALID_HANDLE)
 	{
 		//ACE_DEBUG((LM_INFO, "(%P|%t) Stream_Handler::handle_input start\n"));
-		char buf[1024];
+		const int blockSize(0x10);
+		const int NumBlock(10);
+		const int bufferSize = blockSize*NumBlock;
+		char *buf = new char[bufferSize+1];	//+1:NULL을 삽입하기 위해서
+
 		ssize_t recv_cnt;
-		if ((recv_cnt = this->peer().recv(buf, 1024)) <= 0) {
+		if ((recv_cnt = this->peer().recv(buf, bufferSize)) <= 0) {
 			return -1;
 		}
 		buf[recv_cnt] = 0;
 		ACE_DEBUG((LM_INFO, "(%P|%t) %d bytes received\n", recv_cnt));
-		ACE_DEBUG((LM_INFO, "%s\n", buf));
+		ACE_DEBUG((LM_INFO, "Encrypted stream:%s\n", buf));
+
+		ACE_ASSERT(hsm.decryptInit(CHsmProxy::AES_ECB, hTagKey) == 0);
+		unsigned long ulDataLen;
+		ACE_ASSERT(hsm.decrypt((unsigned char*)buf, (unsigned long)recv_cnt, NULL, &ulDataLen) == 0);
+
+		std::vector<unsigned char> vDecryptedData;
+		vDecryptedData.resize(ulDataLen);
+		ACE_ASSERT(hsm.decrypt((unsigned char*)buf, (unsigned long)recv_cnt, &vDecryptedData.front(), &ulDataLen) == 0);
+		ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 
 		ACE_DEBUG((LM_INFO, ": "));
-		fgets(buf, sizeof(buf), stdin);
+		fgets(buf, bufferSize, stdin);
+
+		ACE_ASSERT(hsm.encryptInit(CHsmProxy::AES_ECB, hTagKey) == 0);
+		unsigned long ulEncryptedDataLen;
+		ACE_ASSERT(hsm.encrypt((unsigned char*)buf, bufferSize, NULL, &ulEncryptedDataLen) == 0);
+		ACE_ASSERT(ulEncryptedDataLen == bufferSize);
+
+		std::vector<unsigned char> vEncryptedData;
+		vEncryptedData.resize(ulEncryptedDataLen);
+		ACE_ASSERT(hsm.encrypt((unsigned char*)buf, bufferSize, &vEncryptedData.front(), &ulEncryptedDataLen) == 0);
+		ACE_ASSERT(ulEncryptedDataLen == bufferSize);
 
 		ACE_Message_Block *mb;
-		ACE_NEW_RETURN(mb, ACE_Message_Block(ACE_OS::strlen(buf)), -1);
-		mb->copy(buf, ACE_OS::strlen(buf));
+		ACE_NEW_RETURN(mb, ACE_Message_Block(ulEncryptedDataLen), -1);
+		mb->copy((char*)&vEncryptedData.front(), ulEncryptedDataLen);
 		this->putq(mb);
+
+		delete [] buf;
 		//ACE_DEBUG((LM_INFO, "(%P|%t) Stream_Handler::handle_input end\n"));
 		return 0;
 	}
@@ -125,9 +151,6 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	hsm.setenv("SOFTHSM2_CONF", ".\\se1Token.conf", 1);
 	ACE_ASSERT(hsm.init(SO_PIN, USER_PIN) == 0);
-
-	unsigned long hTagKey, hSeKey;
-	hTagKey = hSeKey = 0;	//CK_INVALID_HANDLE = 0
 
 	ACE_ASSERT(hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey)==0);
 	ACE_ASSERT(hTagKey!=0);

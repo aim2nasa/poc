@@ -48,17 +48,30 @@ int main(int argc, char *argv[])
 	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
 
 	size_t nRtn = 0;
-	char buffer[SIZE_BUF];
+	const int blockSize(0x10);
+	const int NumBlock(10);
+	const int bufferSize = blockSize*NumBlock;
+	char *buffer = new char[bufferSize+1];	//+1:NULL을 삽입하기 위해서
 	std::cout << "press q and enter to finish" << std::endl;
 	while (true){
 		std::cout << ": ";
-		ACE_OS::fgets(buffer, sizeof(buffer), stdin);
+		ACE_OS::fgets(buffer, bufferSize, stdin);
 		buffer[ACE_OS::strlen(buffer)] = 0;
 
 		if (ACE_OS::strcmp(buffer, "q\n") == 0)
 			break;
 
-		if ((nRtn = client_stream.send_n(buffer, ACE_OS::strlen(buffer))) == -1) {
+		ACE_ASSERT(hsm.encryptInit(CHsmProxy::AES_ECB, hTagKey) == 0);
+		unsigned long ulEncryptedDataLen;
+		ACE_ASSERT(hsm.encrypt((unsigned char*)buffer, bufferSize, NULL, &ulEncryptedDataLen) == 0);
+		ACE_ASSERT(ulEncryptedDataLen == bufferSize);
+
+		std::vector<unsigned char> vEncryptedData;
+		vEncryptedData.resize(ulEncryptedDataLen);
+		ACE_ASSERT(hsm.encrypt((unsigned char*)buffer, bufferSize, &vEncryptedData.front(), &ulEncryptedDataLen) == 0);
+		ACE_ASSERT(ulEncryptedDataLen == bufferSize);
+
+		if ((nRtn = client_stream.send_n(&vEncryptedData.front(), ulEncryptedDataLen)) == -1) {
 			ACE_DEBUG((LM_DEBUG, "(%P|%t) Error send_n(%d)\n", nRtn));
 			break;
 		}
@@ -66,16 +79,26 @@ int main(int argc, char *argv[])
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) %d bytes sent\n", nRtn));
 
 		// recv
-		char recv_buff[SIZE_BUF] = { 0 };
-		if ((nRtn = client_stream.recv(recv_buff, sizeof(recv_buff))) == -1) {
+		if ((nRtn = client_stream.recv(buffer, bufferSize)) == -1) {
 			ACE_ERROR((LM_ERROR, "(%P|%t) Error recv_n(%d)\n", nRtn));
 			break;
 		}
 		else
-			ACE_DEBUG((LM_DEBUG, "(%P|%t) %dbytes received\n", nRtn));
+			ACE_DEBUG((LM_DEBUG, "(%P|%t) %d bytes received\n", nRtn));
 
-		ACE_DEBUG((LM_DEBUG, "%s\n", recv_buff));
+		buffer[nRtn] = 0;
+		ACE_DEBUG((LM_INFO, "Encrypted stream:%s\n", buffer));
+
+		ACE_ASSERT(hsm.decryptInit(CHsmProxy::AES_ECB, hTagKey) == 0);
+		unsigned long ulDataLen;
+		ACE_ASSERT(hsm.decrypt((unsigned char*)buffer, (unsigned long)nRtn, NULL, &ulDataLen) == 0);
+
+		std::vector<unsigned char> vDecryptedData;
+		vDecryptedData.resize(ulDataLen);
+		ACE_ASSERT(hsm.decrypt((unsigned char*)buffer, (unsigned long)nRtn, &vDecryptedData.front(), &ulDataLen) == 0);
+		ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 	}
+	delete[] buffer;
 
 	if (client_stream.close() == -1)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
