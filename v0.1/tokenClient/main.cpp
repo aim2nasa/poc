@@ -6,6 +6,7 @@
 #include "ace/OS_NS_string.h" 
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_stdlib.h"
+#include "ace/OS_NS_sys_time.h"
 #include "CHsmProxy.h"
 #include "testConf.h"
 #include "common.h"
@@ -19,6 +20,7 @@ CHsmProxy hsm;	//전역변수
 
 void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
 void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen);
+int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsigned long hKey, char* buffer, const int bufferSize);
 
 int main(int argc, char *argv[])
 {
@@ -55,6 +57,13 @@ int main(int argc, char *argv[])
 	const int NumBlock(10);
 	const int bufferSize = blockSize*NumBlock;
 	char *buffer = new char[bufferSize+1];	//+1:NULL을 삽입하기 위해서
+
+	int nAuth;
+	if ((nAuth=authenticate(client_stream, CHsmProxy::AES_ECB, hTagKey, buffer, bufferSize)) != 0) {
+		std::cout << "Authentication failure : " <<nAuth<< std::endl;
+		return -1;
+	}
+
 	std::cout << "press q and enter to finish" << std::endl;
 	while (true){
 		std::cout << ": ";
@@ -117,4 +126,33 @@ void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *
 
 	vDecryptedData.resize(ulDecryptedDataLen);
 	ACE_ASSERT(hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen) == 0);
+}
+
+int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsigned long hKey, char* buffer, const int bufferSize)
+{
+	ACE_OS::memcpy(buffer, "AuthRequest", sizeof("AuthRequest") - 1);	//인증요청 메세지
+
+	unsigned long ulEncryptedDataLen;
+	std::vector<unsigned char> vEncryptedData;
+	encrypt(CHsmProxy::AES_ECB, hKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
+
+	size_t size;
+	if ((size = stream.send_n(buffer, bufferSize)) == -1) {
+		ACE_DEBUG((LM_ERROR, "(%P|%t) Error send_n(%d)\n", size));
+		return -1;
+	}
+	ACE_DEBUG((LM_DEBUG, "(%P|%t) Authentication Request %d bytes sent\n", size));
+
+	ACE_Time_Value waitTime(1);	//1초 동안 오지 않으면 타임아웃
+	if ((size = stream.recv(buffer, bufferSize, &waitTime)) == -1) {
+		ACE_ERROR((LM_ERROR, "(%P|%t) Error recv_n(%d)\n", size));
+		return -2;
+	}
+	ACE_DEBUG((LM_DEBUG, "(%P|%t) %d bytes received\n", size));
+
+	if (ACE_OS::memcmp(buffer, "AuthRequest:Done", size) != 0)
+		return 1;
+
+	ACE_DEBUG((LM_INFO, "(%P|%t) AuthRequest:Done\n"));
+	return 0;
 }
