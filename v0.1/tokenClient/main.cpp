@@ -130,6 +130,7 @@ void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *
 
 int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsigned long hKey, char* buffer, const int bufferSize)
 {
+	ACE_OS::memset(buffer, 0, bufferSize);
 	ACE_OS::memcpy(buffer, "AuthRequest", sizeof("AuthRequest") - 1);	//인증요청 메세지
 
 	unsigned long ulEncryptedDataLen;
