@@ -16,6 +16,26 @@
 CHsmProxy hsm;	//전역변수
 unsigned long hTagKey, hSeKey;
 
+void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
+{
+	ACE_ASSERT(hsm.encryptInit(mType, hKey) == 0);
+	ACE_ASSERT(hsm.encrypt(data, dataLen, NULL, &ulEncryptedDataLen) == 0);
+	ACE_ASSERT(ulEncryptedDataLen == dataLen);
+
+	vEncryptedData.resize(ulEncryptedDataLen);
+	ACE_ASSERT(hsm.encrypt(data, dataLen, &vEncryptedData.front(), &ulEncryptedDataLen) == 0);
+	ACE_ASSERT(ulEncryptedDataLen == dataLen);
+}
+
+void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen)
+{
+	ACE_ASSERT(hsm.decryptInit(mType, hKey) == 0);
+	ACE_ASSERT(hsm.decrypt(data, dataLen, NULL, &ulDecryptedDataLen) == 0);
+
+	vDecryptedData.resize(ulDecryptedDataLen);
+	ACE_ASSERT(hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen) == 0);
+}
+
 class Stream_Handler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
 private:
 	typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> super;
@@ -62,27 +82,17 @@ public:
 		ACE_DEBUG((LM_INFO, "(%P|%t) %d bytes received\n", recv_cnt));
 		ACE_DEBUG((LM_INFO, "Encrypted stream:%s\n", buf));
 
-		ACE_ASSERT(hsm.decryptInit(CHsmProxy::AES_ECB, hTagKey) == 0);
 		unsigned long ulDataLen;
-		ACE_ASSERT(hsm.decrypt((unsigned char*)buf, (unsigned long)recv_cnt, NULL, &ulDataLen) == 0);
-
 		std::vector<unsigned char> vDecryptedData;
-		vDecryptedData.resize(ulDataLen);
-		ACE_ASSERT(hsm.decrypt((unsigned char*)buf, (unsigned long)recv_cnt, &vDecryptedData.front(), &ulDataLen) == 0);
+		decrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
 		ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 
 		ACE_DEBUG((LM_INFO, ": "));
 		fgets(buf, bufferSize, stdin);
 
-		ACE_ASSERT(hsm.encryptInit(CHsmProxy::AES_ECB, hTagKey) == 0);
 		unsigned long ulEncryptedDataLen;
-		ACE_ASSERT(hsm.encrypt((unsigned char*)buf, bufferSize, NULL, &ulEncryptedDataLen) == 0);
-		ACE_ASSERT(ulEncryptedDataLen == bufferSize);
-
 		std::vector<unsigned char> vEncryptedData;
-		vEncryptedData.resize(ulEncryptedDataLen);
-		ACE_ASSERT(hsm.encrypt((unsigned char*)buf, bufferSize, &vEncryptedData.front(), &ulEncryptedDataLen) == 0);
-		ACE_ASSERT(ulEncryptedDataLen == bufferSize);
+		encrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buf, bufferSize, vEncryptedData, ulEncryptedDataLen);
 
 		ACE_Message_Block *mb;
 		ACE_NEW_RETURN(mb, ACE_Message_Block(ulEncryptedDataLen), -1);
