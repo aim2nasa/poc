@@ -17,6 +17,8 @@ static u_short SERVER_PORT = 9870;
 
 CHsmProxy hsm;	//전역변수
 
+void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
+
 int main(int argc, char *argv[])
 {
 	const char *server_host = argc > 1 ? argv[1] : SERVER_HOST;
@@ -61,15 +63,9 @@ int main(int argc, char *argv[])
 		if (ACE_OS::strcmp(buffer, "q\n") == 0)
 			break;
 
-		ACE_ASSERT(hsm.encryptInit(CHsmProxy::AES_ECB, hTagKey) == 0);
 		unsigned long ulEncryptedDataLen;
-		ACE_ASSERT(hsm.encrypt((unsigned char*)buffer, bufferSize, NULL, &ulEncryptedDataLen) == 0);
-		ACE_ASSERT(ulEncryptedDataLen == bufferSize);
-
 		std::vector<unsigned char> vEncryptedData;
-		vEncryptedData.resize(ulEncryptedDataLen);
-		ACE_ASSERT(hsm.encrypt((unsigned char*)buffer, bufferSize, &vEncryptedData.front(), &ulEncryptedDataLen) == 0);
-		ACE_ASSERT(ulEncryptedDataLen == bufferSize);
+		encrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
 
 		if ((nRtn = client_stream.send_n(&vEncryptedData.front(), ulEncryptedDataLen)) == -1) {
 			ACE_DEBUG((LM_DEBUG, "(%P|%t) Error send_n(%d)\n", nRtn));
@@ -104,4 +100,15 @@ int main(int argc, char *argv[])
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
 
 	return 0;
+}
+
+void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
+{
+	ACE_ASSERT(hsm.encryptInit(mType, hKey) == 0);
+	ACE_ASSERT(hsm.encrypt(data, dataLen, NULL, &ulEncryptedDataLen) == 0);
+	ACE_ASSERT(ulEncryptedDataLen == dataLen);
+
+	vEncryptedData.resize(ulEncryptedDataLen);
+	ACE_ASSERT(hsm.encrypt(data,dataLen,&vEncryptedData.front(), &ulEncryptedDataLen) == 0);
+	ACE_ASSERT(ulEncryptedDataLen == dataLen);
 }
