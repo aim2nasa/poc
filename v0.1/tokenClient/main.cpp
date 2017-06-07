@@ -18,6 +18,7 @@ static u_short SERVER_PORT = 9870;
 CHsmProxy hsm;	//전역변수
 
 void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
+void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen);
 
 int main(int argc, char *argv[])
 {
@@ -85,13 +86,9 @@ int main(int argc, char *argv[])
 		buffer[nRtn] = 0;
 		ACE_DEBUG((LM_INFO, "Encrypted stream:%s\n", buffer));
 
-		ACE_ASSERT(hsm.decryptInit(CHsmProxy::AES_ECB, hTagKey) == 0);
-		unsigned long ulDataLen;
-		ACE_ASSERT(hsm.decrypt((unsigned char*)buffer, (unsigned long)nRtn, NULL, &ulDataLen) == 0);
-
+		unsigned long ulDecryptedDataLen;
 		std::vector<unsigned char> vDecryptedData;
-		vDecryptedData.resize(ulDataLen);
-		ACE_ASSERT(hsm.decrypt((unsigned char*)buffer, (unsigned long)nRtn, &vDecryptedData.front(), &ulDataLen) == 0);
+		decrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, (unsigned long)nRtn, vDecryptedData, ulDecryptedDataLen);
 		ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 	}
 	delete[] buffer;
@@ -111,4 +108,13 @@ void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *
 	vEncryptedData.resize(ulEncryptedDataLen);
 	ACE_ASSERT(hsm.encrypt(data,dataLen,&vEncryptedData.front(), &ulEncryptedDataLen) == 0);
 	ACE_ASSERT(ulEncryptedDataLen == dataLen);
+}
+
+void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen)
+{
+	ACE_ASSERT(hsm.decryptInit(mType, hKey) == 0);
+	ACE_ASSERT(hsm.decrypt(data, dataLen, NULL, &ulDecryptedDataLen) == 0);
+
+	vDecryptedData.resize(ulDecryptedDataLen);
+	ACE_ASSERT(hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen) == 0);
 }
