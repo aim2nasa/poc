@@ -87,6 +87,16 @@ public:
 		decrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
 		ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 
+		std::string str = (char*)&vDecryptedData.front();
+		if (str == "AuthRequest") {
+			str += ":Done";
+			ACE_OS::memset(buf, 0, bufferSize + 1);
+			ACE_OS::memcpy(buf, str.c_str(), str.size());
+			sendAuthRequestResult((unsigned char*)buf, bufferSize);
+			ACE_DEBUG((LM_INFO, "Client Authenticated\n"));
+			return 0;
+		}
+
 		ACE_DEBUG((LM_INFO, ": "));
 		fgets(buf, bufferSize, stdin);
 
@@ -145,6 +155,18 @@ public:
 		return super::handle_close(handle, close_mask);
 	}
 
+	int sendAuthRequestResult(unsigned char *data, unsigned long dataLen)
+	{
+		unsigned long ulEncryptedDataLen;
+		std::vector<unsigned char> vEncryptedData;
+		encrypt(CHsmProxy::AES_ECB, hTagKey, data, dataLen, vEncryptedData, ulEncryptedDataLen);
+
+		ACE_Message_Block *mb;
+		ACE_NEW_RETURN(mb, ACE_Message_Block(ulEncryptedDataLen), -1);
+		mb->copy((char*)&vEncryptedData.front(), ulEncryptedDataLen);
+		this->putq(mb);
+		return 0;
+	}
 };
 
 #define SERVER_PORT 9870

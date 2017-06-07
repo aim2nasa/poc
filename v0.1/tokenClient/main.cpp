@@ -59,10 +59,11 @@ int main(int argc, char *argv[])
 	char *buffer = new char[bufferSize+1];	//+1:NULL을 삽입하기 위해서
 
 	int nAuth;
-	if ((nAuth=authenticate(client_stream, CHsmProxy::AES_ECB, hTagKey, buffer, bufferSize)) != 0) {
+	if ((nAuth = authenticate(client_stream, CHsmProxy::AES_ECB, hTagKey, buffer, bufferSize)) != 0) {
 		std::cout << "Authentication failure : " <<nAuth<< std::endl;
 		return -1;
 	}
+	std::cout << "Authentication successful" << std::endl;
 
 	std::cout << "press q and enter to finish" << std::endl;
 	while (true){
@@ -138,21 +139,28 @@ int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsign
 	encrypt(CHsmProxy::AES_ECB, hKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
 
 	size_t size;
-	if ((size = stream.send_n(buffer, bufferSize)) == -1) {
+	if ((size = stream.send_n(&vEncryptedData.front(), ulEncryptedDataLen)) == -1) {
 		ACE_DEBUG((LM_ERROR, "(%P|%t) Error send_n(%d)\n", size));
 		return -1;
 	}
 	ACE_DEBUG((LM_DEBUG, "(%P|%t) Authentication Request %d bytes sent\n", size));
 
-	ACE_Time_Value waitTime(1);	//1초 동안 오지 않으면 타임아웃
+	ACE_Time_Value waitTime(3);	//3초 동안 오지 않으면 타임아웃
 	if ((size = stream.recv(buffer, bufferSize, &waitTime)) == -1) {
 		ACE_ERROR((LM_ERROR, "(%P|%t) Error recv_n(%d)\n", size));
 		return -2;
 	}
 	ACE_DEBUG((LM_DEBUG, "(%P|%t) %d bytes received\n", size));
 
-	if (ACE_OS::memcmp(buffer, "AuthRequest:Done", size) != 0)
+	unsigned long ulDecryptedDataLen;
+	std::vector<unsigned char> vDecryptedData;
+	decrypt(mType, hKey, (unsigned char*)buffer, (unsigned long)size, vDecryptedData, ulDecryptedDataLen);
+
+	std::string str = (char*)&vDecryptedData.front();
+	if (str != "AuthRequest:Done") {
+		ACE_DEBUG((LM_INFO, "(%P|%t) AuthRequest failed:%s\n",str));
 		return 1;
+	}
 
 	ACE_DEBUG((LM_INFO, "(%P|%t) AuthRequest:Done\n"));
 	return 0;
