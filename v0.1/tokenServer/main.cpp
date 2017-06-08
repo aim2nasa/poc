@@ -100,8 +100,8 @@ public:
 				return 0;
 			}
 			else{
-				return -1;
 				ACE_DEBUG((LM_INFO, "Client Authentication failed\n"));
+				return -1;
 			}
 		}
 
