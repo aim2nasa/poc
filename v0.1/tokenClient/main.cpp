@@ -39,16 +39,21 @@ int main(int argc, char *argv[])
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
 
 	hsm.setenv("SOFTHSM2_CONF", ".\\se2Token.conf", 1);
-	ACE_ASSERT(hsm.init(SO_PIN, USER_PIN) == 0);
+	if (hsm.init(SO_PIN, USER_PIN) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, "(%t) %p \n", "HSM init failure(soPin:%s,userPin:%s)", SO_PIN, USER_PIN), -1);
 
 	unsigned long hTagKey, hSeKey;
 	hTagKey = hSeKey = 0;	//CK_INVALID_HANDLE = 0
 
-	ACE_ASSERT(hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey) == 0);
+	if (hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, "(%t) %p \n", "Tag key(%s) not found", TAG_KEY_LABEL), -1);
+
 	ACE_ASSERT(hTagKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) Tag key(%d) retrieved\n", hTagKey));
 
-	ACE_ASSERT(hsm.findKey(SE_KEY_LABEL, sizeof(SE_KEY_LABEL)-1, hSeKey) == 0);
+	if (hsm.findKey(SE_KEY_LABEL, sizeof(SE_KEY_LABEL)-1, hSeKey) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, "(%t) %p \n", "SE key(%s) not found", SE_KEY_LABEL), -1);
+
 	ACE_ASSERT(hSeKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
 
