@@ -152,6 +152,11 @@ int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsign
 	}
 	ACE_DEBUG((LM_DEBUG, "(%P|%t) %d bytes received\n", size));
 
+	if (size == 0)	{//서버에서 연결이 끊어진 상태임
+		ACE_DEBUG((LM_INFO, "(%P|%t) Authentication failed\n"));
+		return -3;
+	}
+
 	unsigned long ulDecryptedDataLen;
 	std::vector<unsigned char> vDecryptedData;
 	decrypt(mType, hKey, (unsigned char*)buffer, (unsigned long)size, vDecryptedData, ulDecryptedDataLen);
