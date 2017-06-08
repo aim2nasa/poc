@@ -42,10 +42,11 @@ private:
 
 	ACE_INET_Addr remote_addr_;
 	ACE_Reactor_Notification_Strategy noti_;
+	bool autheProcess_;
 
 public:
 	Stream_Handler()
-		: noti_(0, this, ACE_Event_Handler::WRITE_MASK)
+		: noti_(0, this, ACE_Event_Handler::WRITE_MASK), autheProcess_(false)
 	{ /* empty */
 	}
 
@@ -87,14 +88,21 @@ public:
 		decrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
 		ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 
-		std::string str = (char*)&vDecryptedData.front();
-		if (str == "AuthRequest") {
-			str += ":Done";
-			ACE_OS::memset(buf, 0, bufferSize + 1);
-			ACE_OS::memcpy(buf, str.c_str(), str.size());
-			sendAuthRequestResult((unsigned char*)buf, bufferSize);
-			ACE_DEBUG((LM_INFO, "Client Authenticated\n"));
-			return 0;
+		if (!autheProcess_) {
+			autheProcess_ = true;
+			std::string str = (char*)&vDecryptedData.front();
+			if (str == "AuthRequest") {	//맨처음 수신한 스트림은 정상적으로 디코딩이 된다면 "AuthRequest"메세지를 받아야 한다. 그렇지 않으면 키가 달라 복호화에 실패한것임
+				str += ":Done";
+				ACE_OS::memset(buf, 0, bufferSize + 1);
+				ACE_OS::memcpy(buf, str.c_str(), str.size());
+				sendAuthRequestResult((unsigned char*)buf, bufferSize);
+				ACE_DEBUG((LM_INFO, "Client Authenticated\n"));
+				return 0;
+			}
+			else{
+				return -1;
+				ACE_DEBUG((LM_INFO, "Client Authentication failed\n"));
+			}
 		}
 
 		ACE_DEBUG((LM_INFO, ": "));
