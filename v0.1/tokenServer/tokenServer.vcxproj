@@ -186,9 +186,14 @@ copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bi
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Stream_Handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="se1Token.conf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CClientAcceptor.h" />
+    <ClInclude Include="Stream_Handler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
