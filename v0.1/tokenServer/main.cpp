@@ -205,6 +205,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	ACE_ASSERT(hSeKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
 
+	ACE_DEBUG((LM_INFO, "(%t) Running event loop...\n"));
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
 	ACE_DEBUG((LM_INFO, "(%t) server end\n"));
