@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
 	hsm.setenv("SOFTHSM2_CONF", ".\\se2Token.conf", 1);
 	if (hsm.init(SO_PIN, USER_PIN) != 0)
-		ACE_ERROR_RETURN((LM_ERROR, "(%t) %p \n", "HSM init failure(soPin:%s,userPin:%s)", SO_PIN, USER_PIN), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(soPin:%s,userPin:%s)"), SO_PIN, USER_PIN), -1);
 
 	unsigned long hTagKey, hSeKey;
 	hTagKey = hSeKey = 0;	//CK_INVALID_HANDLE = 0
