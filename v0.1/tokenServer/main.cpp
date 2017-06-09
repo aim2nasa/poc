@@ -191,7 +191,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	hsm.setenv("SOFTHSM2_CONF", ".\\se1Token.conf", 1);
 	if(hsm.init(SO_PIN, USER_PIN) != 0) 
-		ACE_ERROR_RETURN((LM_ERROR, "(%t) %p \n", "HSM init failure(soPin:%s,userPin:%s)", SO_PIN, USER_PIN), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(soPin:%s,userPin:%s)"), SO_PIN, USER_PIN), -1);
 
 	if (hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, "(%t) %p \n", "Tag key(%s) not found", TAG_KEY_LABEL), -1);
