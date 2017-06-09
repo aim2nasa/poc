@@ -47,6 +47,7 @@ int CHsmProxy::findKey(const char *label, unsigned int labelSize, unsigned long 
 	CK_ULONG ulObjectCount = 0;
 	if (C_FindObjects(token_->session(), &hK, 1, &ulObjectCount) != CKR_OK) return -2;
 	if (ulObjectCount > 1) return -3;	//하나의 키만을 찾게 된다는 전제를 하고 있음, 따라서 하나 이상의 경우에는 오류 처리
+	if (ulObjectCount == 0) return -4;	//키를 발견하지 못한 경우임
 
 	hKey = (unsigned long)hK;
 	C_FindObjectsFinal(token_->session());
