@@ -37,6 +37,11 @@ int CHsmProxy::init(const char *soPin, const char *userPin)
 	return 0;
 }
 
+unsigned long CHsmProxy::slotID()
+{
+	return token_->slotID();
+}
+
 int CHsmProxy::findKey(const char *label, unsigned int labelSize, unsigned long &hKey)
 {
 	CK_ATTRIBUTE attribs[] = { { CKA_LABEL, (CK_UTF8CHAR_PTR)label, labelSize } };

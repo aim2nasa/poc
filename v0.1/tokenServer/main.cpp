@@ -193,6 +193,8 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	if(hsm.init(SO_PIN, USER_PIN) != 0) 
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(soPin:%s,userPin:%s)"), SO_PIN, USER_PIN), -1);
 
+	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u\n", hsm.slotID()));
+
 	if (hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("Tag key(%s) not found\n"), TAG_KEY_LABEL), -1);
 

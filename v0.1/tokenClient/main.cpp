@@ -48,6 +48,8 @@ int main(int argc, char *argv[])
 	if (hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("Tag key(%s) not found\n"), TAG_KEY_LABEL), -1);
 
+	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u\n", hsm.slotID()));
+
 	ACE_ASSERT(hTagKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) Tag key(%d) retrieved\n", hTagKey));
 
