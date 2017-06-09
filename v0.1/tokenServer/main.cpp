@@ -194,13 +194,13 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(soPin:%s,userPin:%s)"), SO_PIN, USER_PIN), -1);
 
 	if (hsm.findKey(TAG_KEY_LABEL, sizeof(TAG_KEY_LABEL)-1, hTagKey) != 0)
-		ACE_ERROR_RETURN((LM_ERROR, "(%t) %p \n", "Tag key(%s) not found", TAG_KEY_LABEL), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("Tag key(%s) not found\n"), TAG_KEY_LABEL), -1);
 
 	ACE_ASSERT(hTagKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) Tag key(%d) retrieved\n", hTagKey));
 
 	if (hsm.findKey(SE_KEY_LABEL, sizeof(SE_KEY_LABEL)-1, hSeKey) != 0)
-		ACE_ERROR_RETURN((LM_ERROR, "(%t) %p \n", "SE key(%s) not found", SE_KEY_LABEL), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("SE key(%s) not found\n"), SE_KEY_LABEL), -1);
 
 	ACE_ASSERT(hSeKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
