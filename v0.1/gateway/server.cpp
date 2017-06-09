@@ -49,13 +49,20 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	listen.set((u_short)SERVER_PORT);
 	CSeAcceptor acceptor;	//CSeAcceptor는 CGwData를 자료구조로 갖는 ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR>에서 상속받은 클래스이다
 							//새로운 접속이 생기면 StreamHandler의 open과정에서 이 자료구조에 접속번호화 StreamHandler의 포인터를 등록한다.
-	acceptor.open(listen);
+	if(acceptor.open(listen)==-1) 
+		ACE_ERROR_RETURN((LM_ERROR,ACE_TEXT("(%t)\n"),ACE_TEXT("acceptor.open")),-1);
+
+	ACE_DEBUG((LM_INFO, "(%t) Port(%d) for SE opened\n", SERVER_PORT));
 
 	ACE_INET_Addr ctrlListen;
 	ctrlListen.set((u_short)CONTRL_PORT);
 	ACE_Acceptor<CCtrlProxy, ACE_SOCK_ACCEPTOR> ctrlAcceptor;
-	ctrlAcceptor.open(ctrlListen);
+	if (ctrlAcceptor.open(ctrlListen) == -1)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t)\n"), ACE_TEXT("ctrlAcceptor.open")), -1);
 
+	ACE_DEBUG((LM_INFO, "(%t) Port(%d) for gatewayCtrl opened\n", CONTRL_PORT));
+
+	ACE_DEBUG((LM_INFO, "(%t) Running event loop...\n"));
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
 	CGwData::delInstance();
