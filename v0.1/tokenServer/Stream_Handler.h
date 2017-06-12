@@ -1,11 +1,7 @@
 #ifndef __STREAM_HANDLER_H__
 #define __STREAM_HANDLER_H__
 
-#include <ace/INET_Addr.h>
-#include <ace/Svc_Handler.h>
 #include <ace/SOCK_Acceptor.h>
-#include <ace/SOCK_Stream.h>
-//#include <ace/Synch_Traits.h>
 #include <ace/Acceptor.h>
 #include <ace/Reactor_Notification_Strategy.h>
 #include "CHsmProxy.h"
