@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
 
 	hsm.setenv("SOFTHSM2_CONF", ".\\se2Token.conf", 1);
-	if (hsm.init(SO_PIN, USER_PIN) != 0)
+	if (hsm.init(USER_PIN) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(soPin:%s,userPin:%s)"), SO_PIN, USER_PIN), -1);
 
 	unsigned long hTagKey, hSeKey;

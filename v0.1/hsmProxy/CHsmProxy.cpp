@@ -14,7 +14,7 @@ CHsmProxy::~CHsmProxy()
 	delete token_;
 }
 
-int CHsmProxy::init(const char *soPin, const char *userPin)
+int CHsmProxy::init(const char *userPin)
 {
 	int nRtn;
 	if ( (nRtn=token_->initialize()) != 0) {

@@ -12,7 +12,7 @@ CTestDll::~CTestDll()
 	delete hsm_;
 }
 
-int CTestDll::init(const char *soPin, const char *userPin)
+int CTestDll::init(const char *userPin)
 {
-	return hsm_->init(soPin, userPin);
+	return hsm_->init(userPin);
 }

@@ -8,7 +8,7 @@ public:
 	CTestDll();
 	virtual ~CTestDll();
 
-	int init(const char *soPin, const char *userPin);
+	int init(const char *userPin);
 
 	CHsmProxy	*hsm_;
 };
