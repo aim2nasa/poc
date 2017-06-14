@@ -11,6 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gateway", "gateway\gateway.
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "se", "se\se.vcxproj", "{28643FC8-C14F-44BB-8A65-8C504C352804}"
+	ProjectSection(ProjectDependencies) = postProject
+		{80803290-F49B-4F73-8AF1-691FEF33D692} = {80803290-F49B-4F73-8AF1-691FEF33D692}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gatewayCtrl", "gatewayCtrl\gatewayCtrl.vcxproj", "{5B4F3875-1FB0-4ECC-9589-95789F0CFC45}"
 EndProject
