@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <vector>
+#include <assert.h>
 
 CToken::CToken()
 :_module(NULL), _p11(NULL), _hSession(CK_INVALID_HANDLE), _slotID(INVALID_SLOT_ID)
@@ -160,6 +161,42 @@ int CToken::createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG
 	CK_RV rv = C_GenerateKey(_hSession, &mechanism, keyAttrib, keyAttribNo, &hKey);
 	if (rv != CKR_OK) {
 		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Logout: 0x", rv);
+		return -1;
+	}
+	return 0;
+}
+
+int CToken::deriveAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv)
+{
+	CK_RV rv;
+	CK_MECHANISM mechanism = { mechType, NULL_PTR, 0 };
+	CK_KEY_DERIVATION_STRING_DATA param1;
+	CK_AES_CBC_ENCRYPT_DATA_PARAMS param3;
+
+	switch (mechType)
+	{
+	case CKM_AES_ECB_ENCRYPT_DATA:
+		param1.pData = data;
+		param1.ulLen = dataSize;
+		mechanism.pParameter = &param1;
+		mechanism.ulParameterLen = sizeof(param1);
+		break;
+	case CKM_AES_CBC_ENCRYPT_DATA:
+		assert(iv);
+		memcpy(param3.iv, iv, 16);
+		param3.pData = data;
+		param3.length = dataSize;
+		mechanism.pParameter = &param3;
+		mechanism.ulParameterLen = sizeof(param3);
+		break;
+	default:
+		return -1;		//Invalid mechanism
+	}
+
+	hDerive = CK_INVALID_HANDLE;
+	rv = C_DeriveKey(_hSession, &mechanism, hKey, keyAttrib, keyAttribNo, &hDerive);
+	if (rv != CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_DeriveKey: 0x", rv);
 		return -1;
 	}
 	return 0;

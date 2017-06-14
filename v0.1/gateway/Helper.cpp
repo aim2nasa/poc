@@ -28,33 +28,8 @@ int gatewayKey(CToken &token, CK_ULONG keySize, CK_OBJECT_HANDLE &hGw)
 	ACE_RETURN(0);
 }
 
-int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv)
+int aesDerive(CToken &token, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv)
 {
-	CK_RV rv;
-	CK_MECHANISM mechanism = { mechType, NULL_PTR, 0 };
-	CK_KEY_DERIVATION_STRING_DATA param1;
-	CK_AES_CBC_ENCRYPT_DATA_PARAMS param3;
-
-	switch (mechType)
-	{
-	case CKM_AES_ECB_ENCRYPT_DATA:
-		param1.pData = data;
-		param1.ulLen = dataSize;
-		mechanism.pParameter = &param1;
-		mechanism.ulParameterLen = sizeof(param1);
-		break;
-	case CKM_AES_CBC_ENCRYPT_DATA:
-		ACE_ASSERT(iv);
-		memcpy(param3.iv, iv, 16);
-		param3.pData = data;
-		param3.length = dataSize;
-		mechanism.pParameter = &param3;
-		mechanism.ulParameterLen = sizeof(param3);
-		break;
-	default:
-		ACE_RETURN(-1);		//Invalid mechanism
-	}
-
 	CK_KEY_TYPE keyType = CKK_AES;
 	CK_ULONG secLen = dataSize;	//8*32 = 256bit
 
@@ -74,36 +49,36 @@ int aesDerive(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDL
 	};
 
 	hDerive = CK_INVALID_HANDLE;
-	rv = C_DeriveKey(hSession, &mechanism, hKey, keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), &hDerive);
-	if (rv != CKR_OK) ACE_RETURN(-3);
-
+	if (token.deriveAesKey(keyAttribs, sizeof(keyAttribs) / sizeof(CK_ATTRIBUTE), hKey, hDerive, mechType, data, dataSize, iv) != 0) {
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("deriveAesKey failed\n")), -1);
+	}
 	ACE_RETURN(0);
 }
 
 //Derive Group
-int deriveGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_HANDLE hParent, CK_BYTE_PTR data, CK_ULONG dataSize)
+int deriveGroup(CToken &token, CK_OBJECT_HANDLE &hGroup, CK_OBJECT_HANDLE hParent, CK_BYTE_PTR data, CK_ULONG dataSize)
 {
 	hGroup = CK_INVALID_HANDLE;
 	int nRtn;
-	if ((nRtn = aesDerive(hSession, hParent, hGroup, CKM_AES_ECB_ENCRYPT_DATA, data, dataSize)) != 0)
+	if ((nRtn = aesDerive(token, hParent, hGroup, CKM_AES_ECB_ENCRYPT_DATA, data, dataSize)) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("aesDerive failed:0x%x\n"), nRtn), -1);
 
 	ACE_RETURN(0);
 }
 
 //Derive Tag from Group
-int deriveTagFromGroup(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup)
+int deriveTagFromGroup(CToken &token, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE hGroup)
 {
 	hTag = CK_INVALID_HANDLE;
 
 	CK_BYTE keyValue[64];
 	CK_ATTRIBUTE valAttrib = { CKA_VALUE, &keyValue, sizeof(keyValue) };
-	CK_RV rv = C_GetAttributeValue(hSession, hGroup, &valAttrib, 1);
+	CK_RV rv = C_GetAttributeValue(token.session(), hGroup, &valAttrib, 1);
 	if (rv != CKR_OK)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("ERROR: C_GetAttributeValue:0x%x\n"), rv), -1);
 
 	int nRtn;
-	if ((nRtn = aesDerive(hSession, hGroup, hTag, CKM_AES_ECB_ENCRYPT_DATA, (CK_BYTE*)valAttrib.pValue, valAttrib.ulValueLen)) != 0)
+	if ((nRtn = aesDerive(token, hGroup, hTag, CKM_AES_ECB_ENCRYPT_DATA, (CK_BYTE*)valAttrib.pValue, valAttrib.ulValueLen)) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("ERROR: aesDerive:0x%x\n"), nRtn), -2);
 	
 	ACE_RETURN(0);

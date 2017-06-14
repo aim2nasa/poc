@@ -28,6 +28,7 @@ public:
 	int getSlotID();
 
 	int createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG keySize, CK_OBJECT_HANDLE &hKey);
+	int deriveAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_OBJECT_HANDLE hKey, CK_OBJECT_HANDLE &hDerive, CK_MECHANISM_TYPE mechType, CK_BYTE *data, CK_LONG dataSize, CK_CHAR_PTR iv=NULL);
 
 	char _message[MAX_ERR_MSG];
 
