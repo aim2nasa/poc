@@ -11,6 +11,7 @@ public:
 	virtual ~CHsmProxy();
 
 	int init(const char *userPin);
+	int init(const char *label, const char *soPin, const char *userPin, bool emptySlot=true);
 	unsigned long slotID();
 	int findKey(const char *label, unsigned int labelSize, unsigned long &hKey);	//hKey의 타입은 CK_SESSION_HANDLE이지만 pkcs11헤더를 포함하지 않기 위해서 기본형으로 표시
 	CToken& token();

@@ -37,6 +37,58 @@ int CHsmProxy::init(const char *userPin)
 	return 0;
 }
 
+int CHsmProxy::init(const char *label, const char *soPin, const char *userPin, bool emptySlot)
+{
+	int nRtn;
+	if ((nRtn = token_->initialize()) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token initialize error(%d):%s", nRtn, token_->_message);
+		return -1;
+	}
+
+	CK_ULONG ulSlotCount;
+	if ((nRtn=token_->slotCount(ulSlotCount)) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token slotCount error(%d):%s", nRtn, token_->_message);
+		return -2;
+	}
+
+	if (emptySlot && ulSlotCount != 1) {	//슬롯이 하나도 없어야 하는 조건일때 카운트는 1로 나와야 한다. 슬롯이 없을때 softhsm2는 1로 카운트해서 알려주기 때문
+		sprintf_s(message_, MAX_ERR_MSG, "token emptySlot error:slotCount(%u)", ulSlotCount);
+		return -3;
+	}
+	if (emptySlot) assert(ulSlotCount==1);
+
+	if ((nRtn=token_->initToken(ulSlotCount - 1, soPin, (CK_ULONG)strlen(soPin), label, (CK_ULONG)strlen(label))) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token initToken error(%d):%s", nRtn, token_->_message);
+		return -4;
+	}
+
+	if ((nRtn=token_->openSession()) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token openSession error(%d):%s", nRtn, token_->_message);
+		return -5;
+	}
+
+	if ((nRtn=token_->login(CKU_SO, soPin, (CK_ULONG)strlen(soPin))) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token SO login error(%d):%s", nRtn, token_->_message);
+		return -6;
+	}
+
+	if ((nRtn=token_->initPin(userPin, (CK_ULONG)strlen(userPin))) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token initPin error(%d):%s", nRtn, token_->_message);
+		return -7;
+	}
+
+	if ((nRtn=token_->logout()) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token logout error(%d):%s", nRtn, token_->_message);
+		return -8;
+	}
+
+	if ((nRtn=token_->login(CKU_USER, userPin, (CK_ULONG)strlen(userPin))) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token USER login error(%d):%s", nRtn, token_->_message);
+		return -9;
+	}
+	return 0;
+}
+
 unsigned long CHsmProxy::slotID()
 {
 	return token_->slotID();
