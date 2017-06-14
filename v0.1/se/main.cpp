@@ -17,7 +17,6 @@
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
 
-int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin);
 int createSerialNo(CToken &token, char *sn, unsigned int snSize);
 size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len);
 int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo);
@@ -80,54 +79,6 @@ int main(int argc, char *argv[])
 
 	ACE_DEBUG((LM_INFO, "(%t) SE successfully initialized\n"));
 	return 0;
-}
-
-int prepareSession(CToken &token, const char *label, const char *soPin, const char *userPin)
-{
-	if (token.initialize() != 0) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
-		ACE_RETURN(-1);
-	}
-	ACE_DEBUG((LM_INFO, "(%t) HSM library initialized\n"));
-
-	CK_ULONG ulSlotCount;
-	if (token.slotCount(ulSlotCount) != 0) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
-		ACE_RETURN(-1);
-	}
-	ACE_DEBUG((LM_INFO, "(%t) number of slots:%d\n", ulSlotCount));
-
-	if (token.initToken(ulSlotCount - 1, soPin, (CK_ULONG)strlen(soPin), label, (CK_ULONG)strlen(label)) != 0) { //slotID: 디폴트로 들어가는 한개의 카운트를 제외한다. 슬롯이 하나도 없을때도 카운트는 1로 나오므로
-		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
-		ACE_RETURN(-1);
-	}
-
-	if (token.openSession() != 0) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
-		ACE_RETURN(-1);
-	}
-
-	if (token.login(CKU_SO, soPin, (CK_ULONG)strlen(soPin)) != 0) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
-		ACE_RETURN(-1);
-	}
-
-	if (token.initPin(userPin, (CK_ULONG)strlen(userPin)) != 0) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
-		ACE_RETURN(-1);
-	}
-
-	if (token.logout() != 0) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
-		ACE_RETURN(-1);
-	}
-
-	if (token.login(CKU_USER, userPin, (CK_ULONG)strlen(userPin)) != 0) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("%s\n"), token._message));
-		ACE_RETURN(-1);
-	}
-
-	ACE_RETURN(0);
 }
 
 int createSerialNo(CToken &token, char *sn, unsigned int snSize)
