@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
 	int nRtn;
 	if ((nRtn = hsm.init(argv[3], argv[4], argv[5])) != 0)
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(%s,%s,%s):%d\n"), argv[3], argv[4], argv[5], nRtn), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(%s,%s,%s):%d (%s)\n"), argv[3], argv[4], argv[5], nRtn, hsm.message_), -1);
 
 	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", hsm.slotID(), hsm.token().label().c_str()));
 
