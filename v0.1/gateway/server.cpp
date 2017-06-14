@@ -10,6 +10,7 @@
 #include "CSeAcceptor.h"
 #include "CGwData.h"
 #include "common.h"
+#include "CHsmProxy.h"
 
 #define SERVER_PORT 9876
 #define CONTRL_PORT 9875
@@ -29,21 +30,23 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	ACE_OS::atoi(argv[1]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[1]);
 	ACE_DEBUG((LM_INFO, "(%t) gateway start at port:%u\n", server_port));
 
-	CToken token;
-	if (prepareSession(token, argv[2], argv[3], argv[4]) != 0) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("prepareSession failed\n")));
-		ACE_RETURN(-1);
-	}
-	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", token.slotID(), token.label().c_str()));
+	CHsmProxy hsm;
+	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+
+	int nRtn;
+	if ((nRtn=hsm.init(argv[2], argv[3], argv[4])) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(%s,%s,%s):%d\n"), argv[2], argv[3], argv[4],nRtn), -1);
+
+	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", hsm.slotID(), hsm.token().label().c_str()));
 
 	//GwKey(AES키를 생성)
-	if (gatewayKey(token, AES_KEY_SIZE, CGwData::getInstance()->hGw_) != 0) {
+	if (gatewayKey(hsm.token(), AES_KEY_SIZE, CGwData::getInstance()->hGw_) != 0) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("gatewayKey creation failed\n")));
 		ACE_RETURN(-1);
 	}
 	ACE_DEBUG((LM_INFO, "(%t) AES key for gateway created\n"));
-	CGwData::getInstance()->token_ = &token;
-	showKey(token.session(), CGwData::getInstance()->hGw_, "GW");
+	CGwData::getInstance()->token_ = &hsm.token();
+	showKey(hsm.token().session(), CGwData::getInstance()->hGw_, "GW");
 
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);

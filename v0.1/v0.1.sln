@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gwKeyGen", "gwKeyGen\gwKeyGen.vcxproj", "{7C34DBFE-ED72-4E4D-9A0D-CCBBFD51F419}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gateway", "gateway\gateway.vcxproj", "{84B5D60A-D0AE-411F-837A-60068623770B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{80803290-F49B-4F73-8AF1-691FEF33D692} = {80803290-F49B-4F73-8AF1-691FEF33D692}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "se", "se\se.vcxproj", "{28643FC8-C14F-44BB-8A65-8C504C352804}"
 EndProject
