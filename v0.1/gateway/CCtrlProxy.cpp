@@ -173,13 +173,13 @@ int CCtrlProxy::generateKey(CGroup &group)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveGroup failed\n")), -1);
 
 	std::string groupName = std::string("Group(") + group.groupName_ + std::string(")");
-	showKey(CGwData::getInstance()->token_->session(), CGwData::getInstance()->hGw_, groupName.c_str());
+	showKey(*CGwData::getInstance()->token_, CGwData::getInstance()->hGw_, groupName.c_str());
 
 	//Group에 대한 키로 부터 Tag키를 derive한다
 	if (deriveTagFromGroup(*CGwData::getInstance()->token_, group.hTag_, group.hGroup_) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) CCtrlProxy::generateKey deriveTagFromGroup failed\n")), -1);
 
-	if (0 != getKey(CGwData::getInstance()->token_->session(), group.hTag_, group.tagKey(), AES_KEY_SIZE)) ACE_RETURN(-1);
+	if (0 != CGwData::getInstance()->token_->getKey(group.hTag_, group.tagKey(), AES_KEY_SIZE)) ACE_RETURN(-1);
 	displayKey(group.tagKey(), AES_KEY_SIZE, std::string("GroupTag").c_str());
 
 	for (std::list<CSe>::iterator it = group.seList_.begin(); it != group.seList_.end(); it++) {
@@ -194,7 +194,7 @@ int CCtrlProxy::generateKey(CGroup &group)
 		it->tagKey(group.tagKey(), AES_KEY_SIZE);
 
 		//Group에 속한 SE에 derive된 SE의 키를 복사 (SE들은 각자 고유의 Group으로 부터 derive된 키를 갖게 된다)
-		if (0 != getKey(CGwData::getInstance()->token_->session(), it->h_, it->seKey(), AES_KEY_SIZE)) ACE_RETURN(-1);
+		if (0 != CGwData::getInstance()->token_->getKey(it->h_, it->seKey(), AES_KEY_SIZE)) ACE_RETURN(-1);
 		std::string seName = std::string("SE") + std::to_string(it->cid_);
 		displayKey(it->seKey(), AES_KEY_SIZE, seName.c_str());
 	}

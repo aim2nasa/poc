@@ -20,6 +20,7 @@ public:
 	int initPin(const char *userPin, CK_ULONG userPinSize);
 	int logout();
 	int genRandom(char *randomData, unsigned long randomDataSize);
+	int getKey(CK_OBJECT_HANDLE hKey, CK_BYTE_PTR key, CK_ULONG keySize);
 
 	CK_SLOT_ID slotID();
 	std::string label();

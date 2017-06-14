@@ -84,22 +84,12 @@ int deriveTagFromGroup(CToken &token, CK_OBJECT_HANDLE &hTag, CK_OBJECT_HANDLE h
 	ACE_RETURN(0);
 }
 
-int showKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey,const char *name)
+int showKey(CToken &token, CK_OBJECT_HANDLE hKey, const char *name)
 {
 	CK_BYTE key[AES_KEY_SIZE];
-	if (getKey(hSession, hKey, key, sizeof(key)) != 0) ACE_RETURN(-1);
+	if (token.getKey(hKey, key, sizeof(key)) != 0) ACE_RETURN(-1);
 
 	displayKey(key, sizeof(key), name);
-	ACE_RETURN(0);
-}
-
-int getKey(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE hKey, CK_BYTE_PTR key, CK_ULONG keySize)
-{
-	CK_ATTRIBUTE keyAttribs[] = { { CKA_VALUE, key, keySize } };
-	CK_RV rv = C_GetAttributeValue(hSession, hKey, keyAttribs, 1);
-	if (rv != CKR_OK)
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in getKey(%d,%d)\n"), hSession, hKey), -1);
-
 	ACE_RETURN(0);
 }
 

@@ -46,7 +46,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	}
 	ACE_DEBUG((LM_INFO, "(%t) AES key for gateway created\n"));
 	CGwData::getInstance()->token_ = &hsm.token();
-	showKey(hsm.token().session(), CGwData::getInstance()->hGw_, "GW");
+	showKey(hsm.token(), CGwData::getInstance()->hGw_, "GW");
 
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);

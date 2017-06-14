@@ -211,3 +211,14 @@ int CToken::genRandom(char *randomData, unsigned long randomDataSize)
 	}
 	return 0;
 }
+
+int CToken::getKey(CK_OBJECT_HANDLE hKey, CK_BYTE_PTR key, CK_ULONG keySize)
+{
+	CK_ATTRIBUTE keyAttribs[] = { { CKA_VALUE, key, keySize } };
+	CK_RV rv;
+	if ((rv = _p11->C_GetAttributeValue(_hSession, hKey, keyAttribs, 1)) != CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: getKey: 0x", rv);
+		return -1;
+	}
+	return 0;
+}
