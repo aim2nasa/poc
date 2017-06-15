@@ -32,6 +32,8 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	CHsmProxy hsm;
 	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+	CHsmProxy::emptyToken();
+	ACE_DEBUG((LM_INFO, "(%t) empty token folder\n"));
 
 	int nRtn;
 	if ((nRtn=hsm.init(argv[2], argv[3], argv[4])) != 0)
