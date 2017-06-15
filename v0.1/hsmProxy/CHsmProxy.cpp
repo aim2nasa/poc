@@ -1,6 +1,10 @@
 #include "CHsmProxy.h"
 #include "CToken.h"
 #include "protocol.h"
+#include "Configuration.h"
+#include "OSPathSep.h"
+#include "util.h"
+#include "Directory.h"
 #include <assert.h>
 
 CHsmProxy::CHsmProxy()
@@ -114,6 +118,74 @@ int CHsmProxy::findKey(const char *label, unsigned int labelSize, unsigned long 
 CToken& CHsmProxy::token()
 {
 	return *token_;
+}
+
+int CHsmProxy::deleteToken(char* slotSerialNo, char* tokenLabel)
+{
+	if (slotSerialNo == NULL && tokenLabel == NULL) return -1;
+
+	if (!initSoftHSM()) {
+		finalizeSoftHSM();
+		return -2;
+	}
+
+	std::string basedir = Configuration::i()->getString("directories.tokendir", DEFAULT_TOKENDIR);
+	std::string tokendir;
+
+	if (findTokenDirectory(basedir, tokendir, slotSerialNo, tokenLabel))
+	{
+		std::string fulldir = basedir;
+		if (fulldir.find_last_of(OS_PATHSEP) != (fulldir.size() - 1))
+		{
+			fulldir += OS_PATHSEP + tokendir;
+		}
+		else
+		{
+			fulldir += tokendir;
+		}
+
+		if (rmdir(fulldir))
+		{
+			return 0;
+		}
+		else{
+			return -3;
+		}
+	}
+	return -4;
+}
+
+int CHsmProxy::emptyToken()
+{
+	if (!initSoftHSM()) {
+		finalizeSoftHSM();
+		return -1;
+	}
+
+	std::string basedir = Configuration::i()->getString("directories.tokendir", DEFAULT_TOKENDIR);
+	std::string tokendir;
+
+	// Find all tokens in the specified path
+	Directory storeDir(basedir);
+
+	if (!storeDir.isValid())
+	{
+		fprintf(stderr, "Failed to enumerate object store in %s", basedir.c_str());
+		return -2;
+	}
+
+	// Assume that all subdirectories are tokens
+	std::vector<std::string> dirs = storeDir.getSubDirs();
+	for (std::vector<std::string>::iterator i = dirs.begin(); i != dirs.end(); i++)
+	{
+		std::string fulldir = basedir;
+		fulldir += *i;
+
+		if (!rmdir(fulldir)){
+			//삭제 실패 메세지
+		}
+	}
+	return 0;
 }
 
 unsigned long CHsmProxy::mechanismType(MechanismType mType)

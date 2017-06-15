@@ -15,6 +15,8 @@ public:
 	unsigned long slotID();
 	int findKey(const char *label, unsigned int labelSize, unsigned long &hKey);	//hKey의 타입은 CK_SESSION_HANDLE이지만 pkcs11헤더를 포함하지 않기 위해서 기본형으로 표시
 	CToken& token();
+	static int deleteToken(char* slotSerialNo, char* tokenLabel);	//파일시스템에 존재하는 토큰을 라벨이름으로 삭제 또는 시리얼 번호로 특정 슬롯만을 삭제
+	static int emptyToken();	//softhsm2.conf에 지정된 폴더를 비우는 함수(HSM을 시작할때 토큰을 깨끗하게 비우는 함수)
 
 	enum MechanismType {
 		AES_CBC_PAD,
