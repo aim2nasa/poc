@@ -186,7 +186,6 @@ copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectN
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\library.cpp" />
-    <ClCompile Include="..\gateway\CToken.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -194,7 +193,6 @@ copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectN
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\protocol.h" />
-    <ClInclude Include="..\gateway\CToken.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -24,9 +24,6 @@
     <ClCompile Include="..\..\common\library.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CToken.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Helper.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StreamHandler.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CToken.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Helper.h">

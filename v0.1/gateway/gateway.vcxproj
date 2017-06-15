@@ -95,6 +95,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\common;..\hsmProxy</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,6 +118,7 @@ copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectN
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\common;..\hsmProxy</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,7 +143,7 @@ copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectN
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\common;..\hsmProxy</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,7 +170,7 @@ copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectN
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\common;..\hsmProxy</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -190,7 +192,6 @@ copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectN
     <ClCompile Include="CGroup.cpp" />
     <ClCompile Include="CGwData.cpp" />
     <ClCompile Include="CSe.cpp" />
-    <ClCompile Include="CToken.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="server.cpp" />
     <ClCompile Include="StreamHandler.cpp" />
@@ -202,7 +203,6 @@ copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectN
     <ClInclude Include="CGroup.h" />
     <ClInclude Include="CSe.h" />
     <ClInclude Include="CSeAcceptor.h" />
-    <ClInclude Include="CToken.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="StreamHandler.h" />
     <ClInclude Include="CGwData.h" />

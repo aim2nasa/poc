@@ -7,7 +7,7 @@
 #define MAX_ERR_MSG			256
 #define INVALID_SLOT_ID		-1
 
-class CToken{
+class __declspec(dllexport) CToken{
 public:
 	CToken();
 	virtual ~CToken();
