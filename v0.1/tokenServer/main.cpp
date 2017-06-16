@@ -27,8 +27,9 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	CHsmProxy hsm;
 	hsm.setenv("SOFTHSM2_CONF", ".\\se1Token.conf", 1);
-	if (hsm.init(USER_PIN) != 0)
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(soPin:%s,userPin:%s)"), SO_PIN, USER_PIN), -1);
+	int nRtn;
+	if ((nRtn=hsm.init(USER_PIN)) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), USER_PIN, nRtn, hsm.message_), -1);
 
 	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u\n", hsm.slotID()));
 
