@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	else
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
 
-	hsm.setenv("SOFTHSM2_CONF", ".\\se2Token.conf", 1);
+	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
 	int nInit;
 	if ((nInit = hsm.init(USER_PIN)) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), USER_PIN, nInit, hsm.message_), -1);
