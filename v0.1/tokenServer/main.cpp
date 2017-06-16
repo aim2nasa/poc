@@ -26,7 +26,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	listen.set(SERVER_PORT);
 
 	CHsmProxy hsm;
-	hsm.setenv("SOFTHSM2_CONF", ".\\se1Token.conf", 1);
+	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
 	int nRtn;
 	if ((nRtn=hsm.init(USER_PIN)) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), USER_PIN, nRtn, hsm.message_), -1);

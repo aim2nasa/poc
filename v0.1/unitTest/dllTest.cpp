@@ -6,7 +6,7 @@
 TEST(DllTest, simple)
 {
 	CHsmProxy p;
-	p.setenv("SOFTHSM2_CONF", ".\\se2Token.conf", 1);
+	p.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
 	ASSERT_EQ(p.init(USER_PIN), 0);
 
 	CTestDll dll;
