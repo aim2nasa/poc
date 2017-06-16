@@ -26,7 +26,10 @@ int CHsmProxy::init(const char *userPin)
 		return -1;
 	}
 
-	if (token_->getSlotID() != 0) return -2;
+	if ((nRtn = token_->getSlotID()) != 0) {
+		sprintf_s(message_, MAX_ERR_MSG, "token getSlotID error(%d):%s", nRtn, token_->_message);
+		return -2;
+	}
 	assert(token_->slotID() != INVALID_SLOT_ID);
 
 	if (token_->openSession() != 0) {

@@ -133,16 +133,27 @@ int CToken::getSlotID()
 {
 	bool hasFoundInitialized(false);
 
+	CK_RV rv;
 	CK_ULONG nrOfSlots;
-	if (C_GetSlotList(CK_TRUE, NULL_PTR, &nrOfSlots) != CKR_OK) return -1;
+	if ((rv=C_GetSlotList(CK_TRUE, NULL_PTR, &nrOfSlots)) != CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetSlotList: 0x", rv);
+		return -1;
+	}
 
 	std::vector<CK_SLOT_ID> slotIDs(nrOfSlots);
-	if (C_GetSlotList(CK_TRUE, &slotIDs.front(), &nrOfSlots) != CKR_OK) return -2;
+	if ((rv=C_GetSlotList(CK_TRUE, &slotIDs.front(), &nrOfSlots)) != CKR_OK) {
+		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetSlotList: 0x", rv);
+		return -2;
+	}
 
 	for (std::vector<CK_SLOT_ID>::iterator i = slotIDs.begin(); i != slotIDs.end(); i++) {
 		CK_TOKEN_INFO tokenInfo;
 
-		if (C_GetTokenInfo(*i, &tokenInfo) != CKR_OK) return -3;
+		if ((rv = C_GetTokenInfo(*i, &tokenInfo)) != CKR_OK) {
+			sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetTokenInfo(%u): 0x", *i,rv);
+			return -3;
+		}
+
 		if (tokenInfo.flags & CKF_TOKEN_INITIALIZED) {
 			if (!hasFoundInitialized) {
 				hasFoundInitialized = true;
@@ -151,6 +162,7 @@ int CToken::getSlotID()
 			}
 		}
 	}
+	sprintf_s(_message, MAX_ERR_MSG, "%s", "ERROR: no matching slot found");
 	return -1;
 }
 
