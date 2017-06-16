@@ -10,7 +10,6 @@
 #include <ace/Acceptor.h>
 #include <ace/Reactor_Notification_Strategy.h>
 #include "CHsmProxy.h"
-#include "testConf.h"
 #include "common.h"
 
 #include "CClientAcceptor.h"
@@ -19,17 +18,23 @@
 
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
+	if (argc<3) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:tokenServer <port> <userPin>\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9870)\n")));
+		ACE_RETURN(-1);
+	}
+
 	u_short server_port = argc > 1 ? ACE_OS::atoi(argv[1]) : SERVER_PORT;
 	ACE_DEBUG((LM_INFO, "(%t) server start at port:%d\n", server_port));
 
 	ACE_INET_Addr listen;
-	listen.set(SERVER_PORT);
+	listen.set(server_port);
 
 	CHsmProxy hsm;
 	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
 	int nRtn;
-	if ((nRtn=hsm.init(USER_PIN)) != 0)
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), USER_PIN, nRtn, hsm.message_), -1);
+	if ((nRtn = hsm.init(argv[2])) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), argv[2], nRtn, hsm.message_), -1);
 
 	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u\n", hsm.slotID()));
 
