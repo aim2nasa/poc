@@ -20,6 +20,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="se2Token.conf" />
+    <None Include="softhsm2.conf" />
   </ItemGroup>
 </Project>

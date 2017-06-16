@@ -23,14 +23,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="se1Token.conf" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Stream_Handler.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CClientAcceptor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="softhsm2.conf" />
   </ItemGroup>
 </Project>
