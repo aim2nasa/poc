@@ -29,7 +29,7 @@ int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSessio
 int main(int argc, char *argv[])
 {
 	if (argc<6) {
-		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:se <host> <post> <label> <soPin> <userPin>\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:se <host> <port> <label> <soPin> <userPin>\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9876)\n")));
 		ACE_RETURN(-1);
