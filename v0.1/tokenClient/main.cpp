@@ -8,7 +8,6 @@
 #include "ace/OS_NS_stdlib.h"
 #include "ace/OS_NS_sys_time.h"
 #include "CHsmProxy.h"
-#include "testConf.h"
 #include "common.h"
 
 #define SIZE_BUF 256
@@ -24,6 +23,13 @@ int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsign
 
 int main(int argc, char *argv[])
 {
+	if (argc<4) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:tokenClient <host> <port> <userPin>\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9870)\n")));
+		ACE_RETURN(-1);
+	}
+
 	const char *server_host = argc > 1 ? argv[1] : SERVER_HOST;
 	u_short server_port = argc > 2 ? ACE_OS::atoi(argv[2]) : SERVER_PORT;
 	ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n", server_host, server_port));
@@ -40,8 +46,8 @@ int main(int argc, char *argv[])
 
 	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
 	int nInit;
-	if ((nInit = hsm.init(USER_PIN)) != 0)
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), USER_PIN, nInit, hsm.message_), -1);
+	if ((nInit = hsm.init(argv[3])) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), argv[3], nInit, hsm.message_), -1);
 
 	unsigned long hTagKey, hSeKey;
 	hTagKey = hSeKey = 0;	//CK_INVALID_HANDLE = 0
