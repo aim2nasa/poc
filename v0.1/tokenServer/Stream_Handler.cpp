@@ -136,21 +136,27 @@ int Stream_Handler::sendAuthRequestResult(unsigned char *data, unsigned long dat
 void Stream_Handler::encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
 {
 	CHsmProxy &hsm = *pHsm_;
-	ACE_ASSERT(hsm.encryptInit(mType, hKey) == 0);
-	ACE_ASSERT(hsm.encrypt(data, dataLen, NULL, &ulEncryptedDataLen) == 0);
+	int nRtn = hsm.encryptInit(mType, hKey);
+	ACE_ASSERT( nRtn == 0);
+	nRtn = hsm.encrypt(data, dataLen, NULL, &ulEncryptedDataLen);
+	ACE_ASSERT( nRtn == 0);
 	ACE_ASSERT(ulEncryptedDataLen == dataLen);
 
 	vEncryptedData.resize(ulEncryptedDataLen);
-	ACE_ASSERT(hsm.encrypt(data, dataLen, &vEncryptedData.front(), &ulEncryptedDataLen) == 0);
+	nRtn = hsm.encrypt(data, dataLen, &vEncryptedData.front(), &ulEncryptedDataLen);
+	ACE_ASSERT( nRtn == 0);
 	ACE_ASSERT(ulEncryptedDataLen == dataLen);
 }
 
 void Stream_Handler::decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen)
 {
 	CHsmProxy &hsm = *pHsm_;
-	ACE_ASSERT(hsm.decryptInit(mType, hKey) == 0);
-	ACE_ASSERT(hsm.decrypt(data, dataLen, NULL, &ulDecryptedDataLen) == 0);
+	int nRtn = hsm.decryptInit(mType, hKey);
+	ACE_ASSERT( nRtn == 0);
+	nRtn = hsm.decrypt(data, dataLen, NULL, &ulDecryptedDataLen);
+	ACE_ASSERT( nRtn == 0);
 
 	vDecryptedData.resize(ulDecryptedDataLen);
-	ACE_ASSERT(hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen) == 0);
+	nRtn = hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen);
+	ACE_ASSERT( nRtn == 0);
 }
