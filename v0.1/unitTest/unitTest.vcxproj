@@ -105,7 +105,8 @@
     <PostBuildEvent>
       <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,7 +128,8 @@ copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectNam
     <PostBuildEvent>
       <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -153,7 +155,8 @@ copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectNam
     <PostBuildEvent>
       <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,7 +182,8 @@ copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectNam
     <PostBuildEvent>
       <Command>copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy ..\bin\testDll\$(Platform)\$(Configuration)\testDll.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
