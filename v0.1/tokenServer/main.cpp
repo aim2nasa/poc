@@ -24,8 +24,9 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_RETURN(-1);
 	}
 
-	u_short server_port = argc > 1 ? ACE_OS::atoi(argv[1]) : SERVER_PORT;
-	ACE_DEBUG((LM_INFO, "(%t) server start at port:%d\n", server_port));
+	u_short server_port;
+	ACE_OS::atoi(argv[1]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[1]);
+	ACE_DEBUG((LM_INFO, "(%t) gateway start at port:%u\n", server_port));
 
 	ACE_INET_Addr listen;
 	listen.set(server_port);

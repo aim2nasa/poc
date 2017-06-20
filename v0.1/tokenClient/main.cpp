@@ -30,8 +30,10 @@ int main(int argc, char *argv[])
 		ACE_RETURN(-1);
 	}
 
-	const char *server_host = argc > 1 ? argv[1] : SERVER_HOST;
-	u_short server_port = argc > 2 ? ACE_OS::atoi(argv[2]) : SERVER_PORT;
+	char *server_host = NULL;
+	ACE_OS::atoi(argv[1]) == 0 ? server_host = SERVER_HOST : server_host = argv[1];
+	u_short server_port;
+	ACE_OS::atoi(argv[2]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[2]);
 	ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n", server_host, server_port));
 
 	ACE_SOCK_Stream client_stream;
