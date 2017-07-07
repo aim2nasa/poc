@@ -11,9 +11,11 @@
 #include <ace/Reactor.h>
 #include <ace/Reactor_Notification_Strategy.h>
 
-class Stream_Handler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
+#include <ace/SSL/SSL_SOCK_Acceptor.h>
+
+class Stream_Handler : public ACE_Svc_Handler<ACE_SSL_SOCK_Stream, ACE_NULL_SYNCH> {
 private:
-	typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> super;
+	typedef ACE_Svc_Handler<ACE_SSL_SOCK_Stream, ACE_NULL_SYNCH> super;
 
 	ACE_INET_Addr remote_addr_;
 	ACE_Reactor_Notification_Strategy noti_;
@@ -116,7 +118,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	ACE_INET_Addr listen;
 	listen.set(SERVER_PORT);
-	ACE_Acceptor<Stream_Handler, ACE_SOCK_ACCEPTOR> acceptor;
+	ACE_Acceptor<Stream_Handler, ACE_SSL_SOCK_Acceptor> acceptor;
 	acceptor.open(listen);
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
