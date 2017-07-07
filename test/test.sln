@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unitTest", "unitTest\unitTe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSL_Server", "SSL_Server\SSL_Server.vcxproj", "{2B8C0959-EE0F-493C-930F-019BEDCBA8DB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSL_Client", "SSL_Client\SSL_Client.vcxproj", "{BCAC34C3-62F9-4E70-8526-160D3FD32172}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -37,6 +39,12 @@ Global
 		{2B8C0959-EE0F-493C-930F-019BEDCBA8DB}.Release|Win32.ActiveCfg = Release|Win32
 		{2B8C0959-EE0F-493C-930F-019BEDCBA8DB}.Release|Win32.Build.0 = Release|Win32
 		{2B8C0959-EE0F-493C-930F-019BEDCBA8DB}.Release|x64.ActiveCfg = Release|x64
+		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Debug|Win32.ActiveCfg = Debug|x64
+		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Debug|Win32.Build.0 = Debug|x64
+		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Debug|x64.ActiveCfg = Debug|Win32
+		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Release|Win32.ActiveCfg = Release|Win32
+		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Release|Win32.Build.0 = Release|Win32
+		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
