@@ -94,7 +94,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;$(SSL_ROOT)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\ext\openssl-1.0.2l\inc32</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,7 +115,7 @@ copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;$(SSL_ROOT)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\ext\openssl-1.0.2l\inc32</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +138,7 @@ copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;$(SSL_ROOT)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\ext\openssl-1.0.2l\inc64</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -164,7 +164,7 @@ copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;$(SSL_ROOT)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\ext\openssl-1.0.2l\inc64</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
