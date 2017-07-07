@@ -103,7 +103,8 @@
       <AdditionalDependencies>ACEd.lib;ACE_SSLd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,7 +124,8 @@
       <AdditionalDependencies>ACEd.lib;ACE_SSLd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -148,7 +150,8 @@
       <AdditionalDependencies>ACE.lib;ACE_SSL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -173,7 +176,8 @@
       <AdditionalDependencies>ACE.lib;ACE_SSL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+      <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
