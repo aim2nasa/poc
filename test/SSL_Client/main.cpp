@@ -23,6 +23,9 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	else
 		ACE_DEBUG((LM_DEBUG,ACE_TEXT("(%P|%t) connected to %C at port %d\n"),remote_addr.get_host_name(),remote_addr.get_port_number()));
 
+	X509* cert = ::SSL_get_peer_certificate(cli_stream.ssl());
+	ACE_ASSERT(cert);
+
 	ACE_SSL_Context *context = ACE_SSL_Context::instance();
 	if(!context->check_host(remote_addr, cli_stream.ssl())) 
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("check_host failed\n")), -1);

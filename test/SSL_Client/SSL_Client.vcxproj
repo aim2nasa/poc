@@ -99,8 +99,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;ACE_SSLd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\..\ext\openssl-1.0.2l\out32dll</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;ACE_SSLd.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
@@ -122,8 +122,8 @@ copy ..\..\ext\openssl-1.0.2l\out32dll\ssleay32.dll ..\bin\$(ProjectName)\$(Plat
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;ACE_SSLd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\..\ext\openssl-1.0.2l\out64dll</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;ACE_SSLd.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
@@ -150,8 +150,8 @@ copy ..\..\ext\openssl-1.0.2l\out64dll\ssleay32.dll ..\bin\$(ProjectName)\$(Plat
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACE.lib;ACE_SSL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\..\ext\openssl-1.0.2l\out32dll</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACE.lib;ACE_SSL.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
@@ -178,8 +178,8 @@ copy ..\..\ext\openssl-1.0.2l\out32dll\ssleay32.dll ..\bin\$(ProjectName)\$(Plat
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACE.lib;ACE_SSL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\..\ext\openssl-1.0.2l\out64dll</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACE.lib;ACE_SSL.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
