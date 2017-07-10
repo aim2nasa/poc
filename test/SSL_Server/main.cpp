@@ -115,11 +115,14 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	// 읽은 인증서와 개인키가 맞는지 확인 한다.
 	if(context->verify_private_key()!=0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("인증서와 개인키가 맞지 않습니다.\n")), -1);
+	ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) 개인키를 사용하여 인증서 검증 완료\n")));
 
 	ACE_INET_Addr listen;
 	listen.set(SERVER_PORT);
 	ACE_Acceptor<Stream_Handler, ACE_SSL_SOCK_Acceptor> acceptor;
 	acceptor.open(listen);
+
+	ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) SSL server ready\n")));
 	ACE_Reactor::instance()->run_reactor_event_loop();
 
 	ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) SSL server end\n")));
