@@ -104,7 +104,9 @@
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out32dll\libeay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out32dll\ssleay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -125,7 +127,9 @@ copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out64dll\libeay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out64dll\ssleay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -151,7 +155,9 @@ copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out32dll\libeay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out32dll\ssleay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -177,7 +183,9 @@ copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out64dll\libeay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out64dll\ssleay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
