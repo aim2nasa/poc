@@ -26,6 +26,26 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	X509* cert = ::SSL_get_peer_certificate(cli_stream.ssl());
 	ACE_ASSERT(cert);
 
+	char * retString = NULL;
+	// 주체의 DN을 문자열로 얻음
+	retString = X509_NAME_oneline(X509_get_subject_name(cert), 0, 0);
+	if (retString == NULL) {
+		std::cout << "서버 인증서에서 주체의 DN을 읽을 수 없음";
+		return -1;
+	}
+	std::cout << " -subject:" << retString << std::endl;
+	OPENSSL_free(retString);
+
+	// 발급자의 DN을 문자열로 얻음
+	retString = X509_NAME_oneline(X509_get_issuer_name(cert), 0, 0);
+	if (retString == NULL) {
+		std::cout << "서버 인증서에서 발급자의 DN을 읽을 수 없음";
+		return -1;
+	}
+	std::cout << " -issuer:" << retString << std::endl;
+	OPENSSL_free(retString);
+	X509_free(cert);
+
 	ACE_SSL_Context *context = ACE_SSL_Context::instance();
 	if(!context->check_host(remote_addr, cli_stream.ssl())) 
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("check_host failed\n")), -1);
