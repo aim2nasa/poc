@@ -1,8 +1,13 @@
 #ifndef __STREAMHANDLER_H__
 #define __STREAMHANDLER_H__
 
+#include <common.h>
 #include <ace/Svc_Handler.h>
+#ifdef USE_SSL
+#include <ace/SSL/SSL_SOCK_Acceptor.h>
+#else
 #include <ace/SOCK_Stream.h>
+#endif
 #include <ace/Reactor_Notification_Strategy.h>
 #include "protocol.h"
 
@@ -10,9 +15,17 @@ typedef unsigned int CID;	//Connection ID
 
 class CSeAcceptor;
 
+#ifdef USE_SSL
+class StreamHandler : public ACE_Svc_Handler<ACE_SSL_SOCK_Stream, ACE_NULL_SYNCH> {
+#else
 class StreamHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
+#endif
 private:
+#ifdef USE_SSL
+	typedef ACE_Svc_Handler<ACE_SSL_SOCK_Stream, ACE_NULL_SYNCH> super;
+#else
 	typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> super;
+#endif
 
 	ACE_INET_Addr remote_addr_;
 	ACE_Reactor_Notification_Strategy noti_;

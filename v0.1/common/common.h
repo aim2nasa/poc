@@ -7,4 +7,6 @@
 #define TAG_KEY_LABEL	"GroupTagKey"	//토큰에서 Tag키를 찾기 위해 사용하는 라벨
 #define SE_KEY_LABEL	"SeKey"			//토큰에서 SE키를 찾기 위해 사용하는 라벨
 
+#define USE_SSL							//SSL(ACE SSL)을 사용하는 경우에 정의
+
 #endif
