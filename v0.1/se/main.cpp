@@ -27,6 +27,7 @@ int createSerialNo(CToken &token, char *sn, unsigned int snSize);
 size_t send(ACE_SSL_SOCK_Stream &sock, const char *buffer, size_t len);
 int sendSerialNo(ACE_SSL_SOCK_Stream &sock, const char *serialNo);
 int registerKeys(ACE_SSL_SOCK_Stream &sock, CK_SESSION_HANDLE hSession);
+void certInfo(SSL *ssl);
 #else
 size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len);
 int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo);
@@ -85,6 +86,14 @@ int main(int argc, char *argv[])
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "connection failed"), -1);
 	else
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
+
+#ifdef USE_SSL
+	certInfo(client_stream.ssl());
+
+	ACE_SSL_Context *context = ACE_SSL_Context::instance();
+	if (!context->check_host(remote_addr, client_stream.ssl()))
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("check_host failed\n")), -1);
+#endif
 
 	if (sendSerialNo(client_stream, serialNo) != 0) ACE_RETURN(-1);
 	ACE_DEBUG((LM_INFO, "(%t) serial number sent to gateway\n"));
@@ -240,3 +249,31 @@ int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSessio
 
 	ACE_RETURN(0);
 }
+
+#ifdef USE_SSL
+void certInfo(SSL *ssl)
+{
+	X509* cert = ::SSL_get_peer_certificate(ssl);
+	ACE_ASSERT(cert);
+
+	char * retString = NULL;
+	// 주체의 DN을 문자열로 얻음
+	retString = X509_NAME_oneline(X509_get_subject_name(cert), 0, 0);
+	if (retString == NULL) {
+		std::cout << "서버 인증서에서 주체의 DN을 읽을 수 없음";
+		return;
+	}
+	std::cout << " -subject:" << retString << std::endl;
+	OPENSSL_free(retString);
+
+	// 발급자의 DN을 문자열로 얻음
+	retString = X509_NAME_oneline(X509_get_issuer_name(cert), 0, 0);
+	if (retString == NULL) {
+		std::cout << "서버 인증서에서 발급자의 DN을 읽을 수 없음";
+		return;
+	}
+	std::cout << " -issuer:" << retString << std::endl;
+	OPENSSL_free(retString);
+	X509_free(cert);
+}
+#endif
