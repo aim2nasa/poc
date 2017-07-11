@@ -1,5 +1,10 @@
 #include <iostream>
-#include "ace/SOCK_Connector.h" 
+#include <common.h>
+#ifdef USE_SSL
+#include <ace/SSL/SSL_SOCK_Connector.h>
+#else
+#include <ace/SOCK_Connector.h> 
+#endif
 #include "ace/INET_Addr.h" 
 #include "ace/Log_Msg.h" 
 #include "ace/OS_NS_stdio.h" 
@@ -18,9 +23,15 @@ static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
 
 int createSerialNo(CToken &token, char *sn, unsigned int snSize);
+#ifdef USE_SSL
+size_t send(ACE_SSL_SOCK_Stream &sock, const char *buffer, size_t len);
+int sendSerialNo(ACE_SSL_SOCK_Stream &sock, const char *serialNo);
+int registerKeys(ACE_SSL_SOCK_Stream &sock, CK_SESSION_HANDLE hSession);
+#else
 size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len);
 int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo);
 int registerKeys(ACE_SOCK_Stream &sock, CK_SESSION_HANDLE hSession);
+#endif
 int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
 int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
 int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
@@ -60,9 +71,14 @@ int main(int argc, char *argv[])
 
 	ACE_DEBUG((LM_INFO, "(%t) serial number created\n"));
 
-	ACE_SOCK_Stream client_stream;
 	ACE_INET_Addr remote_addr(server_port, server_host);
+#ifdef USE_SSL
+	ACE_SSL_SOCK_Stream client_stream;
+	ACE_SSL_SOCK_Connector connector;
+#else
+	ACE_SOCK_Stream client_stream;
 	ACE_SOCK_Connector connector;
+#endif
 
 	ACE_DEBUG((LM_DEBUG, "(%P|%t) Starting connect to %s: %d \n", remote_addr.get_host_name(), remote_addr.get_port_number()));
 	if (connector.connect(client_stream, remote_addr) == -1)
@@ -95,12 +111,20 @@ int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 	ACE_RETURN(0);
 }
 
-size_t send(ACE_SOCK_Stream &sock, const char *buffer,size_t len)
+#ifdef USE_SSL
+size_t send(ACE_SSL_SOCK_Stream &sock, const char *buffer, size_t len)
+#else
+size_t send(ACE_SOCK_Stream &sock, const char *buffer, size_t len)
+#endif
 {
 	return sock.send_n(buffer,len);
 }
 
+#ifdef USE_SSL
+int sendSerialNo(ACE_SSL_SOCK_Stream &sock, const char *serialNo)
+#else
 int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo)
+#endif
 {
 	size_t send_cnt = 0;
 
@@ -123,7 +147,11 @@ int sendSerialNo(ACE_SOCK_Stream &sock, const char *serialNo)
 	ACE_RETURN(0);
 }
 
+#ifdef USE_SSL
+int registerKeys(ACE_SSL_SOCK_Stream &sock, CK_SESSION_HANDLE hSession)
+#else
 int registerKeys(ACE_SOCK_Stream &sock, CK_SESSION_HANDLE hSession)
+#endif
 {
 	size_t recv_cnt = 0;
 	char buffer[SIZE_BUF];

@@ -94,19 +94,22 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\common;..\hsmProxy</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\common;..\hsmProxy;..\..\ext\openssl-1.0.2l\inc32</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;softhsm2.lib;hsmProxy.lib</AdditionalDependencies>
+      <AdditionalDependencies>ACEd.lib;softhsm2.lib;hsmProxy.lib;ACE_SSLd.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out32dll\libeay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out32dll\ssleay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -117,19 +120,22 @@ copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\common;..\hsmProxy</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\common;..\hsmProxy;..\..\ext\openssl-1.0.2l\inc64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;softhsm2.lib;hsmProxy.lib</AdditionalDependencies>
+      <AdditionalDependencies>ACEd.lib;softhsm2.lib;hsmProxy.lib;ACE_SSLd.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACEd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSLd.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out64dll\libeay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out64dll\ssleay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,7 +148,7 @@ copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\common;..\hsmProxy</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\common;..\hsmProxy;..\..\ext\openssl-1.0.2l\inc32</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -151,13 +157,16 @@ copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACE.lib;softhsm2.lib;hsmProxy.lib</AdditionalDependencies>
+      <AdditionalDependencies>ACE.lib;softhsm2.lib;hsmProxy.lib;ACE_SSL.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out32dll\libeay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out32dll\ssleay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -170,7 +179,7 @@ copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\common;..\hsmProxy</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ext\ace\include;..\..\common;..\..\ext\softhsm-2.2.0\include;..\..\ext\softhsm-2.2.0\include\cryptoki_compat;..\gateway;..\common;..\hsmProxy;..\..\ext\openssl-1.0.2l\inc64</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -179,13 +188,16 @@ copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\ext\ace\lib\$(Platform);..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration);..\bin\hsmProxy\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACE.lib;softhsm2.lib;hsmProxy.lib</AdditionalDependencies>
+      <AdditionalDependencies>ACE.lib;softhsm2.lib;hsmProxy.lib;ACE_SSL.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\ext\ace\lib\$(Platform)\ACE.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\..\ext\softhsm-2.2.0\lib\$(Platform)\$(Configuration)\softhsm2.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
 copy ..\bin\hsmProxy\$(Platform)\$(Configuration)\hsmProxy.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
-copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+copy softhsm2.conf ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\ace\lib\$(Platform)\ACE_SSL.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out64dll\libeay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)
+copy ..\..\ext\openssl-1.0.2l\out64dll\ssleay32.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
