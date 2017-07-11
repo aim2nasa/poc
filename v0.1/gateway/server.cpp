@@ -11,6 +11,7 @@
 #include "CGwData.h"
 #include "common.h"
 #include "CHsmProxy.h"
+#include <ace/SSL/SSL_Context.h>
 
 #define SERVER_PORT 9876
 #define CONTRL_PORT 9875
@@ -25,6 +26,8 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(98765)\n")));
 		ACE_RETURN(-1);
 	}
+
+	ACE_SSL_Context *context = ACE_SSL_Context::instance();
 
 	u_short server_port;
 	ACE_OS::atoi(argv[1]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[1]);
