@@ -28,6 +28,12 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	}
 
 	ACE_SSL_Context *context = ACE_SSL_Context::instance();
+	context->certificate("../../test/SSL_Server/rootcert.pem", SSL_FILETYPE_PEM);
+	context->private_key("../../test/SSL_Server/rootkey.pem", SSL_FILETYPE_PEM);
+
+	if (context->verify_private_key() != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("certificate not match with private key\n")), -1);
+	ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) certificate verified by private key\n")));
 
 	u_short server_port;
 	ACE_OS::atoi(argv[1]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[1]);
