@@ -11,7 +11,9 @@
 #include "CGwData.h"
 #include "common.h"
 #include "CHsmProxy.h"
+#ifdef USE_SSL
 #include <ace/SSL/SSL_Context.h>
+#endif
 
 #define SERVER_PORT 9876
 #define CONTRL_PORT 9875
@@ -27,6 +29,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_RETURN(-1);
 	}
 
+#ifdef USE_SSL
 	ACE_SSL_Context *context = ACE_SSL_Context::instance();
 	context->certificate("../../test/SSL_Server/rootcert.pem", SSL_FILETYPE_PEM);
 	context->private_key("../../test/SSL_Server/rootkey.pem", SSL_FILETYPE_PEM);
@@ -34,6 +37,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	if (context->verify_private_key() != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("certificate not match with private key\n")), -1);
 	ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) certificate verified by private key\n")));
+#endif
 
 	u_short server_port;
 	ACE_OS::atoi(argv[1]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[1]);
