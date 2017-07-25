@@ -9,4 +9,10 @@
 
 #define USE_SSL							//SSL(ACE SSL)을 사용하는 경우에 정의
 
+#ifdef _WIN32
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT 
+#endif
+
 #endif

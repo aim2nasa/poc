@@ -3,11 +3,12 @@
 
 #include "cryptoki.h"
 #include <string>
+#include <common.h>
 
 #define MAX_ERR_MSG			256
 #define INVALID_SLOT_ID		-1
 
-class __declspec(dllexport) CToken{
+class EXPORT CToken{
 public:
 	CToken();
 	virtual ~CToken();
