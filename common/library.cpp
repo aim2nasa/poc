@@ -1,27 +1,24 @@
 #include "library.h"
 #include <windows.h>
 #include <iostream>
+#include <assert.h>
 
 using namespace std;
 
 int loadLib(void **module, CK_FUNCTION_LIST_PTR *p11)
 {
-	*module = LoadLibraryA(DEFAULT_PKCS11_LIB);
-	if (*module == NULL) {
+	int nRtn = loadLibOnly(module, p11);
+	switch (nRtn){
+	case -1:
 		cout << "ERROR: LoadLibraryA failed : " << GetLastError() << endl;
 		return -1;
-	}
-
-	CK_C_GetFunctionList pGetFunctionList = (CK_C_GetFunctionList)GetProcAddress((HMODULE)*module, "C_GetFunctionList");
-	if (pGetFunctionList == NULL) {
+	case -2:
 		cout << "ERROR: getProcAddress failed : " << GetLastError() << endl;
 		unloadLib(*module);
-		return -1;
+		break;
+	default:
+		assert(nRtn == 0);
 	}
-	cout << "0x" << hex << pGetFunctionList << " C_GetFunctionList retrived" << endl;
-
-	// Load the function list
-	(*pGetFunctionList)(p11);
 
 	// Initialize the library
 	if ((*p11)->C_Initialize(NULL_PTR) != CKR_OK) {
