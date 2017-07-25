@@ -7,7 +7,7 @@
 
 class CToken;
 
-class EXPORT CHsmProxy{
+class MODEXPORT CHsmProxy{
 public:
 	CHsmProxy();
 	virtual ~CHsmProxy();

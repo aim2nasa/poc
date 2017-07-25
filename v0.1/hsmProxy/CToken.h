@@ -8,7 +8,7 @@
 #define MAX_ERR_MSG			256
 #define INVALID_SLOT_ID		-1
 
-class EXPORT CToken{
+class MODEXPORT CToken{
 public:
 	CToken();
 	virtual ~CToken();
