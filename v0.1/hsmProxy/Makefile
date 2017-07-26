@@ -19,3 +19,6 @@ CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
 
 util.o : util.h util.cpp
 	$(CXX) -c util.cpp util.h $(INCLUDES) $(CXXFLAGS) $(LIBS)
+
+clean:
+	rm -rf *.o *.gch
