@@ -17,6 +17,9 @@ LIBS = $(SOFTHSM2_LIBS) $(OPENSSL_LIBS)
 CXX = g++
 CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
 
+library.o: ../../common/library.cpp ../../common/library.h 
+	$(CXX) -c ../../common/library.cpp $(INCLUDES) $(CXXFLAGS)
+
 util.o : util.h util.cpp
 	$(CXX) -c util.cpp util.h $(INCLUDES) $(CXXFLAGS) $(LIBS)
 
