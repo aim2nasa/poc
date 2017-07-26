@@ -6,7 +6,7 @@
 #include <assert.h>
 
 CToken::CToken()
-:_module(NULL), _p11(NULL), _hSession(CK_INVALID_HANDLE), _slotID(INVALID_SLOT_ID)
+:_module(NULL), _moduleHandle(NULL), _p11(NULL), _hSession(CK_INVALID_HANDLE), _slotID(INVALID_SLOT_ID)
 {
 
 }
@@ -14,16 +14,24 @@ CToken::CToken()
 CToken::~CToken()
 {
 	if (_p11) _p11->C_Finalize(NULL_PTR);
-	if (_module) unloadLib(_module);
+	if (_module) unloadLibrary(_moduleHandle);
 }
 
 int CToken::initialize()
 {
-	if (loadLibOnly(&_module, &_p11) == -1) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s", "ERROR: loadLib");
+	// Get a pointer to the function list for PKCS#11 library
+	char *msg = _message;
+	CK_C_GetFunctionList pGetFunctionList = loadLibrary(_module, &_moduleHandle, &msg);
+	if (!pGetFunctionList)
+	{
+		sprintf_s(_message, MAX_ERR_MSG, "ERROR: Could not load the PKCS#11 library/module: %s",_message);
 		return -1;
 	}
 
+	// Load the function list
+	(*pGetFunctionList)(&_p11);
+
+	// Initialize the library
 	CK_RV rv;
 	if ( (rv=_p11->C_Initialize(NULL_PTR)) != CKR_OK) {
 		sprintf_s(_message, MAX_ERR_MSG, "%s:0x%x", "ERROR: C_Initialize",rv);

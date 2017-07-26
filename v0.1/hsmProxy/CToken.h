@@ -35,7 +35,8 @@ public:
 	char _message[MAX_ERR_MSG];
 
 protected:
-	void *_module;
+	char *_module;
+	void *_moduleHandle;
 	CK_FUNCTION_LIST_PTR _p11;
 	CK_SESSION_HANDLE _hSession;
 	CK_SLOT_ID _slotID;
