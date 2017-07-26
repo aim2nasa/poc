@@ -14,8 +14,8 @@ OPENSSL_LIBS = -L$(OPENSSL_ROOT)/lib -lcrypto
 INCLUDES = $(GATEWAY_INCLUDES) $(SOFTHSM2_INCLUDES) $(OPENSSL_INCLUDES)
 LIBS = $(SOFTHSM2_LIBS) $(OPENSSL_LIBS)
 
-OBJS = $(SOFTHSM2_ROOT)/src/lib/.libs/main.o $(SOFTHSM2_ROOT)/src/lib/.libs/SoftHSM.o $(SOFTHSM2_ROOT)/src/lib/.libs/P11Objects.o $(SOFTHSM2_ROOT)/src/lib/.libs/P11Attributes.o $(SOFTHSM2_ROOT)/src/lib/.libs/access.o
 CXX = g++
 CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
+
 util.o : util.h util.cpp
-	$(CXX) -c util.cpp util.h $(OBJS) $(INCLUDES) $(CXXFLAGS) $(LIBS)
+	$(CXX) -c util.cpp util.h $(INCLUDES) $(CXXFLAGS) $(LIBS)
