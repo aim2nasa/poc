@@ -18,4 +18,4 @@ OBJS = $(SOFTHSM2_ROOT)/src/lib/.libs/main.o $(SOFTHSM2_ROOT)/src/lib/.libs/Soft
 CXX = g++
 CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
 util.o : util.h util.cpp
-	$(CXX) util.cpp util.h $(OBJS) $(INCLUDES) $(CXXFLAGS) $(LIBS)
+	$(CXX) -c util.cpp util.h $(OBJS) $(INCLUDES) $(CXXFLAGS) $(LIBS)
