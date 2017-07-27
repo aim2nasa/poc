@@ -7,18 +7,19 @@ OPENSSL_ROOT = /usr/local/ssl
 SOFTHSM2_INCLUDES = -I$(SOFTHSM2_ROOT) -I$(SOFTHSM2_ROOT)/src/lib/pkcs11 -I$(SOFTHSM2_ROOT)/src/lib/common -I$(SOFTHSM2_ROOT)/src/lib/data_mgr -I$(SOFTHSM2_ROOT)/src/lib/crypto -I$(SOFTHSM2_ROOT)/src/lib/object_store
 SOFTHSM2_LIBS = -L$(SOFTHSM2_ROOT)/src/lib/.libs -lsofthsm_convarch -L$(SOFTHSM2_ROOT)/src/lib/.libs -lsofthsm2
 
+COMMON_INCLUDES = -I$(POC_ROOT)/common -I$(POC_ROOT)/v0.1/common
 GATEWAY_INCLUDES = -I$(POC_ROOT)/v0.1/gateway
 OPENSSL_INCLUDES = -I$(OPENSSL_ROOT)/include
 OPENSSL_LIBS = -L$(OPENSSL_ROOT)/lib -lcrypto
 
-INCLUDES = $(GATEWAY_INCLUDES) $(SOFTHSM2_INCLUDES) $(OPENSSL_INCLUDES)
+INCLUDES = $(COMMON_INCLUDES) $(GATEWAY_INCLUDES) $(SOFTHSM2_INCLUDES) $(OPENSSL_INCLUDES)
 LIBS = $(SOFTHSM2_LIBS) $(OPENSSL_LIBS)
 
 CXX = g++
 CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
 
 TARGET = libhsmproxy.so.1
-OBJS = library.o util.o
+OBJS = library.o util.o CToken.o
 
 all : $(TARGET)
 	@echo $@:$(TARGET)...
@@ -34,6 +35,10 @@ library.o: ../../common/library.cpp ../../common/library.h
 util.o : util.h util.cpp
 	@echo $@...
 	$(CXX) -fPIC -c util.cpp util.h $(INCLUDES) $(CXXFLAGS) $(LIBS)
+
+CToken.o : CToken.h CToken.cpp 
+	@echo $@...
+	$(CXX) -fPIC -c CToken.cpp CToken.h $(INCLUDES) $(CXXFLAGS) $(LIBS)
 
 clean:
 	@echo $@...
