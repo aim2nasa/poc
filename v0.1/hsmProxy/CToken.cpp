@@ -5,6 +5,12 @@
 #include <vector>
 #include <assert.h>
 
+#ifdef _WIN32
+#define SPRINTF sprintf_s
+#else
+#define SPRINTF snprintf
+#endif
+
 CToken::CToken()
 :_module(NULL), _moduleHandle(NULL), _p11(NULL), _hSession(CK_INVALID_HANDLE), _slotID(INVALID_SLOT_ID)
 {
@@ -24,7 +30,7 @@ int CToken::initialize()
 	CK_C_GetFunctionList pGetFunctionList = loadLibrary(_module, &_moduleHandle, &msg);
 	if (!pGetFunctionList)
 	{
-		sprintf_s(_message, MAX_ERR_MSG, "ERROR: Could not load the PKCS#11 library/module: %s",_message);
+		SPRINTF(_message, MAX_ERR_MSG, "ERROR: Could not load the PKCS#11 library/module: %s",_message);
 		return -1;
 	}
 
@@ -34,7 +40,7 @@ int CToken::initialize()
 	// Initialize the library
 	CK_RV rv;
 	if ( (rv=_p11->C_Initialize(NULL_PTR)) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s:0x%x", "ERROR: C_Initialize",rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s:0x%x", "ERROR: C_Initialize",rv);
 		return -2;
 	}
 	return 0;
@@ -44,7 +50,7 @@ int CToken::slotCount(CK_ULONG &ulSlotCount)
 {
 	CK_RV rv;
 	if ((rv=_p11->C_GetSlotList(CK_FALSE, NULL_PTR, &ulSlotCount))!= CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: Couldn't get the number of slots: 0x",rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: Couldn't get the number of slots: 0x",rv);
 		return -1;
 	}
 	return 0;
@@ -53,7 +59,7 @@ int CToken::slotCount(CK_ULONG &ulSlotCount)
 int CToken::initToken(CK_SLOT_ID slotID, const char *soPin, CK_ULONG soPinize, const char *label, CK_ULONG labelSize)
 {
 	if (slotID == INVALID_SLOT_ID || soPin == NULL || label == NULL) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s", "ERROR: wrong argument");
+		SPRINTF(_message, MAX_ERR_MSG, "%s", "ERROR: wrong argument");
 		return -1;
 	}
 
@@ -66,7 +72,7 @@ int CToken::initToken(CK_SLOT_ID slotID, const char *soPin, CK_ULONG soPinize, c
 
 	CK_RV rv;
 	if ((rv = _p11->C_InitToken(_slotID, (CK_UTF8CHAR_PTR)soPin, soPinize, paddedLabel) != CKR_OK)) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_InitToken: 0x",rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_InitToken: 0x",rv);
 		return -1;
 	}
 	return 0;
@@ -75,13 +81,13 @@ int CToken::initToken(CK_SLOT_ID slotID, const char *soPin, CK_ULONG soPinize, c
 int CToken::openSession(CK_FLAGS flags)
 {
 	if (_slotID == INVALID_SLOT_ID) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s", "ERROR: slot id must be set prior through initToken");
+		SPRINTF(_message, MAX_ERR_MSG, "%s", "ERROR: slot id must be set prior through initToken");
 		return -1;
 	}
 
 	CK_RV rv;
 	if ((rv = _p11->C_OpenSession(_slotID, flags, NULL_PTR, NULL_PTR, &_hSession) != CKR_OK)) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_OpenSession: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_OpenSession: 0x", rv);
 		return -1;
 	}
 	return 0;
@@ -91,7 +97,7 @@ int CToken::login(CK_USER_TYPE userType, const char *pin, CK_ULONG pinSize)
 {
 	CK_RV rv;
 	if ((rv = _p11->C_Login(_hSession, userType, (CK_UTF8CHAR_PTR)pin, pinSize)) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Login: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Login: 0x", rv);
 		return -1;
 	}
 	return 0;
@@ -101,7 +107,7 @@ int CToken::initPin(const char *userPin, CK_ULONG userPinSize)
 {
 	CK_RV rv;
 	if ((rv = _p11->C_InitPIN(_hSession, (CK_UTF8CHAR_PTR)userPin, userPinSize)) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_InitPIN: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_InitPIN: 0x", rv);
 		return -1;
 	}
 	return 0;
@@ -111,7 +117,7 @@ int CToken::logout()
 {
 	CK_RV rv;
 	if ((rv = _p11->C_Logout(_hSession)) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Logout: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Logout: 0x", rv);
 		return -1;
 	}
 	return 0;
@@ -144,13 +150,13 @@ int CToken::getSlotID()
 	CK_RV rv;
 	CK_ULONG nrOfSlots;
 	if ((rv=C_GetSlotList(CK_TRUE, NULL_PTR, &nrOfSlots)) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetSlotList: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetSlotList: 0x", rv);
 		return -1;
 	}
 
 	std::vector<CK_SLOT_ID> slotIDs(nrOfSlots);
 	if ((rv=C_GetSlotList(CK_TRUE, &slotIDs.front(), &nrOfSlots)) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetSlotList: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetSlotList: 0x", rv);
 		return -2;
 	}
 
@@ -158,7 +164,7 @@ int CToken::getSlotID()
 		CK_TOKEN_INFO tokenInfo;
 
 		if ((rv = C_GetTokenInfo(*i, &tokenInfo)) != CKR_OK) {
-			sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetTokenInfo(%u): 0x", *i,rv);
+			SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GetTokenInfo(%u): 0x", *i,rv);
 			return -3;
 		}
 
@@ -170,7 +176,7 @@ int CToken::getSlotID()
 			}
 		}
 	}
-	sprintf_s(_message, MAX_ERR_MSG, "%s", "ERROR: no matching slot found");
+	SPRINTF(_message, MAX_ERR_MSG, "%s", "ERROR: no matching slot found");
 	return -1;
 }
 
@@ -180,7 +186,7 @@ int CToken::createAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_ULONG
 	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
 	CK_RV rv = C_GenerateKey(_hSession, &mechanism, keyAttrib, keyAttribNo, &hKey);
 	if (rv != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Logout: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_Logout: 0x", rv);
 		return -1;
 	}
 	return 0;
@@ -216,7 +222,7 @@ int CToken::deriveAesKey(CK_ATTRIBUTE *keyAttrib, CK_ULONG keyAttribNo, CK_OBJEC
 	hDerive = CK_INVALID_HANDLE;
 	rv = C_DeriveKey(_hSession, &mechanism, hKey, keyAttrib, keyAttribNo, &hDerive);
 	if (rv != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_DeriveKey: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_DeriveKey: 0x", rv);
 		return -1;
 	}
 	return 0;
@@ -226,7 +232,7 @@ int CToken::genRandom(char *randomData, unsigned long randomDataSize)
 {
 	CK_RV rv;
 	if ((rv = _p11->C_GenerateRandom(_hSession, reinterpret_cast<unsigned char*>(randomData), randomDataSize)) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GenerateRandom: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: C_GenerateRandom: 0x", rv);
 		return -1;
 	}
 	return 0;
@@ -237,7 +243,7 @@ int CToken::getKey(CK_OBJECT_HANDLE hKey, CK_BYTE_PTR key, CK_ULONG keySize)
 	CK_ATTRIBUTE keyAttribs[] = { { CKA_VALUE, key, keySize } };
 	CK_RV rv;
 	if ((rv = _p11->C_GetAttributeValue(_hSession, hKey, keyAttribs, 1)) != CKR_OK) {
-		sprintf_s(_message, MAX_ERR_MSG, "%s %x", "ERROR: getKey: 0x", rv);
+		SPRINTF(_message, MAX_ERR_MSG, "%s %x", "ERROR: getKey: 0x", rv);
 		return -1;
 	}
 	return 0;
