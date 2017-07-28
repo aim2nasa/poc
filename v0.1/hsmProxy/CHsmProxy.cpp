@@ -60,7 +60,7 @@ int CHsmProxy::init(const char *label, const char *soPin, const char *userPin, b
 	}
 
 	if (emptySlot && ulSlotCount != 1) {	//슬롯이 하나도 없어야 하는 조건일때 카운트는 1로 나와야 한다. 슬롯이 없을때 softhsm2는 1로 카운트해서 알려주기 때문
-		SPRINTF(message_, MAX_ERR_MSG, "token emptySlot error:slotCount(%u)", ulSlotCount);
+		SPRINTF(message_, MAX_ERR_MSG, "token emptySlot error:slotCount(%lu)", ulSlotCount);
 		return -3;
 	}
 	if (emptySlot) assert(ulSlotCount==1);
