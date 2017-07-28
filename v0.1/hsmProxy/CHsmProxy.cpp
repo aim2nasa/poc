@@ -6,6 +6,7 @@
 #include "util.h"
 #include "Directory.h"
 #include <assert.h>
+#include <string.h>
 
 CHsmProxy::CHsmProxy()
 :token_(NULL)
