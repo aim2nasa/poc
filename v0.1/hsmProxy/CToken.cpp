@@ -4,12 +4,7 @@
 #include <memory.h>
 #include <vector>
 #include <assert.h>
-
-#ifdef _WIN32
-#define SPRINTF sprintf_s
-#else
-#define SPRINTF snprintf
-#endif
+#include <common.h>
 
 CToken::CToken()
 :_module(NULL), _moduleHandle(NULL), _p11(NULL), _hSession(CK_INVALID_HANDLE), _slotID(INVALID_SLOT_ID)

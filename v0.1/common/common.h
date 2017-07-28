@@ -15,4 +15,10 @@
 #define MODEXPORT 
 #endif
 
+#ifdef _WIN32
+#define SPRINTF sprintf_s
+#else
+#define SPRINTF snprintf
+#endif
+
 #endif
