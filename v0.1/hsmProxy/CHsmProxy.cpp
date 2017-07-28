@@ -7,6 +7,7 @@
 #include "Directory.h"
 #include <assert.h>
 #include <string.h>
+#include <stdlib.h>
 
 CHsmProxy::CHsmProxy()
 :token_(NULL)
@@ -213,6 +214,7 @@ unsigned long CHsmProxy::mechanismType(MechanismType mType)
 	return mechanismType;
 }
 
+#ifdef _WIN32
 int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
 {
 	std::string vv = name;
@@ -224,6 +226,12 @@ int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
 
 	return _putenv(vv.c_str()) == 0;
 }
+#else
+int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
+{
+	return setenv(name,value,overwrite);
+}
+#endif
 
 int CHsmProxy::encryptInit(MechanismType mType, unsigned long hKey)
 {
