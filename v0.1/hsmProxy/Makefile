@@ -19,7 +19,7 @@ CXX = g++
 CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
 
 TARGET = libhsmproxy.so.1
-OBJS = library.o util.o CToken.o
+OBJS = library.o util.o CToken.o CHsmProxy.o
 
 all : $(TARGET)
 	@echo $@:$(TARGET)...
@@ -39,6 +39,10 @@ util.o : util.h util.cpp
 CToken.o : CToken.h CToken.cpp 
 	@echo $@...
 	$(CXX) -fPIC -c CToken.cpp CToken.h $(INCLUDES) $(CXXFLAGS) $(LIBS)
+
+CHsmProxy.o : CHsmProxy.h CHsmProxy.cpp 
+	@echo $@...
+	$(CXX) -fPIC -c CHsmProxy.cpp CHsmProxy.h $(INCLUDES) $(CXXFLAGS) $(LIBS)
 
 clean:
 	@echo $@...
