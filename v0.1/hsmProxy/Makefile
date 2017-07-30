@@ -18,7 +18,8 @@ LIBS = $(SOFTHSM2_LIBS) $(OPENSSL_LIBS)
 CXX = g++
 CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
 
-TARGET = libhsmproxy.so.1
+LIBNAME = libhsmproxy
+TARGET = $(LIBNAME).so.1
 OBJS = library.o util.o CToken.o CHsmProxy.o
 
 all : $(TARGET)
@@ -27,6 +28,8 @@ all : $(TARGET)
 $(TARGET) : $(OBJS)
 	@echo $@:$(OBJS)...
 	$(CXX) -shared -Wl,-soname,$@ -o $@ $(OBJS)
+	@echo $*
+	ln -s $@ $(LIBNAME).so
 
 library.o: ../../common/library.cpp ../../common/library.h 
 	@echo $@...
@@ -46,4 +49,4 @@ CHsmProxy.o : CHsmProxy.h CHsmProxy.cpp
 
 clean:
 	@echo $@...
-	rm -rf *.o *.gch $(TARGET) ../../common/*.gch
+	rm -rf *.o *.gch $(TARGET) *.so ../../common/*.gch
