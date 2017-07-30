@@ -16,7 +16,7 @@ INCLUDES = $(COMMON_INCLUDES) $(GATEWAY_INCLUDES) $(SOFTHSM2_INCLUDES) $(OPENSSL
 LIBS = $(SOFTHSM2_LIBS) $(OPENSSL_LIBS)
 
 CXX = g++
-CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
+CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11
 
 LIBNAME = libhsmproxy
 TARGET = $(LIBNAME).so.1
