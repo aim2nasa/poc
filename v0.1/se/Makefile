@@ -5,7 +5,8 @@ OPENSSL_ROOT = /usr/local/ssl
 
 #Compile options
 SOFTHSM2_INCLUDES = -I$(SOFTHSM2_ROOT) -I$(SOFTHSM2_ROOT)/src/lib/pkcs11 -I$(SOFTHSM2_ROOT)/src/lib/common -I$(SOFTHSM2_ROOT)/src/lib/data_mgr -I$(SOFTHSM2_ROOT)/src/lib/crypto -I$(SOFTHSM2_ROOT)/src/lib/object_store
-SOFTHSM2_LIBS = -L$(SOFTHSM2_ROOT)/src/lib/.libs -lsofthsm_convarch -L$(SOFTHSM2_ROOT)/src/lib/.libs -lsofthsm2
+#SOFTHSM2_LIBS = -L$(SOFTHSM2_ROOT)/src/lib -lsofthsm_convarch -L$(SOFTHSM2_ROOT)/src/lib -lsofthsm2
+SOFTHSM2_LIBS = -L/usr/local/lib/softhsm -lsofthsm2
 
 COMMON_INCLUDES = -I$(POC_ROOT)/common -I$(POC_ROOT)/v0.1/common
 GATEWAY_INCLUDES = -I$(POC_ROOT)/v0.1/gateway
