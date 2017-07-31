@@ -229,7 +229,7 @@ int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
 #else
 int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
 {
-	return setenv(name,value,overwrite);
+	return ::setenv(name,value,overwrite);
 }
 #endif
 
