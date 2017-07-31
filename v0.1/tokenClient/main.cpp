@@ -185,7 +185,7 @@ int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsign
 
 	std::string str = (char*)&vDecryptedData.front();
 	if (str != "AuthRequest:Done") {
-		ACE_DEBUG((LM_INFO, "(%P|%t) AuthRequest failed:%s\n",str));
+		ACE_DEBUG((LM_INFO, "(%P|%t) AuthRequest failed:%s\n",str.c_str()));
 		return 1;
 	}
 
