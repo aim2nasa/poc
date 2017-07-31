@@ -32,7 +32,11 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	listen.set(server_port);
 
 	CHsmProxy hsm;
-	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+#ifndef _WIN32
+        hsm.setenv("SOFTHSM2_CONF", "./softhsm2-linux.conf", 1);
+#else
+        hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+#endif
 	int nRtn;
 	if ((nRtn = hsm.init(argv[2])) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), argv[2], nRtn, hsm.message_), -1);
