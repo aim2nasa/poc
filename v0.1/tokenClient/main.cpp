@@ -46,7 +46,11 @@ int main(int argc, char *argv[])
 	else
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
 
+#ifndef _WIN32
+	hsm.setenv("SOFTHSM2_CONF", "./softhsm2-linux.conf", 1);
+#else
 	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+#endif
 	int nInit;
 	if ((nInit = hsm.init(argv[3])) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("HSM init failure(userPin:%s):%d (%s)"), argv[3], nInit, hsm.message_), -1);
