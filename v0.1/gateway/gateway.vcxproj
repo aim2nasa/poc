@@ -212,6 +212,7 @@ copy ..\..\ext\openssl-1.0.2l\out64dll\ssleay32.dll ..\bin\$(ProjectName)\$(Plat
     <ClCompile Include="StreamHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\sndRcv.h" />
     <ClInclude Include="..\common\common.h" />
     <ClInclude Include="..\common\protocol.h" />
     <ClInclude Include="CCtrlProxy.h" />
