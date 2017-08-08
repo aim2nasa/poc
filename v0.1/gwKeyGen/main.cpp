@@ -16,10 +16,23 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	void* module;
+	char *module = NULL;
+	void *moduleHandle = NULL;
 	CK_FUNCTION_LIST_PTR p11 = NULL;
-	if (loadLib(&module, &p11) == -1) {
-		cout << "ERROR: loadLib" << endl;
+	char message[256];
+	char *msg = message;
+	CK_C_GetFunctionList pGetFunctionList = loadLibrary(module, &moduleHandle, &msg);
+	if (!pGetFunctionList)
+	{
+		cout << "ERROR: Could not load the PKCS#11 library/module: " <<msg<< endl;
+		return -1;
+	}
+
+	(*pGetFunctionList)(&p11);
+
+	CK_RV rv;
+	if ((rv = p11->C_Initialize(NULL_PTR)) != CKR_OK) {
+		cout << "ERROR: C_Initialize:" << rv << endl;
 		return -1;
 	}
 	cout << "loadLib ok" << endl;
@@ -51,14 +64,14 @@ int main(int argc, char* argv[])
 
 	//AES키를 생성
 	CK_OBJECT_HANDLE hKeyAes = CK_INVALID_HANDLE;
-	CK_RV rv = generateAesKey(hSession, ON_TOKEN, IS_PUBLIC, hKeyAes);
+	rv = generateAesKey(hSession, ON_TOKEN, IS_PUBLIC, hKeyAes);
 	assert(rv == CKR_OK);
 
 	// Derive keys
 	CK_OBJECT_HANDLE hDerive = CK_INVALID_HANDLE;
 	symDerive(hSession, hKeyAes, hDerive, CKM_AES_ECB_ENCRYPT_DATA, CKK_AES);
 
-	unloadLib(module);
+	unloadLibrary(moduleHandle);
 	cout << "end" << endl;
 	return 0;
 }

@@ -1,11 +1,13 @@
 #ifndef __CHSMPROXY_H__
 #define __CHSMPROXY_H__
 
+#include <common.h>
+
 #define MAX_ERR_MSG 256
 
 class CToken;
 
-class __declspec(dllexport) CHsmProxy{
+class MODEXPORT CHsmProxy{
 public:
 	CHsmProxy();
 	virtual ~CHsmProxy();

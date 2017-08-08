@@ -2,6 +2,7 @@
 #include "CGwData.h"
 #include "protocol.h"
 #include "CCtrlProxy.h"
+#include "sndRcv.h"
 
 CID StreamHandler::sCounter_ = 0;
 
@@ -36,8 +37,12 @@ int StreamHandler::handle_input(ACE_HANDLE handle)
 	ssize_t recv_cnt;
 
 	//prefix
-	if ((recv_cnt = this->peer().recv_n(buf, PREFIX_SIZE)) <= 0)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "prefix receive error (%d)", recv_cnt), -1);
+	recv_cnt = rcv(this->peer(), buf, PREFIX_SIZE);
+	
+	if (recv_cnt==0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) peer closed connection\n")), -1);
+	else if (recv_cnt != PREFIX_SIZE)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) wrong prefix size(%d)\n"), recv_cnt), -1);
 
 	ACE_ASSERT(PREFIX_SIZE == recv_cnt);
 
@@ -46,13 +51,11 @@ int StreamHandler::handle_input(ACE_HANDLE handle)
 
 	//dataSize
 	ACE_INT32 len;
-	if ((recv_cnt = this->peer().recv_n(&len, sizeof(ACE_INT32))) <= 0)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "dataSize receive error (%d)", recv_cnt), -1);
+	recv_cnt = rcv(this->peer(), &len, sizeof(ACE_INT32));
 	ACE_INT32 dataSize = ACE_NTOHL(len);
 
 	//data
-	if ((recv_cnt = this->peer().recv_n(buf, dataSize)) <= 0)
-		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "data receive error (%d)", recv_cnt), -1);
+	recv_cnt = rcv(this->peer(), buf, dataSize);
 	
 	ACE_ASSERT(dataSize == recv_cnt);
 	if (prefix == PRF_SERIALNO) onSerialNo(buf, dataSize);

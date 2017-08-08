@@ -6,6 +6,8 @@
 #include "util.h"
 #include "Directory.h"
 #include <assert.h>
+#include <string.h>
+#include <stdlib.h>
 
 CHsmProxy::CHsmProxy()
 :token_(NULL)
@@ -22,23 +24,23 @@ int CHsmProxy::init(const char *userPin)
 {
 	int nRtn;
 	if ( (nRtn=token_->initialize()) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token initialize error(%d):%s",nRtn,token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token initialize error(%d):%s",nRtn,token_->_message);
 		return -1;
 	}
 
 	if ((nRtn = token_->getSlotID()) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token getSlotID error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token getSlotID error(%d):%s", nRtn, token_->_message);
 		return -2;
 	}
-	assert(token_->slotID() != INVALID_SLOT_ID);
+	assert(token_->slotID() != (CK_SLOT_ID)INVALID_SLOT_ID);
 
 	if (token_->openSession() != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token openSession error");
+		SPRINTF(message_, MAX_ERR_MSG, "token openSession error");
 		return -3;
 	}
 
 	if (token_->login(CKU_USER, userPin, (CK_ULONG)strlen(userPin)) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token user login error userPin:%s", userPin);
+		SPRINTF(message_, MAX_ERR_MSG, "token user login error userPin:%s", userPin);
 		return -4;
 	}
 	return 0;
@@ -48,49 +50,49 @@ int CHsmProxy::init(const char *label, const char *soPin, const char *userPin, b
 {
 	int nRtn;
 	if ((nRtn = token_->initialize()) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token initialize error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token initialize error(%d):%s", nRtn, token_->_message);
 		return -1;
 	}
 
 	CK_ULONG ulSlotCount;
 	if ((nRtn=token_->slotCount(ulSlotCount)) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token slotCount error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token slotCount error(%d):%s", nRtn, token_->_message);
 		return -2;
 	}
 
 	if (emptySlot && ulSlotCount != 1) {	//슬롯이 하나도 없어야 하는 조건일때 카운트는 1로 나와야 한다. 슬롯이 없을때 softhsm2는 1로 카운트해서 알려주기 때문
-		sprintf_s(message_, MAX_ERR_MSG, "token emptySlot error:slotCount(%u)", ulSlotCount);
+		SPRINTF(message_, MAX_ERR_MSG, "token emptySlot error:slotCount(%lu)", ulSlotCount);
 		return -3;
 	}
 	if (emptySlot) assert(ulSlotCount==1);
 
 	if ((nRtn=token_->initToken(ulSlotCount - 1, soPin, (CK_ULONG)strlen(soPin), label, (CK_ULONG)strlen(label))) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token initToken error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token initToken error(%d):%s", nRtn, token_->_message);
 		return -4;
 	}
 
 	if ((nRtn=token_->openSession()) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token openSession error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token openSession error(%d):%s", nRtn, token_->_message);
 		return -5;
 	}
 
 	if ((nRtn=token_->login(CKU_SO, soPin, (CK_ULONG)strlen(soPin))) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token SO login error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token SO login error(%d):%s", nRtn, token_->_message);
 		return -6;
 	}
 
 	if ((nRtn=token_->initPin(userPin, (CK_ULONG)strlen(userPin))) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token initPin error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token initPin error(%d):%s", nRtn, token_->_message);
 		return -7;
 	}
 
 	if ((nRtn=token_->logout()) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token logout error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token logout error(%d):%s", nRtn, token_->_message);
 		return -8;
 	}
 
 	if ((nRtn=token_->login(CKU_USER, userPin, (CK_ULONG)strlen(userPin))) != 0) {
-		sprintf_s(message_, MAX_ERR_MSG, "token USER login error(%d):%s", nRtn, token_->_message);
+		SPRINTF(message_, MAX_ERR_MSG, "token USER login error(%d):%s", nRtn, token_->_message);
 		return -9;
 	}
 	return 0;
@@ -212,6 +214,7 @@ unsigned long CHsmProxy::mechanismType(MechanismType mType)
 	return mechanismType;
 }
 
+#ifdef _WIN32
 int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
 {
 	std::string vv = name;
@@ -223,6 +226,12 @@ int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
 
 	return _putenv(vv.c_str()) == 0;
 }
+#else
+int CHsmProxy::setenv(const char *name, const char *value, int overwrite)
+{
+	return ::setenv(name,value,overwrite);
+}
+#endif
 
 int CHsmProxy::encryptInit(MechanismType mType, unsigned long hKey)
 {

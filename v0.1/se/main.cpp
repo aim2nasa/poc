@@ -55,7 +55,14 @@ int main(int argc, char *argv[])
 	ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n", server_host, server_port));
 
 	CHsmProxy hsm;
+	ACE_DEBUG((LM_INFO, "(%t) set environment...\n"));
+#ifndef _WIN32
+	ACE_DEBUG((LM_INFO, "(%t) linux environment ./softhsm2-linux.conf\n"));
+	hsm.setenv("SOFTHSM2_CONF", "./softhsm2-linux.conf", 1);
+#else
+	ACE_DEBUG((LM_INFO, "(%t) win32 environment .\\softhsm2.conf\n"));
 	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+#endif
 	CHsmProxy::emptyToken();
 	ACE_DEBUG((LM_INFO, "(%t) empty token folder\n"));
 
@@ -93,6 +100,7 @@ int main(int argc, char *argv[])
 	ACE_SSL_Context *context = ACE_SSL_Context::instance();
 	if (!context->check_host(remote_addr, client_stream.ssl()))
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("check_host failed\n")), -1);
+	ACE_DEBUG((LM_DEBUG, "(%P|%t) check_host(%s) ok\n", remote_addr.get_host_name()));
 #endif
 
 	if (sendSerialNo(client_stream, serialNo) != 0) ACE_RETURN(-1);

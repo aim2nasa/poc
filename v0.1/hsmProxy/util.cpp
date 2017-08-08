@@ -1,5 +1,5 @@
 #include "util.h"
-#include "helper.h"
+#include "Helper.h"
 #include "MutexFactory.h"
 #include "SecureMemoryRegistry.h"
 #include "CryptoFactory.h"

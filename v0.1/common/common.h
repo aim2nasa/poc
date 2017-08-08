@@ -9,4 +9,16 @@
 
 #define USE_SSL							//SSL(ACE SSL)을 사용하는 경우에 정의
 
+#ifdef _WIN32
+#define MODEXPORT __declspec(dllexport)
+#else
+#define MODEXPORT 
+#endif
+
+#ifdef _WIN32
+#define SPRINTF sprintf_s
+#else
+#define SPRINTF snprintf
+#endif
+
 #endif
