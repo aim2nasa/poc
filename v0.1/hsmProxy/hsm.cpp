@@ -137,6 +137,28 @@ void encrypt(const FunctionCallbackInfo<Value>& args) {
   printf("* 5.encrypt: encData.data = %s, encData.Size=%d\n",(char*)encData.data(),encData.size());
 }
 
+void decryptInit(const FunctionCallbackInfo<Value>& args)
+{
+  String::Utf8Value strMechType(args[0]);
+  const char* mt = ToCString(strMechType);
+
+  unsigned long hArgKey = args[1]->NumberValue();
+
+  int nRtn;
+  if(strcmp(mt,"AES_CBC_PAD")==0)
+    nRtn = hsm.decryptInit(CHsmProxy::AES_CBC_PAD,hArgKey);
+  else if(strcmp(mt,"AES_CBC")==0)
+    nRtn = hsm.decryptInit(CHsmProxy::AES_CBC,hArgKey);
+  else if(strcmp(mt,"AES_ECB")==0)
+    nRtn = hsm.decryptInit(CHsmProxy::AES_ECB,hArgKey);
+  else{
+    args.GetReturnValue().Set(-1);
+    return;
+  }
+
+  args.GetReturnValue().Set(nRtn);
+}
+
 void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "init", Init);
   NODE_SET_METHOD(exports, "init2", Init2);
@@ -146,6 +168,7 @@ void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "setEnv", setEnv);
   NODE_SET_METHOD(exports, "encryptInit", encryptInit);
   NODE_SET_METHOD(exports, "encrypt", encrypt);
+  NODE_SET_METHOD(exports, "decryptInit", decryptInit);
 }
 
 NODE_MODULE(addon, init)

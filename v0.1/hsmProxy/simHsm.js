@@ -52,3 +52,9 @@ console.log("Buffer length="+buf.length);
 console.log("before encoding="+buf.toString()+",length="+buf.length);
 var encBuf = hsm.encrypt(buf,buf.length);
 console.log("after encoding="+encBuf.toString()+",length="+encBuf.length);
+
+if(hsm.decryptInit(mType,hTagKey)!=0) {
+  console.log("hsm.decryptInit("+mType+","+hTagKey+") failed");
+  process.exit(-1);
+}
+console.log("hsm.decryptInit("+mType+","+hTagKey+") ok");
