@@ -116,7 +116,8 @@ void encryptInit(const FunctionCallbackInfo<Value>& args)
   args.GetReturnValue().Set(nRtn);
 }
 
-void encrypt(const FunctionCallbackInfo<Value>& args) {
+void encrypt(const FunctionCallbackInfo<Value>& args)
+{
   unsigned long dataLen = args[1]->NumberValue();
   Local<Object> bufferObj = args[0]->ToObject();
   char *data = node::Buffer::Data(bufferObj);
@@ -161,7 +162,8 @@ void decryptInit(const FunctionCallbackInfo<Value>& args)
   args.GetReturnValue().Set(nRtn);
 }
 
-void decrypt(const FunctionCallbackInfo<Value>& args) {
+void decrypt(const FunctionCallbackInfo<Value>& args)
+{
   unsigned long encryptedDataLen = args[1]->NumberValue();
   Local<Object> bufferObj = args[0]->ToObject();
   char *encryptedData = node::Buffer::Data(bufferObj);
@@ -184,7 +186,8 @@ void decrypt(const FunctionCallbackInfo<Value>& args) {
   printf("* 5.decrypt: decData.data = %s, decData.Size=%d\n",(char*)gDecData.data(),gDecData.size());
 }
 
-void init(Local<Object> exports) {
+void init(Local<Object> exports)
+{
   NODE_SET_METHOD(exports, "init", Init);
   NODE_SET_METHOD(exports, "init2", Init2);
   NODE_SET_METHOD(exports, "slotId", slotId);
