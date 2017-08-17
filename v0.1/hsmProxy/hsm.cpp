@@ -186,6 +186,12 @@ void decrypt(const FunctionCallbackInfo<Value>& args)
   printf("* 5.decrypt: decData.data = %s, decData.Size=%d\n",(char*)gDecData.data(),gDecData.size());
 }
 
+void message(const FunctionCallbackInfo<Value>& args)
+{
+  std::string s = std::string(gHsm.message_);
+  args.GetReturnValue().Set(Nan::New<String>(s.c_str()).ToLocalChecked());
+}
+
 void init(Local<Object> exports)
 {
   NODE_SET_METHOD(exports, "init", Init);
@@ -198,6 +204,7 @@ void init(Local<Object> exports)
   NODE_SET_METHOD(exports, "encrypt", encrypt);
   NODE_SET_METHOD(exports, "decryptInit", decryptInit);
   NODE_SET_METHOD(exports, "decrypt", decrypt);
+  NODE_SET_METHOD(exports, "message", message);
 }
 
 NODE_MODULE(addon, init)
