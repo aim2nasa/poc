@@ -40,3 +40,15 @@ if(hsm.encryptInit(mType,hTagKey)!=0) {
   process.exit(-1);
 }
 console.log("hsm.encryptInit("+mType+","+hTagKey+") ok");
+
+var blockSize = 0x10;
+var NumBlock = 1;
+//버퍼의 크기는 블럭사이즈의 정수배이어야만 한다.
+const buf = Buffer.alloc(blockSize*NumBlock);
+console.log(buf);
+console.log("Buffer length="+buf.length);
+
+
+console.log("before encoding="+buf.toString()+",length="+buf.length);
+var encBuf = hsm.encrypt(buf,buf.length);
+console.log("after encoding="+encBuf.toString()+",length="+encBuf.length);

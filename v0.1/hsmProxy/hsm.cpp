@@ -1,7 +1,9 @@
 // hsm.cpp 
 #include <node.h>
+#include <node_buffer.h>
 #include "CHsmProxy.h"
 #include <string.h>
+#include <nan.h>
 
 namespace demo {
 
@@ -14,6 +16,8 @@ using v8::Object;
 
 CHsmProxy hsm;
 unsigned long hKey = 0;
+unsigned long encryptedDataLen = 0;
+std::vector<unsigned char> encData;
 
 const char* ToCString(const String::Utf8Value& value)
 {
@@ -110,6 +114,29 @@ void encryptInit(const FunctionCallbackInfo<Value>& args)
   args.GetReturnValue().Set(nRtn);
 }
 
+void encrypt(const FunctionCallbackInfo<Value>& args) {
+  unsigned long dataLen = args[1]->NumberValue();
+  Local<Object> bufferObj = args[0]->ToObject();
+  char *data = node::Buffer::Data(bufferObj);
+
+  printf("* 1.encrypt: data:%s,dataLen=%d\n",data,dataLen);
+
+  int nRtn;
+  nRtn = hsm.encrypt((unsigned char*)data,dataLen,NULL,&encryptedDataLen);
+  printf("* 2.encrypt: nRtn=%d,encryptedDataLen=%d\n",nRtn,encryptedDataLen);
+
+  encData.resize(encryptedDataLen);
+  nRtn = hsm.encrypt((unsigned char*)data,dataLen,&encData.front(),&encryptedDataLen);
+  if(nRtn!=0) args.GetReturnValue().Set(nRtn);
+  printf("* 3.encrypt: nRtn=%d\n",nRtn);
+
+  printf("* 4.encrypt: encData.data = %s, encData.Size=%d\n",(char*)encData.data(),encData.size());
+
+  //Nan 버퍼 사용
+  args.GetReturnValue().Set(Nan::NewBuffer((char*)encData.data(),encData.size()).ToLocalChecked());
+  printf("* 5.encrypt: encData.data = %s, encData.Size=%d\n",(char*)encData.data(),encData.size());
+}
+
 void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "init", Init);
   NODE_SET_METHOD(exports, "init2", Init2);
@@ -118,6 +145,7 @@ void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "getFoundKey", getFoundKey);
   NODE_SET_METHOD(exports, "setEnv", setEnv);
   NODE_SET_METHOD(exports, "encryptInit", encryptInit);
+  NODE_SET_METHOD(exports, "encrypt", encrypt);
 }
 
 NODE_MODULE(addon, init)
