@@ -22,8 +22,6 @@ const char* ToCString(const String::Utf8Value& value)
 void Init(const FunctionCallbackInfo<Value>& args)
 {
   printf("Init\n");
-  Isolate* isolate = args.GetIsolate();
-
   String::Utf8Value cmd(args[0]);
   std::string str = std::string(*cmd);
   int nRtn = hsm.init(str.c_str());
@@ -55,6 +53,7 @@ void Init2(const FunctionCallbackInfo<Value>& args)
 
 void slotId(const FunctionCallbackInfo<Value>& args)
 {
+  printf("slotId\n");
   args.GetReturnValue().Set((uint32_t)hsm.slotID());
 }
 
