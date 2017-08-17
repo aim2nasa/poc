@@ -13,7 +13,8 @@ using v8::Object;
 
 CHsmProxy hsm;
 
-void Init(const FunctionCallbackInfo<Value>& args) {
+void Init(const FunctionCallbackInfo<Value>& args)
+{
   printf("Init\n");
   Isolate* isolate = args.GetIsolate();
 
