@@ -22,4 +22,14 @@ if(hsm.findKey(TAG_KEY_LABEL,TAG_KEY_LABEL.length)!=0){
   console.log("findKey("+TAG_KEY_LABEL+") failed");
   process.exit(-1);
 }
-console.log("Key found, Found key="+hsm.getFoundKey());
+console.log("Tag Key found, Found key="+hsm.getFoundKey());
+
+var SE_KEY_LABEL = "SeKey";
+console.log("SeKeyLabel="+SE_KEY_LABEL+",SeKeyLabel length="+SE_KEY_LABEL.length);
+
+var hSeKey
+if(hsm.findKey(SE_KEY_LABEL,SE_KEY_LABEL.length)!=0){
+  console.log("findKey("+SE_KEY_LABEL+") failed");
+  process.exit(-1);
+}
+console.log("SE Key found, Found key="+hsm.getFoundKey());
