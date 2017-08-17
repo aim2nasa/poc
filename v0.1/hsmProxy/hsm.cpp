@@ -53,9 +53,15 @@ void Init2(const FunctionCallbackInfo<Value>& args)
   args.GetReturnValue().Set(nRtn);
 }
 
+void slotId(const FunctionCallbackInfo<Value>& args)
+{
+  args.GetReturnValue().Set((uint32_t)hsm.slotID());
+}
+
 void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "init", Init);
   NODE_SET_METHOD(exports, "init2", Init2);
+  NODE_SET_METHOD(exports, "slotId", slotId);
 }
 
 NODE_MODULE(addon, init)

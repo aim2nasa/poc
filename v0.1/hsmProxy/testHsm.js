@@ -14,3 +14,5 @@ console.log("hsm.init2("+label+","+soPin+","+userPin+","+emptySlot+")="
 emptySlot = false;
 console.log("hsm.init2("+label+","+soPin+","+userPin+","+emptySlot+")="
 	+hsm.init2(label,soPin,userPin,emptySlot));
+
+console.log("slotId="+hsm.slotId());
