@@ -17,7 +17,9 @@ using v8::Object;
 CHsmProxy hsm;
 unsigned long hKey = 0;
 unsigned long encryptedDataLen = 0;
+unsigned long gDataLen = 0;
 std::vector<unsigned char> encData;
+std::vector<unsigned char> gDecData;
 
 const char* ToCString(const String::Utf8Value& value)
 {
@@ -159,6 +161,29 @@ void decryptInit(const FunctionCallbackInfo<Value>& args)
   args.GetReturnValue().Set(nRtn);
 }
 
+void decrypt(const FunctionCallbackInfo<Value>& args) {
+  unsigned long encryptedDataLen = args[1]->NumberValue();
+  Local<Object> bufferObj = args[0]->ToObject();
+  char *encryptedData = node::Buffer::Data(bufferObj);
+
+  printf("* 1.decrypt: encryptedData:%s,encryptedDataLen=%lu\n",encryptedData,encryptedDataLen);
+
+  int nRtn;
+  nRtn = hsm.decrypt((unsigned char*)encryptedData,encryptedDataLen,NULL,&gDataLen);
+  printf("* 2.decrypt: nRtn=%d,DataLen=%lu\n",nRtn,gDataLen);
+
+  gDecData.resize(gDataLen);
+  nRtn = hsm.decrypt((unsigned char*)encryptedData,encryptedDataLen,&gDecData.front(),&gDataLen);
+  if(nRtn!=0) args.GetReturnValue().Set(nRtn);
+  printf("* 3.decrypt: nRtn=%d\n",nRtn);
+
+  printf("* 4.decrypt: decData.data = %s, decData.Size=%d\n",(char*)gDecData.data(),gDecData.size());
+
+  //Nan 버퍼 사용
+  args.GetReturnValue().Set(Nan::NewBuffer((char*)gDecData.data(),gDecData.size()).ToLocalChecked());
+  printf("* 5.decrypt: decData.data = %s, decData.Size=%d\n",(char*)gDecData.data(),gDecData.size());
+}
+
 void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "init", Init);
   NODE_SET_METHOD(exports, "init2", Init2);
@@ -169,6 +194,7 @@ void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "encryptInit", encryptInit);
   NODE_SET_METHOD(exports, "encrypt", encrypt);
   NODE_SET_METHOD(exports, "decryptInit", decryptInit);
+  NODE_SET_METHOD(exports, "decrypt", decrypt);
 }
 
 NODE_MODULE(addon, init)

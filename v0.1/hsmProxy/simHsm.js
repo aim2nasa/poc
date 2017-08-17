@@ -58,3 +58,7 @@ if(hsm.decryptInit(mType,hTagKey)!=0) {
   process.exit(-1);
 }
 console.log("hsm.decryptInit("+mType+","+hTagKey+") ok");
+
+console.log("before decoding="+encBuf.toString()+",length="+encBuf.length);
+var decBuf = hsm.decrypt(encBuf,encBuf.length);
+console.log("after decoding="+decBuf.toString()+",length="+decBuf.length);
