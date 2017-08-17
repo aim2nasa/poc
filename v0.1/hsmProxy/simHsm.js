@@ -8,7 +8,7 @@ console.log("hsm.setEnv("+name+","+value+","+overwrite+")="+hsm.setEnv(name,valu
 
 var userPin="12345";
 if(hsm.init(userPin)!=0) {
-  console.log("HSM init failurei(userPin:"+userPin+")");
+  console.log("HSM init failure(userPin:"+userPin+")");
   console.log("error message:"+hsm.message());
   process.exit(-1);
 }
