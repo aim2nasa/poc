@@ -18,7 +18,7 @@ CHsmProxy hsm;
 unsigned long hKey = 0;
 unsigned long gEncryptedDataLen = 0;
 unsigned long gDataLen = 0;
-std::vector<unsigned char> encData;
+std::vector<unsigned char> gEncData;
 std::vector<unsigned char> gDecData;
 
 const char* ToCString(const String::Utf8Value& value)
@@ -127,16 +127,16 @@ void encrypt(const FunctionCallbackInfo<Value>& args) {
   nRtn = hsm.encrypt((unsigned char*)data,dataLen,NULL,&gEncryptedDataLen);
   printf("* 2.encrypt: nRtn=%d,encryptedDataLen=%lu\n",nRtn,gEncryptedDataLen);
 
-  encData.resize(gEncryptedDataLen);
-  nRtn = hsm.encrypt((unsigned char*)data,dataLen,&encData.front(),&gEncryptedDataLen);
+  gEncData.resize(gEncryptedDataLen);
+  nRtn = hsm.encrypt((unsigned char*)data,dataLen,&gEncData.front(),&gEncryptedDataLen);
   if(nRtn!=0) args.GetReturnValue().Set(nRtn);
   printf("* 3.encrypt: nRtn=%d\n",nRtn);
 
-  printf("* 4.encrypt: encData.data = %s, encData.Size=%d\n",(char*)encData.data(),encData.size());
+  printf("* 4.encrypt: encData.data = %s, encData.Size=%d\n",(char*)gEncData.data(),gEncData.size());
 
   //Nan 버퍼 사용
-  args.GetReturnValue().Set(Nan::NewBuffer((char*)encData.data(),encData.size()).ToLocalChecked());
-  printf("* 5.encrypt: encData.data = %s, encData.Size=%d\n",(char*)encData.data(),encData.size());
+  args.GetReturnValue().Set(Nan::NewBuffer((char*)gEncData.data(),gEncData.size()).ToLocalChecked());
+  printf("* 5.encrypt: encData.data = %s, encData.Size=%d\n",(char*)gEncData.data(),gEncData.size());
 }
 
 void decryptInit(const FunctionCallbackInfo<Value>& args)
