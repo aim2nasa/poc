@@ -16,7 +16,7 @@ using v8::Object;
 
 CHsmProxy hsm;
 unsigned long hKey = 0;
-unsigned long encryptedDataLen = 0;
+unsigned long gEncryptedDataLen = 0;
 unsigned long gDataLen = 0;
 std::vector<unsigned char> encData;
 std::vector<unsigned char> gDecData;
@@ -124,11 +124,11 @@ void encrypt(const FunctionCallbackInfo<Value>& args) {
   printf("* 1.encrypt: data:%s,dataLen=%lu\n",data,dataLen);
 
   int nRtn;
-  nRtn = hsm.encrypt((unsigned char*)data,dataLen,NULL,&encryptedDataLen);
-  printf("* 2.encrypt: nRtn=%d,encryptedDataLen=%lu\n",nRtn,encryptedDataLen);
+  nRtn = hsm.encrypt((unsigned char*)data,dataLen,NULL,&gEncryptedDataLen);
+  printf("* 2.encrypt: nRtn=%d,encryptedDataLen=%lu\n",nRtn,gEncryptedDataLen);
 
-  encData.resize(encryptedDataLen);
-  nRtn = hsm.encrypt((unsigned char*)data,dataLen,&encData.front(),&encryptedDataLen);
+  encData.resize(gEncryptedDataLen);
+  nRtn = hsm.encrypt((unsigned char*)data,dataLen,&encData.front(),&gEncryptedDataLen);
   if(nRtn!=0) args.GetReturnValue().Set(nRtn);
   printf("* 3.encrypt: nRtn=%d\n",nRtn);
 
