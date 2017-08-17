@@ -119,11 +119,11 @@ void encrypt(const FunctionCallbackInfo<Value>& args) {
   Local<Object> bufferObj = args[0]->ToObject();
   char *data = node::Buffer::Data(bufferObj);
 
-  printf("* 1.encrypt: data:%s,dataLen=%d\n",data,dataLen);
+  printf("* 1.encrypt: data:%s,dataLen=%lu\n",data,dataLen);
 
   int nRtn;
   nRtn = hsm.encrypt((unsigned char*)data,dataLen,NULL,&encryptedDataLen);
-  printf("* 2.encrypt: nRtn=%d,encryptedDataLen=%d\n",nRtn,encryptedDataLen);
+  printf("* 2.encrypt: nRtn=%d,encryptedDataLen=%lu\n",nRtn,encryptedDataLen);
 
   encData.resize(encryptedDataLen);
   nRtn = hsm.encrypt((unsigned char*)data,dataLen,&encData.front(),&encryptedDataLen);
