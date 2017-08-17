@@ -6,7 +6,7 @@ var value = "./softhsm2-linux.conf";
 var overwrite = 1;
 console.log("hsm.setEnv("+name+","+value+","+overwrite+")="+hsm.setEnv(name,value,overwrite));
 
-var userPin="12345";
+var userPin="1234";
 if(hsm.init(userPin)!=0) {
   console.log("HSM init failure(userPin:"+userPin+")");
   console.log("error message:"+hsm.message());
