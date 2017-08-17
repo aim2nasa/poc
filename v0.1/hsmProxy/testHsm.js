@@ -19,3 +19,8 @@ console.log("slotId="+hsm.slotId());
 
 console.log("hsm.findKey("+label+","+label.length+")="+hsm.findKey(label,label.length));
 console.log("hsm.getFoundKey()="+hsm.getFoundKey());
+
+var name = "SOFTHSM2_CONF";
+var value = "./softhsm2-linux.conf";
+var overwrite = 1;
+console.log("hsm.setEnv("+name+","+value+","+overwrite+")="+hsm.setEnv(name,value,overwrite));

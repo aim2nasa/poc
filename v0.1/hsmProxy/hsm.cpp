@@ -74,12 +74,27 @@ void getFoundKey(const FunctionCallbackInfo<Value>& args)
   args.GetReturnValue().Set((uint32_t)hKey);
 }
 
+void setEnv(const FunctionCallbackInfo<Value>& args)
+{
+  String::Utf8Value strName(args[0]);
+  const char* name = ToCString(strName);
+
+  String::Utf8Value strValue(args[1]);
+  const char* value = ToCString(strValue);
+
+  int overwrite = args[2]->NumberValue();
+
+  int nRtn = hsm.setenv(name,value,overwrite);
+  args.GetReturnValue().Set(nRtn);
+}
+
 void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "init", Init);
   NODE_SET_METHOD(exports, "init2", Init2);
   NODE_SET_METHOD(exports, "slotId", slotId);
   NODE_SET_METHOD(exports, "findKey", findKey);
   NODE_SET_METHOD(exports, "getFoundKey", getFoundKey);
+  NODE_SET_METHOD(exports, "setEnv", setEnv);
 }
 
 NODE_MODULE(addon, init)
