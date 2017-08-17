@@ -24,3 +24,8 @@ var name = "SOFTHSM2_CONF";
 var value = "./softhsm2-linux.conf";
 var overwrite = 1;
 console.log("hsm.setEnv("+name+","+value+","+overwrite+")="+hsm.setEnv(name,value,overwrite));
+
+console.log("encryptInit="+hsm.encryptInit("AES_CBC_PAD",9876));
+console.log("encryptInit="+hsm.encryptInit("AES_CBC",6543));
+console.log("encryptInit="+hsm.encryptInit("AES_ECB",3210));
+console.log("encryptInit="+hsm.encryptInit("AES_WRONG",0000));

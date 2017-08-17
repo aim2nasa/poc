@@ -88,6 +88,28 @@ void setEnv(const FunctionCallbackInfo<Value>& args)
   args.GetReturnValue().Set(nRtn);
 }
 
+void encryptInit(const FunctionCallbackInfo<Value>& args)
+{
+  String::Utf8Value strMechType(args[0]);
+  const char* mt = ToCString(strMechType);
+
+  unsigned long hArgKey = args[1]->NumberValue();
+
+  int nRtn;
+  if(strcmp(mt,"AES_CBC_PAD")==0)
+    nRtn = hsm.encryptInit(CHsmProxy::AES_CBC_PAD,hArgKey);
+  else if(strcmp(mt,"AES_CBC")==0)
+    nRtn = hsm.encryptInit(CHsmProxy::AES_CBC,hArgKey);
+  else if(strcmp(mt,"AES_ECB")==0)
+    nRtn = hsm.encryptInit(CHsmProxy::AES_ECB,hArgKey);
+  else{
+    args.GetReturnValue().Set(-1);
+    return;
+  }
+
+  args.GetReturnValue().Set(nRtn);
+}
+
 void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "init", Init);
   NODE_SET_METHOD(exports, "init2", Init2);
@@ -95,6 +117,7 @@ void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "findKey", findKey);
   NODE_SET_METHOD(exports, "getFoundKey", getFoundKey);
   NODE_SET_METHOD(exports, "setEnv", setEnv);
+  NODE_SET_METHOD(exports, "encryptInit", encryptInit);
 }
 
 NODE_MODULE(addon, init)
