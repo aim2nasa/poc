@@ -16,3 +16,6 @@ console.log("hsm.init2("+label+","+soPin+","+userPin+","+emptySlot+")="
 	+hsm.init2(label,soPin,userPin,emptySlot));
 
 console.log("slotId="+hsm.slotId());
+
+console.log("hsm.findKey("+label+","+label.length+")="+hsm.findKey(label,label.length));
+console.log("hsm.getFoundKey()="+hsm.getFoundKey());

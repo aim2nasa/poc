@@ -13,6 +13,7 @@ using v8::Local;
 using v8::Object;
 
 CHsmProxy hsm;
+unsigned long hKey = 0;
 
 const char* ToCString(const String::Utf8Value& value)
 {
@@ -57,10 +58,28 @@ void slotId(const FunctionCallbackInfo<Value>& args)
   args.GetReturnValue().Set((uint32_t)hsm.slotID());
 }
 
+void findKey(const FunctionCallbackInfo<Value>& args)
+{
+  String::Utf8Value strLabel(args[0]);
+  const char* label = ToCString(strLabel);
+
+  unsigned int labelSize = args[1]->NumberValue();
+
+  int nRtn = hsm.findKey(label,labelSize,hKey);
+  args.GetReturnValue().Set(nRtn);
+}
+
+void getFoundKey(const FunctionCallbackInfo<Value>& args)
+{
+  args.GetReturnValue().Set((uint32_t)hKey);
+}
+
 void init(Local<Object> exports) {
   NODE_SET_METHOD(exports, "init", Init);
   NODE_SET_METHOD(exports, "init2", Init2);
   NODE_SET_METHOD(exports, "slotId", slotId);
+  NODE_SET_METHOD(exports, "findKey", findKey);
+  NODE_SET_METHOD(exports, "getFoundKey", getFoundKey);
 }
 
 NODE_MODULE(addon, init)
