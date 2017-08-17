@@ -14,7 +14,7 @@ using v8::String;
 using v8::Local;
 using v8::Object;
 
-CHsmProxy hsm;
+CHsmProxy gHsm;
 unsigned long gHKey = 0;
 unsigned long gEncryptedDataLen = 0;
 unsigned long gDataLen = 0;
@@ -31,7 +31,7 @@ void Init(const FunctionCallbackInfo<Value>& args)
   printf("Init\n");
   String::Utf8Value cmd(args[0]);
   std::string str = std::string(*cmd);
-  int nRtn = hsm.init(str.c_str());
+  int nRtn = gHsm.init(str.c_str());
 
   args.GetReturnValue().Set(nRtn);
 }
@@ -54,14 +54,14 @@ void Init2(const FunctionCallbackInfo<Value>& args)
   bool bEmptySlot = true;
   if(strcmp(emptySlot,"false")==0) bEmptySlot=false;
 
-  int nRtn = hsm.init(label,soPin,userPin,bEmptySlot);
+  int nRtn = gHsm.init(label,soPin,userPin,bEmptySlot);
   args.GetReturnValue().Set(nRtn);
 }
 
 void slotId(const FunctionCallbackInfo<Value>& args)
 {
   printf("slotId\n");
-  args.GetReturnValue().Set((uint32_t)hsm.slotID());
+  args.GetReturnValue().Set((uint32_t)gHsm.slotID());
 }
 
 void findKey(const FunctionCallbackInfo<Value>& args)
@@ -71,7 +71,7 @@ void findKey(const FunctionCallbackInfo<Value>& args)
 
   unsigned int labelSize = args[1]->NumberValue();
 
-  int nRtn = hsm.findKey(label,labelSize,gHKey);
+  int nRtn = gHsm.findKey(label,labelSize,gHKey);
   args.GetReturnValue().Set(nRtn);
 }
 
@@ -90,7 +90,7 @@ void setEnv(const FunctionCallbackInfo<Value>& args)
 
   int overwrite = args[2]->NumberValue();
 
-  int nRtn = hsm.setenv(name,value,overwrite);
+  int nRtn = gHsm.setenv(name,value,overwrite);
   args.GetReturnValue().Set(nRtn);
 }
 
@@ -103,11 +103,11 @@ void encryptInit(const FunctionCallbackInfo<Value>& args)
 
   int nRtn;
   if(strcmp(mt,"AES_CBC_PAD")==0)
-    nRtn = hsm.encryptInit(CHsmProxy::AES_CBC_PAD,hArgKey);
+    nRtn = gHsm.encryptInit(CHsmProxy::AES_CBC_PAD,hArgKey);
   else if(strcmp(mt,"AES_CBC")==0)
-    nRtn = hsm.encryptInit(CHsmProxy::AES_CBC,hArgKey);
+    nRtn = gHsm.encryptInit(CHsmProxy::AES_CBC,hArgKey);
   else if(strcmp(mt,"AES_ECB")==0)
-    nRtn = hsm.encryptInit(CHsmProxy::AES_ECB,hArgKey);
+    nRtn = gHsm.encryptInit(CHsmProxy::AES_ECB,hArgKey);
   else{
     args.GetReturnValue().Set(-1);
     return;
@@ -124,11 +124,11 @@ void encrypt(const FunctionCallbackInfo<Value>& args) {
   printf("* 1.encrypt: data:%s,dataLen=%lu\n",data,dataLen);
 
   int nRtn;
-  nRtn = hsm.encrypt((unsigned char*)data,dataLen,NULL,&gEncryptedDataLen);
+  nRtn = gHsm.encrypt((unsigned char*)data,dataLen,NULL,&gEncryptedDataLen);
   printf("* 2.encrypt: nRtn=%d,encryptedDataLen=%lu\n",nRtn,gEncryptedDataLen);
 
   gEncData.resize(gEncryptedDataLen);
-  nRtn = hsm.encrypt((unsigned char*)data,dataLen,&gEncData.front(),&gEncryptedDataLen);
+  nRtn = gHsm.encrypt((unsigned char*)data,dataLen,&gEncData.front(),&gEncryptedDataLen);
   if(nRtn!=0) args.GetReturnValue().Set(nRtn);
   printf("* 3.encrypt: nRtn=%d\n",nRtn);
 
@@ -148,11 +148,11 @@ void decryptInit(const FunctionCallbackInfo<Value>& args)
 
   int nRtn;
   if(strcmp(mt,"AES_CBC_PAD")==0)
-    nRtn = hsm.decryptInit(CHsmProxy::AES_CBC_PAD,hArgKey);
+    nRtn = gHsm.decryptInit(CHsmProxy::AES_CBC_PAD,hArgKey);
   else if(strcmp(mt,"AES_CBC")==0)
-    nRtn = hsm.decryptInit(CHsmProxy::AES_CBC,hArgKey);
+    nRtn = gHsm.decryptInit(CHsmProxy::AES_CBC,hArgKey);
   else if(strcmp(mt,"AES_ECB")==0)
-    nRtn = hsm.decryptInit(CHsmProxy::AES_ECB,hArgKey);
+    nRtn = gHsm.decryptInit(CHsmProxy::AES_ECB,hArgKey);
   else{
     args.GetReturnValue().Set(-1);
     return;
@@ -169,11 +169,11 @@ void decrypt(const FunctionCallbackInfo<Value>& args) {
   printf("* 1.decrypt: encryptedData:%s,encryptedDataLen=%lu\n",encryptedData,encryptedDataLen);
 
   int nRtn;
-  nRtn = hsm.decrypt((unsigned char*)encryptedData,encryptedDataLen,NULL,&gDataLen);
+  nRtn = gHsm.decrypt((unsigned char*)encryptedData,encryptedDataLen,NULL,&gDataLen);
   printf("* 2.decrypt: nRtn=%d,DataLen=%lu\n",nRtn,gDataLen);
 
   gDecData.resize(gDataLen);
-  nRtn = hsm.decrypt((unsigned char*)encryptedData,encryptedDataLen,&gDecData.front(),&gDataLen);
+  nRtn = gHsm.decrypt((unsigned char*)encryptedData,encryptedDataLen,&gDecData.front(),&gDataLen);
   if(nRtn!=0) args.GetReturnValue().Set(nRtn);
   printf("* 3.decrypt: nRtn=%d\n",nRtn);
 
