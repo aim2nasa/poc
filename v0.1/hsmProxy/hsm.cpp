@@ -15,7 +15,7 @@ using v8::Local;
 using v8::Object;
 
 CHsmProxy hsm;
-unsigned long hKey = 0;
+unsigned long gHKey = 0;
 unsigned long gEncryptedDataLen = 0;
 unsigned long gDataLen = 0;
 std::vector<unsigned char> gEncData;
@@ -71,13 +71,13 @@ void findKey(const FunctionCallbackInfo<Value>& args)
 
   unsigned int labelSize = args[1]->NumberValue();
 
-  int nRtn = hsm.findKey(label,labelSize,hKey);
+  int nRtn = hsm.findKey(label,labelSize,gHKey);
   args.GetReturnValue().Set(nRtn);
 }
 
 void getFoundKey(const FunctionCallbackInfo<Value>& args)
 {
-  args.GetReturnValue().Set((uint32_t)hKey);
+  args.GetReturnValue().Set((uint32_t)gHKey);
 }
 
 void setEnv(const FunctionCallbackInfo<Value>& args)
