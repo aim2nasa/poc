@@ -42,12 +42,12 @@ if(hsm.encryptInit(mType,hTagKey)!=0) {
 console.log("hsm.encryptInit("+mType+","+hTagKey+") ok");
 
 var blockSize = 0x10;
-var NumBlock = 1;
+var NumBlock = 2;
 //버퍼의 크기는 블럭사이즈의 정수배이어야만 한다.
 const buf = Buffer.alloc(blockSize*NumBlock);
+buf.write("node.js C++ Addon test");
 console.log(buf);
 console.log("Buffer length="+buf.length);
-
 
 console.log("before encoding="+buf.toString()+",length="+buf.length);
 var encBuf = hsm.encrypt(buf,buf.length);
