@@ -45,8 +45,12 @@ server.on('request',function(req,res){
   var decBuf = hsm.decrypt(req.payload,req.payload.length);
   console.log("after decoding="+decBuf.toString()+",length="+decBuf.length);
 
+  var authWords = new Buffer(decBuf.length);
+  authWords.write('AuthorizedClient');
+  console.log('authWords='+authWords.toString());
+
   var auth = false;
-  if(req.payload=='AuthorizedClient') auth = true;
+  if(decBuf.toString()==authWords.toString()) auth = true;
 
   if(auth==true){
     console.log('authentication ok')
