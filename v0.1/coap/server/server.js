@@ -42,6 +42,9 @@ server.on('request',function(req,res){
   //console.log(req);
   console.log('req.payload='+req.payload);
 
+  var decBuf = hsm.decrypt(req.payload,req.payload.length);
+  console.log("after decoding="+decBuf.toString()+",length="+decBuf.length);
+
   var auth = false;
   if(req.payload=='AuthorizedClient') auth = true;
 
