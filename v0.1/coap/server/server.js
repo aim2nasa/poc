@@ -1,5 +1,6 @@
 //server.js
 const coap = require('../')
+const hsm = require('../../hsmProxy/build/Release/hsmproxy');
 
 server = coap.createServer()
 
