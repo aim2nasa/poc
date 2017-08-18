@@ -26,14 +26,14 @@ if(hsm.findKey(TAG_KEY_LABEL,TAG_KEY_LABEL.length)!=0){
 var hTagKey = hsm.getFoundKey();
 console.log("Tag Key found, Found key="+hTagKey);
 
-//인코딩 초기화
+//디코딩 초기화
 var mType = "AES_ECB";
-if(hsm.encryptInit(mType,hTagKey)!=0) {
-  console.log("hsm.encryptInit("+mType+","+hTagKey+") failed");
+if(hsm.decryptInit(mType,hTagKey)!=0) {
+  console.log("hsm.decryptInit("+mType+","+hTagKey+") failed");
   console.log("error message:"+hsm.message());
   process.exit(-1);
 }
-console.log("hsm.encryptInit("+mType+","+hTagKey+") ok");
+console.log("hsm.decryptInit("+mType+","+hTagKey+") ok");
 
 server = coap.createServer()
 
