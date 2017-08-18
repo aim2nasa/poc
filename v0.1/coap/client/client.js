@@ -35,6 +35,16 @@ if(hsm.encryptInit(mType,hTagKey)!=0) {
 }
 console.log("hsm.encryptInit("+mType+","+hTagKey+") ok");
 
+//인증 문자열 'AuthorizedClient' 암호화
+var blockSize = 0x10;
+var NumBlock = 2;
+const buf = Buffer.alloc(blockSize*NumBlock);
+buf.write("AuthorizedClient");
+
+console.log("before encoding="+buf.toString()+",length="+buf.length);
+var encBuf = hsm.encrypt(buf,buf.length);
+console.log("after encoding="+encBuf.toString()+",length="+encBuf.length);
+
 var coapConnection = {
   host:'localhost',
   pathname: '/payloadTest',
