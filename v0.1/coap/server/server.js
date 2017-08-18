@@ -9,12 +9,13 @@ server.on('request',function(req,res){
   console.log('req.payload='+req.payload);
 
   var auth = false;
-  if(req.payload='AuthorizedClient') auth = true;
+  if(req.payload=='AuthorizedClient') auth = true;
 
   if(auth==true){
     console.log('authentication ok')
   }else{
     console.log('authentication failed')
+    res.end('authentication failed\n')
     return
   }
 
