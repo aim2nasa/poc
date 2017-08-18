@@ -1,5 +1,6 @@
 //client.js
 const coap = require('../')
+const hsm = require('../../hsmProxy/build/Release/hsmproxy');
 
 var coapConnection = {
   host:'localhost',
