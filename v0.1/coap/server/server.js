@@ -2,6 +2,9 @@
 const coap = require('../')
 const hsm = require('../../hsmProxy/build/Release/hsmproxy');
 
+var rtn = hsm.setEnv("SOFTHSM2_CONF","./softhsm2-linux.conf",1)
+console.log('hsm.setEnv='+rtn)
+
 server = coap.createServer()
 
 server.on('request',function(req,res){
