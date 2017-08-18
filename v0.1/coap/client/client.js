@@ -9,7 +9,7 @@ var coapConnection = {
 }
 
 var req = coap.request(coapConnection)
-req.write('ABCDEFG')
+req.write('AuthorizedClient')
 
 req.on('response',function(res){
   res.pipe(process.stdout);
