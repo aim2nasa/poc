@@ -53,7 +53,7 @@ var coapConnection = {
 }
 
 var req = coap.request(coapConnection)
-req.write('AuthorizedClient')
+req.write(encBuf)
 
 req.on('response',function(res){
   res.pipe(process.stdout);
