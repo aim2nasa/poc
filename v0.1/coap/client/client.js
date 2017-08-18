@@ -11,6 +11,8 @@ if(hsm.init(userPin)!=0) {
   console.log("error message:"+hsm.message());
   process.exit(-1);
 }
+console.log("hsm.init("+userPin+") ok");
+console.log("SlotID="+hsm.slotId());
 
 var coapConnection = {
   host:'localhost',
