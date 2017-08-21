@@ -60,7 +60,11 @@ server.on('request',function(req,res){
     return
   }
 
-  res.end('Hello ' + req.url.split('/')[1] + '\n')
+  var interval = setInterval(function() {
+    res.write(new Date().toISOString() + '\n')
+  }, 1000)
+
+  //res.end('Hello ' + req.url.split('/')[1] + '\n')
   //console.log('===============Response====================\n');
   //console.log(res);
 })

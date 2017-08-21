@@ -49,7 +49,8 @@ var coapConnection = {
   host:'localhost',
   pathname: '/payloadTest',
   method: 'GET',
-  confirmable:true
+  confirmable:true,
+  observe:true
 }
 
 var req = coap.request(coapConnection)
