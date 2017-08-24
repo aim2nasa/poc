@@ -14,6 +14,9 @@ x64/
 build/
 [Bb]in/
 [Oo]bj/
+v0.1/hsmProxy/libhsmproxy.so
+v0.1/hsmProxy/libhsmproxy.so.1
+v0.1/se/se
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
@@ -45,6 +48,8 @@ build/
 *.pidb
 *.log
 *.scc
+*.gch
+*.o
 
 # Visual C++ cache files
 ipch/
