@@ -17,6 +17,11 @@ build/
 v0.1/hsmProxy/libhsmproxy.so
 v0.1/hsmProxy/libhsmproxy.so.1
 v0.1/se/se
+v0.1/se/libhsmproxy.so.1
+v0.1/tokenClient/libhsmproxy.so.1
+v0.1/tokenClient/tokenClient
+v0.1/tokenServer/libhsmproxy.so.1
+v0.1/tokenServer/tokenServer
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
