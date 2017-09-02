@@ -1,5 +1,5 @@
 #Define variables 
-POC_ROOT = /home/pi/pocLinux
+POC_ROOT = /home/pi/poc
 SOFTHSM2_ROOT = /home/pi/src/softhsm2/softhsm-2.3.0
 OPENSSL_ROOT = /usr/local/ssl
 
