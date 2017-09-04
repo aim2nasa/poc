@@ -26,21 +26,21 @@ if(hsm.findKey(TAG_KEY_LABEL,TAG_KEY_LABEL.length)!=0){
 var hTagKey = hsm.getFoundKey();
 console.log("Tag Key found, Found key="+hTagKey);
 
-//디코딩 초기화
-var mType = "AES_ECB";
-if(hsm.decryptInit(mType,hTagKey)!=0) {
-  console.log("hsm.decryptInit("+mType+","+hTagKey+") failed");
-  console.log("error message:"+hsm.message());
-  process.exit(-1);
-}
-console.log("hsm.decryptInit("+mType+","+hTagKey+") ok");
-
 server = coap.createServer()
 
 server.on('request',function(req,res){
   //console.log('===============Request=====================\n');
   //console.log(req);
   console.log('req.payload='+req.payload);
+
+  //디코딩 초기화
+  var mType = "AES_ECB";
+  if(hsm.decryptInit(mType,hTagKey)!=0) {
+    console.log("hsm.decryptInit("+mType+","+hTagKey+") failed");
+    console.log("error message:"+hsm.message());
+    process.exit(-1);
+  }
+  console.log("hsm.decryptInit("+mType+","+hTagKey+") ok");
 
   var decBuf = hsm.decrypt(req.payload,req.payload.length);
   console.log("after decoding="+decBuf.toString()+",length="+decBuf.length);
