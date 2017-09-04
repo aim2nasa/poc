@@ -28,7 +28,6 @@ OBJS = main.o Stream_Handler.o
 
 all : $(TARGET)
 	@echo $@:$(TARGET)...
-	ln -s ../hsmProxy/libhsmproxy.so.1 libhsmproxy.so.1
 
 $(TARGET) : $(OBJS)
 	@echo $@:$(OBJS)...
