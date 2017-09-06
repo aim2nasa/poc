@@ -61,6 +61,11 @@ server.on('request',function(req,res){
   }
 
   var interval = setInterval(function() {
+    if(res._writableState.ended==true) {
+      console.log('writableState ended\n')
+      return; //상태가 종료되었으면 아무일도 하지 않는다
+    }
+
     res.write(new Date().toISOString() + '\n')
   }, 1000)
 
