@@ -7,7 +7,8 @@ console.log('arguments='+argc);
 if(argc<4) {
   console.log('usage: client <server> <resource>'); 
   console.log('       <server> : localhost for local server(127.0.0.1)'); 
-  console.log('       <resource> : supported resource must be one of the followings(date, version)'); 
+  console.log('       <resource> : supported resource must be one of the followings'); 
+  console.log('                    date,version'); 
   process.exit(-1);
 }
 var server = process.argv[2];
