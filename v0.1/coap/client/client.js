@@ -14,7 +14,7 @@ if(argc<4) {
 }
 var server = process.argv[2];
 var resource = process.argv[3];
-var observeMode = false; //default
+var observeMode = 'false'; //default
 console.log('server='+server);
 console.log('resource='+resource);
 
