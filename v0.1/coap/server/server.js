@@ -69,7 +69,7 @@ server.on('request',function(req,res){
       }
       res.write(new Date().toISOString() + '\n')
     }, 1000)
-  }else if(req.url='/version'){
+  }else if(req.url=='/version'){
     console.log('* version\n')
     exec("uname -amrs",function(error,stdout,stderr){
       if(error!=null) {
