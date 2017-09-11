@@ -47,7 +47,7 @@ console.log("after encoding="+encBuf.toString()+",length="+encBuf.length);
 
 var coapConnection = {
   host:'localhost',
-  pathname: '/payloadTest',
+  pathname: '/date',
   method: 'GET',
   confirmable:true,
   observe:true

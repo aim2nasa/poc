@@ -1,6 +1,7 @@
 //server.js
 const coap = require('../')
 const hsm = require('../../hsmProxy/build/Release/hsmproxy');
+var exec = require("child_process").exec;
 
 var rtn = hsm.setEnv("SOFTHSM2_CONF","./softhsm2-linux.conf",1)
 console.log('hsm.setEnv='+rtn)
@@ -59,15 +60,30 @@ server.on('request',function(req,res){
     res.end('authentication failed\n')
     return
   }
-
-  var interval = setInterval(function() {
-    if(res._writableState.ended==true) {
-      console.log('writableState ended\n')
-      return; //상태가 종료되었으면 아무일도 하지 않는다
-    }
-
-    res.write(new Date().toISOString() + '\n')
-  }, 1000)
+ 
+  console.log('url='+req.url)
+  if(req.url=='/date'){
+    console.log('* date\n')
+    var interval = setInterval(function() {
+      if(res._writableState.ended==true) {
+        console.log('writableState ended\n')
+        return; //상태가 종료되었으면 아무일도 하지 않는다
+      }
+      res.write(new Date().toISOString() + '\n')
+    }, 1000)
+  }else if(req.url='/version'){
+    console.log('* version\n')
+    exec("uname -amrs",function(error,stdout,stderr){
+      if(error!=null) {
+        console.log("getLoad:"+error);
+      }
+      res.write(stdout);
+      res.end();
+      console.log(stdout);
+    })
+  }else{
+    console.log('* none\n')
+  }
 
   //res.end('Hello ' + req.url.split('/')[1] + '\n')
   //console.log('===============Response====================\n');
