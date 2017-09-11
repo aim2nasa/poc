@@ -19,7 +19,7 @@ console.log('server='+server);
 console.log('resource='+resource);
 
 if(argc>=5) observeMode = process.argv[4];
-console.log('observe='+observeMode);
+console.log('observeMode='+observeMode);
 
 if(observeMode!='true' && observeMode!='false') {
   console.log('observeMode must be either true or false');
