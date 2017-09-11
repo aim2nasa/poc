@@ -30,8 +30,6 @@ console.log("Tag Key found, Found key="+hTagKey);
 server = coap.createServer()
 
 server.on('request',function(req,res){
-  //console.log('===============Request=====================\n');
-  //console.log(req);
   console.log('req.payload='+req.payload);
 
   //디코딩 초기화
@@ -84,10 +82,6 @@ server.on('request',function(req,res){
   }else{
     console.log('* none\n')
   }
-
-  //res.end('Hello ' + req.url.split('/')[1] + '\n')
-  //console.log('===============Response====================\n');
-  //console.log(res);
 })
 
 server.listen(function(){
