@@ -2,6 +2,19 @@
 const coap = require('../')
 const hsm = require('../../hsmProxy/build/Release/hsmproxy');
 
+var argc = process.argv.length; 
+console.log('arguments='+argc);
+if(argc<4) {
+  console.log('usage: client <server> <resource>'); 
+  console.log('       <server> : localhost for local server(127.0.0.1)'); 
+  console.log('       <resource> : supported resource must be one of the followings(date, version)'); 
+  process.exit(-1);
+}
+var server = process.argv[2];
+var resource = process.argv[3];
+console.log('server='+server);
+console.log('resource='+resource);
+
 var rtn = hsm.setEnv("SOFTHSM2_CONF","./softhsm2-linux.conf",1)
 console.log('hsm.setEnv='+rtn)
 
@@ -45,12 +58,19 @@ console.log("before encoding="+buf.toString()+",length="+buf.length);
 var encBuf = hsm.encrypt(buf,buf.length);
 console.log("after encoding="+encBuf.toString()+",length="+encBuf.length);
 
+//resource에 따른 observe모드 설정
+var observeMode = false;
+if(resource=='date'){
+  observeMode = true;
+}
+
+console.log('observe='+observeMode);
 var coapConnection = {
-  host:'localhost',
-  pathname: '/date',
+  host:server,
+  pathname: '/'+resource,
   method: 'GET',
   confirmable:true,
-  observe:true
+  observe:observeMode
 }
 
 var req = coap.request(coapConnection)
