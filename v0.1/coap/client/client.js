@@ -21,6 +21,11 @@ console.log('resource='+resource);
 if(argc>=5) observeMode = process.argv[4];
 console.log('observe='+observeMode);
 
+if(observeMode!='true' && observeMode!='false') {
+  console.log('observeMode must be either true or false');
+  process.exit(-1);
+}
+
 var rtn = hsm.setEnv("SOFTHSM2_CONF","./softhsm2-linux.conf",1)
 console.log('hsm.setEnv='+rtn)
 
