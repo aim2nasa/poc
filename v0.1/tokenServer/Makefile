@@ -1,7 +1,9 @@
 #Define variables 
-POC_ROOT = /home/pi/poc
-SOFTHSM2_ROOT = /home/pi/src/softhsm2/softhsm-2.3.0
-OPENSSL_ROOT = /usr/local/ssl
+
+#set these variables in shell like, POC=/home/pi/poc
+#POC_ROOT = /home/pi/poc
+#SOFTHSM2_ROOT = /home/pi/src/softhsm2/softhsm-2.3.0
+#OPENSSL_ROOT = /usr/local/ssl
 
 #Compile options
 SOFTHSM2_INCLUDES = -I$(SOFTHSM2_ROOT) -I$(SOFTHSM2_ROOT)/src/lib/pkcs11 -I$(SOFTHSM2_ROOT)/src/lib/common -I$(SOFTHSM2_ROOT)/src/lib/data_mgr -I$(SOFTHSM2_ROOT)/src/lib/crypto -I$(SOFTHSM2_ROOT)/src/lib/object_store
