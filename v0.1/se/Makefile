@@ -15,7 +15,7 @@ OPENSSL_INCLUDES = -I$(OPENSSL_ROOT)/include
 HSMPROXY_INCLUDES = -I$(POC_ROOT)/v0.1/hsmProxy
 ACE_INCLUDES = -I/usr/local/include
 
-OPENSSL_LIBS = -L$(OPENSSL_ROOT)/lib -lcrypto
+OPENSSL_LIBS = -L$(OPENSSL_ROOT)/lib -lcrypto -lssl
 HSMPROXY_LIBS = -L$(POC_ROOT)/v0.1/hsmProxy -lhsmproxy
 ACE_LIBS = -L/usr/local/lib -lACE -L/usr/local/lib -lACE_SSL
 
