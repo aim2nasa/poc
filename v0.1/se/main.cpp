@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 
 	ACE_SSL_Context *context = ACE_SSL_Context::instance();
 	if (!context->check_host(remote_addr, client_stream.ssl()))
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("check_host failed\n")), -1);
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("check_host(%s) failed\n"),remote_addr.get_host_name()), -1);
 	ACE_DEBUG((LM_DEBUG, "(%P|%t) check_host(%s) ok\n", remote_addr.get_host_name()));
 #endif
 
