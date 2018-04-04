@@ -17,7 +17,7 @@ ACE_INCLUDES = -I/usr/local/include
 
 OPENSSL_LIBS = -L$(OPENSSL_ROOT)/lib -lcrypto
 HSMPROXY_LIBS = -L$(POC_ROOT)/v0.1/hsmProxy -lhsmproxy
-ACE_LIBS = -L/usr/local/lib -lACE -L/usr/local/lib -lACE_SSL
+ACE_LIBS = -L/usr/local/lib -lACE -lACE_SSL
 
 INCLUDES = $(COMMON_INCLUDES) $(GATEWAY_INCLUDES) $(SOFTHSM2_INCLUDES) $(OPENSSL_INCLUDES) $(HSMPROXY_INCLUDES)
 LIBS = $(HSMPROXY_LIBS) $(SOFTHSM2_LIBS) $(OPENSSL_LIBS) $(ACE_LIBS) -lpthread -lm
