@@ -1,8 +1,11 @@
-#ifndef __CGWDATA_H__
+﻿#ifndef __CGWDATA_H__
 #define __CGWDATA_H__
 
 #include <map>
 #include "StreamHandler.h"
+#ifndef _WIN32
+#include "cryptoki.h"
+#endif
 #include "pkcs11.h"
 #include "CGroup.h"
 

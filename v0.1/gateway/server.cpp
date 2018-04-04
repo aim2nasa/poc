@@ -1,4 +1,4 @@
-#include <ace/OS.h>
+ï»¿#include <ace/OS.h>
 #include <ace/Log_Msg.h>
 #include <ace/INET_Addr.h>
 #include <ace/Acceptor.h>
@@ -44,7 +44,11 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	ACE_DEBUG((LM_INFO, "(%t) gateway start at port:%u\n", server_port));
 
 	CHsmProxy hsm;
+#ifdef _WIN32
 	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
+#else
+	hsm.setenv("SOFTHSM2_CONF", "./softhsm2-linux.conf", 1);
+#endif
 	CHsmProxy::emptyToken();
 	ACE_DEBUG((LM_INFO, "(%t) empty token folder\n"));
 
@@ -54,7 +58,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", hsm.slotID(), hsm.token().label().c_str()));
 
-	//GwKey(AESÅ°¸¦ »ý¼º)
+	//GwKey(AESÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	if (gatewayKey(hsm.token(), AES_KEY_SIZE, CGwData::getInstance()->hGw_) != 0) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("gatewayKey creation failed\n")));
 		ACE_RETURN(-1);
@@ -65,8 +69,8 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	ACE_INET_Addr listen;
 	listen.set((u_short)SERVER_PORT);
-	CSeAcceptor acceptor;	//CSeAcceptor´Â CGwData¸¦ ÀÚ·á±¸Á¶·Î °®´Â ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR>¿¡¼­ »ó¼Ó¹ÞÀº Å¬·¡½ºÀÌ´Ù
-							//»õ·Î¿î Á¢¼ÓÀÌ »ý±â¸é StreamHandlerÀÇ open°úÁ¤¿¡¼­ ÀÌ ÀÚ·á±¸Á¶¿¡ Á¢¼Ó¹øÈ£È­ StreamHandlerÀÇ Æ÷ÀÎÅÍ¸¦ µî·ÏÇÑ´Ù.
+	CSeAcceptor acceptor;	//CSeAcceptorï¿½ï¿½ CGwDataï¿½ï¿½ ï¿½Ú·á±¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ACE_Acceptor<StreamHandler, ACE_SOCK_ACCEPTOR>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½
+							//ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ StreamHandlerï¿½ï¿½ openï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú·á±¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ó¹ï¿½È£È­ StreamHandlerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	if(acceptor.open(listen)==-1) 
 		ACE_ERROR_RETURN((LM_ERROR,ACE_TEXT("(%t)\n"),ACE_TEXT("acceptor.open")),-1);
 

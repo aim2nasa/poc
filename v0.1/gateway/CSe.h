@@ -1,6 +1,9 @@
-#ifndef __CSE_H__
+﻿#ifndef __CSE_H__
 #define __CSE_H__
 
+#ifndef _WIN32
+#include "cryptoki.h"
+#endif
 #include "protocol.h"
 #include "pkcs11.h"
 

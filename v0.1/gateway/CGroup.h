@@ -1,6 +1,9 @@
-#ifndef __CGROUP_H__
+﻿#ifndef __CGROUP_H__
 #define __CGROUP_H__
 
+#ifndef _WIN32
+#include <string>
+#endif
 #include <list>
 #include "CSe.h"
 
