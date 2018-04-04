@@ -49,6 +49,11 @@ CHsmProxy.o : CHsmProxy.h CHsmProxy.cpp
 	@echo $@...
 	$(CXX) -fPIC -c CHsmProxy.cpp CHsmProxy.h $(INCLUDES) $(CXXFLAGS) $(LIBS)
 
+install: $(TARGET)
+	sudo mkdir /usr/local/lib/poc
+	sudo cp libhsmproxy.so.1 /usr/local/lib/poc
+	sudo ln -s /usr/local/lib/poc/libhsmproxy.so.1 /usr/local/lib/poc/libhsmproxy.so
+
 clean:
 	@echo $@...
 	rm -rf *.o *.gch $(TARGET) *.so ../../common/*.gch
