@@ -29,7 +29,7 @@ all : $(TARGET)
 
 $(TARGET) : $(OBJS)
 	@echo $@:$(OBJS)...
-	$(CXX) -shared -Wl,-soname,$@ -o $@ $(OBJS)
+	$(CXX) -shared -Wl,-soname,$@ -o $@ $(OBJS) $(LIBS)
 	@echo $*
 	ln -s $@ $(LIBNAME).so
 
