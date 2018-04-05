@@ -11,7 +11,7 @@ SOFTHSM2_LIBS = -L$(SOFTHSM2_ROOT)/src/lib/.libs -lsofthsm_convarch -lsofthsm2
 COMMON_INCLUDES = -I../../common -I../common -I../hsmProxy -I$(POC_ROOT)/v0.1/common
 GATEWAY_INCLUDES = -I$(POC_ROOT)/v0.1/gateway
 OPENSSL_INCLUDES = -I$(OPENSSL_ROOT)/include
-OPENSSL_LIBS = -L$(OPENSSL_ROOT) -lcrypto -lssl
+OPENSSL_LIBS = -L$(OPENSSL_ROOT)/lib -lcrypto -lssl
 
 ACE_INCLUDES = -I$(ACE_ROOT)
 ACE_LIBS = -L$(ACE_ROOT)/lib -lACE -lACE_SSL
