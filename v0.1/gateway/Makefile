@@ -1,8 +1,8 @@
 #Define variables 
-POC_ROOT = $(HOME)/poc
-SOFTHSM2_ROOT = $(HOME)/softhsm-2.3.0
-OPENSSL_ROOT = $(HOME)/openssl-1.0.2l
-ACE_ROOT = $(HOME)/ACE_wrappers
+#POC_ROOT = $(HOME)/poc
+#SOFTHSM2_ROOT = $(HOME)/softhsm-2.3.0
+#OPENSSL_ROOT = $(HOME)/openssl-1.0.2l
+#ACE_ROOT = $(HOME)/ACE_wrappers
 
 #Compile options
 SOFTHSM2_INCLUDES = -I$(SOFTHSM2_ROOT) -I$(SOFTHSM2_ROOT)/src/lib/pkcs11 -I$(SOFTHSM2_ROOT)/src/lib/common -I$(SOFTHSM2_ROOT)/src/lib/data_mgr -I$(SOFTHSM2_ROOT)/src/lib/crypto -I$(SOFTHSM2_ROOT)/src/lib/object_store
