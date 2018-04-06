@@ -37,6 +37,7 @@ int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
 int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
 int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
 int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label);
+void displayKey(const char *name,const char *buffer, unsigned int len);
 
 int main(int argc, char *argv[])
 {
@@ -200,6 +201,7 @@ int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	ACE_ASSERT(len%AES_KEY_SIZE == 0);
 
 	unsigned int count = len / AES_KEY_SIZE;
+	ACE_DEBUG((LM_DEBUG, "NTF TAGS received keys:%d\n", count));
 	for (unsigned int i = 0; i < count; i++) {
 		(i == 0) ? onTagKey(buffer,AES_KEY_SIZE,hSession) : onSeKey(buffer,AES_KEY_SIZE,hSession);
 		buffer += AES_KEY_SIZE;
@@ -207,9 +209,18 @@ int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	ACE_RETURN(0);
 }
 
+void displayKey(const char *name,const char *buffer, unsigned int len)
+{
+	ACE_DEBUG((LM_DEBUG, "%s:%d bytes\n",name,len));
+	for(unsigned int i=0;i<len;i++) 
+		ACE_DEBUG((LM_DEBUG, "%x ",buffer[i]));
+	ACE_DEBUG((LM_DEBUG, "\n"));
+}
+
 int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 {
 	ACE_ASSERT(len == AES_KEY_SIZE);
+	displayKey("TAG KEY",buffer,len);
 
 	CK_OBJECT_HANDLE hTagKey = CK_INVALID_HANDLE;
 	if (aesKeyInjection((CK_BYTE_PTR)(buffer) ,len, hSession, hTagKey, TAG_KEY_LABEL)!=0) 
@@ -222,6 +233,7 @@ int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 {
 	ACE_ASSERT(len == AES_KEY_SIZE);
+	displayKey("SE KEY",buffer,len);
 
 	CK_OBJECT_HANDLE hSeKey = CK_INVALID_HANDLE;
 	if (aesKeyInjection((CK_BYTE_PTR)(buffer), len, hSession, hSeKey, SE_KEY_LABEL) != 0)
