@@ -19,7 +19,7 @@
 
 #define SIZE_BUF (1024*8)
 
-static char* SERVER_HOST = "127.0.0.1";
+static const char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9876;
 
 #ifdef USE_SSL
