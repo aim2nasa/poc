@@ -31,15 +31,15 @@ void certInfo(SSL *ssl);
 #define SE_SOCK_CONNECTOR ACE_SOCK_Connector
 #endif
 
-int createSerialNo(CToken &token, char *sn, unsigned int snSize);
-size_t send(SE_SOCK_STREAM &sock, const char *buffer, size_t len);
-int sendSerialNo(SE_SOCK_STREAM &sock, const char *serialNo);
-int registerKeys(SE_SOCK_STREAM &sock, CK_SESSION_HANDLE hSession);
-int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
-int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
-int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
-int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label);
-void displayKey(const char *name,const char *buffer, unsigned int len);
+static int createSerialNo(CToken &token, char *sn, unsigned int snSize);
+static size_t send(SE_SOCK_STREAM &sock, const char *buffer, size_t len);
+static int sendSerialNo(SE_SOCK_STREAM &sock, const char *serialNo);
+static int registerKeys(SE_SOCK_STREAM &sock, CK_SESSION_HANDLE hSession);
+static int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
+static int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
+static int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession);
+static int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label);
+static void displayKey(const char *name,const char *buffer, unsigned int len);
 
 int main(int argc, char *argv[])
 {
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-int createSerialNo(CToken &token, char *sn, unsigned int snSize)
+static int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 {
 	if (token.genRandom(sn, snSize) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "SE serialNo creation failed"), -1);
@@ -126,12 +126,12 @@ int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 	ACE_RETURN(0);
 }
 
-size_t send(SE_SOCK_STREAM &sock, const char *buffer, size_t len)
+static size_t send(SE_SOCK_STREAM &sock, const char *buffer, size_t len)
 {
 	return sock.send_n(buffer,len);
 }
 
-int sendSerialNo(SE_SOCK_STREAM &sock, const char *serialNo)
+static int sendSerialNo(SE_SOCK_STREAM &sock, const char *serialNo)
 {
 	size_t send_cnt = 0;
 
@@ -154,7 +154,7 @@ int sendSerialNo(SE_SOCK_STREAM &sock, const char *serialNo)
 	ACE_RETURN(0);
 }
 
-int registerKeys(SE_SOCK_STREAM &sock, CK_SESSION_HANDLE hSession)
+static int registerKeys(SE_SOCK_STREAM &sock, CK_SESSION_HANDLE hSession)
 {
 	size_t recv_cnt = 0;
 	char buffer[SIZE_BUF];
@@ -181,7 +181,7 @@ int registerKeys(SE_SOCK_STREAM &sock, CK_SESSION_HANDLE hSession)
 	ACE_RETURN(0);
 }
 
-int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
+static int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 {
 	ACE_ASSERT(len%AES_KEY_SIZE == 0);
 
@@ -194,7 +194,7 @@ int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	ACE_RETURN(0);
 }
 
-void displayKey(const char *name,const char *buffer, unsigned int len)
+static void displayKey(const char *name,const char *buffer, unsigned int len)
 {
 	ACE_DEBUG((LM_DEBUG, "%s:%d bytes\n",name,len));
 	for(unsigned int i=0;i<len;i++) 
@@ -202,7 +202,7 @@ void displayKey(const char *name,const char *buffer, unsigned int len)
 	ACE_DEBUG((LM_DEBUG, "\n"));
 }
 
-int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
+static int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 {
 	ACE_ASSERT(len == AES_KEY_SIZE);
 	displayKey("TAG KEY",buffer,len);
@@ -215,7 +215,7 @@ int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	ACE_RETURN(0);
 }
 
-int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
+static int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 {
 	ACE_ASSERT(len == AES_KEY_SIZE);
 	displayKey("SE KEY",buffer,len);
@@ -228,7 +228,7 @@ int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
 	ACE_RETURN(0);
 }
 
-int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label)
+static int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label)
 {
 	//원하는 키값으로 객체를 생성한다.
 	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
@@ -256,7 +256,7 @@ int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSessio
 }
 
 #ifdef USE_SSL
-void certInfo(SSL *ssl)
+static void certInfo(SSL *ssl)
 {
 	X509* cert = ::SSL_get_peer_certificate(ssl);
 	ACE_ASSERT(cert);
