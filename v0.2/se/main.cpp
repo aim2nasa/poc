@@ -231,7 +231,6 @@ static int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSess
 static int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label)
 {
 	//원하는 키값으로 객체를 생성한다.
-	CK_MECHANISM mechanism = { CKM_AES_KEY_GEN, NULL_PTR, 0 };
 	CK_BBOOL bTrue = CK_TRUE;
 	CK_BBOOL bFalse = CK_FALSE;
 	CK_OBJECT_CLASS secretClass = CKO_SECRET_KEY;
