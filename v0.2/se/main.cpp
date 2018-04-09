@@ -153,7 +153,7 @@ static int onNtfTags(const char *buffer, unsigned int len)
 	ACE_RETURN(0);
 }
 
-static size_t send(SE_SOCK_STREAM &sock, const char *buffer, size_t len)
+static ssize_t send(SE_SOCK_STREAM &sock, const char *buffer, size_t len)
 {
 	return sock.send_n(buffer,len);
 }
