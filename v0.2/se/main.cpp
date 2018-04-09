@@ -133,7 +133,7 @@ static size_t send(SE_SOCK_STREAM &sock, const char *buffer, size_t len)
 
 static int sendSerialNo(SE_SOCK_STREAM &sock, const char *serialNo)
 {
-	size_t send_cnt = 0;
+	ssize_t send_cnt = 0;
 
 	//프로토콜 포맷 정의
 	//{prefix, 8바이트} {dataSize,바이트} {data}
@@ -156,7 +156,7 @@ static int sendSerialNo(SE_SOCK_STREAM &sock, const char *serialNo)
 
 static int registerKeys(SE_SOCK_STREAM &sock, CK_SESSION_HANDLE hSession)
 {
-	size_t recv_cnt = 0;
+	ssize_t recv_cnt = 0;
 	char buffer[SIZE_BUF];
 
 	//prefix
