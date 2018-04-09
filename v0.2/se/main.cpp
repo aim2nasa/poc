@@ -12,10 +12,13 @@
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_stdlib.h"
 #include "ace/Truncate.h"
+
+#include "protocol.h"
+#ifdef USE_SOFTHSM
 #include "library.h"
 #include "CToken.h"
-#include "protocol.h"
 #include "CHsmProxy.h"
+#endif
 
 #define SIZE_BUF (1024*8)
 
@@ -63,6 +66,9 @@ static void displayKey(const char *name,const char *buffer, unsigned int len)
 	ACE_DEBUG((LM_DEBUG, "\n"));
 }
 
+#ifdef USE_SOFTHSM
+CHsmProxy hsm;
+
 static int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE &hKey, const char *label)
 {
 	//원하는 키값으로 객체를 생성한다.
@@ -89,45 +95,6 @@ static int aesKeyInjection(CK_BYTE_PTR key, CK_ULONG keySize, CK_SESSION_HANDLE 
 	ACE_RETURN(0);
 }
 
-static int onTagKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
-{
-	ACE_ASSERT(len == AES_KEY_SIZE);
-	displayKey("TAG KEY",buffer,len);
-
-	CK_OBJECT_HANDLE hTagKey = CK_INVALID_HANDLE;
-	if (aesKeyInjection((CK_BYTE_PTR)(buffer) ,len, hSession, hTagKey, TAG_KEY_LABEL)!=0) 
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hSession), -1);
-
-	ACE_ASSERT(hTagKey != CK_INVALID_HANDLE);
-	ACE_RETURN(0);
-}
-
-static int onSeKey(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
-{
-	ACE_ASSERT(len == AES_KEY_SIZE);
-	displayKey("SE KEY",buffer,len);
-
-	CK_OBJECT_HANDLE hSeKey = CK_INVALID_HANDLE;
-	if (aesKeyInjection((CK_BYTE_PTR)(buffer), len, hSession, hSeKey, SE_KEY_LABEL) != 0)
-		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hSession), -1);
-
-	ACE_ASSERT(hSeKey != CK_INVALID_HANDLE);
-	ACE_RETURN(0);
-}
-
-static int onNtfTags(const char *buffer, unsigned int len, CK_SESSION_HANDLE hSession)
-{
-	ACE_ASSERT(len%AES_KEY_SIZE == 0);
-
-	unsigned int count = len / AES_KEY_SIZE;
-	ACE_DEBUG((LM_DEBUG, "NTF TAGS received keys:%d\n", count));
-	for (unsigned int i = 0; i < count; i++) {
-		(i == 0) ? onTagKey(buffer,AES_KEY_SIZE,hSession) : onSeKey(buffer,AES_KEY_SIZE,hSession);
-		buffer += AES_KEY_SIZE;
-	}
-	ACE_RETURN(0);
-}
-
 static int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 {
 	if (token.genRandom(sn, snSize) != 0)
@@ -137,6 +104,50 @@ static int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 	for (unsigned long i = 0; i < snSize; i++) ACE_DEBUG((LM_INFO, ACE_TEXT("%0x "), static_cast<unsigned char>(sn[i])));
 	ACE_DEBUG((LM_INFO, "\n"));
 
+	ACE_RETURN(0);
+}
+#endif
+
+static int onTagKey(const char *buffer, unsigned int len)
+{
+	ACE_ASSERT(len == AES_KEY_SIZE);
+	displayKey("TAG KEY",buffer,len);
+
+#ifdef USE_SOFTHSM
+	CK_OBJECT_HANDLE hTagKey = CK_INVALID_HANDLE;
+	if (aesKeyInjection((CK_BYTE_PTR)(buffer) ,len, hsm.token().session(), hTagKey, TAG_KEY_LABEL)!=0) 
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hsm.token().session()), -1);
+
+	ACE_ASSERT(hTagKey != CK_INVALID_HANDLE);
+#endif
+	ACE_RETURN(0);
+}
+
+static int onSeKey(const char *buffer, unsigned int len)
+{
+	ACE_ASSERT(len == AES_KEY_SIZE);
+	displayKey("SE KEY",buffer,len);
+
+#ifdef USE_SOFTHSM
+	CK_OBJECT_HANDLE hSeKey = CK_INVALID_HANDLE;
+	if (aesKeyInjection((CK_BYTE_PTR)(buffer), len, hsm.token().session(), hSeKey, SE_KEY_LABEL) != 0)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hsm.token().session()), -1);
+
+	ACE_ASSERT(hSeKey != CK_INVALID_HANDLE);
+#endif
+	ACE_RETURN(0);
+}
+
+static int onNtfTags(const char *buffer, unsigned int len)
+{
+	ACE_ASSERT(len%AES_KEY_SIZE == 0);
+
+	unsigned int count = len / AES_KEY_SIZE;
+	ACE_DEBUG((LM_DEBUG, "NTF TAGS received keys:%d\n", count));
+	for (unsigned int i = 0; i < count; i++) {
+		(i == 0) ? onTagKey(buffer,AES_KEY_SIZE) : onSeKey(buffer,AES_KEY_SIZE);
+		buffer += AES_KEY_SIZE;
+	}
 	ACE_RETURN(0);
 }
 
@@ -168,7 +179,7 @@ static int sendSerialNo(SE_SOCK_STREAM &sock, const char *serialNo)
 	ACE_RETURN(0);
 }
 
-static int registerKeys(SE_SOCK_STREAM &sock, CK_SESSION_HANDLE hSession)
+static int registerKeys(SE_SOCK_STREAM &sock)
 {
 	ssize_t recv_cnt = 0;
 	char buffer[SIZE_BUF];
@@ -191,12 +202,19 @@ static int registerKeys(SE_SOCK_STREAM &sock, CK_SESSION_HANDLE hSession)
 			ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "Error recv_n(%d), data", recv_cnt), -1);
 	}
 
-	if (prefix == PRF_NTF_TAGS) onNtfTags(buffer, dataSize, hSession);
+	if (prefix == PRF_NTF_TAGS) onNtfTags(buffer, dataSize);
 	ACE_RETURN(0);
 }
 
 int main(int argc, char *argv[])
 {
+#ifdef USE_SOFTHSM
+	ACE_DEBUG((LM_INFO, "configured to use softhsm\n"));
+#elif defined(USE_OPTEE)
+	ACE_DEBUG((LM_INFO, "configured to use optee\n"));
+#else
+	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Error predefine missing, define USE_SOFTHSM or USE_OPTEE\n")), -1);
+#endif
 	if (argc<6) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:se <host> <port> <label> <soPin> <userPin>\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
@@ -211,15 +229,17 @@ int main(int argc, char *argv[])
 	ACE_OS::atoi(argv[2]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[2]);
 	ACE_DEBUG((LM_INFO, "(%P|%t) server info(addr:%s,port:%d)\n", server_host, server_port));
 
-	CHsmProxy hsm;
+	char serialNo[SERIAL_NO_SIZE];
 	ACE_DEBUG((LM_INFO, "(%t) set environment...\n"));
-#ifndef _WIN32
+
+#ifdef USE_SOFTHSM
+	#ifndef _WIN32
 	ACE_DEBUG((LM_INFO, "(%t) linux environment ./softhsm2-linux.conf\n"));
 	hsm.setenv("SOFTHSM2_CONF", "./softhsm2-linux.conf", 1);
-#else
+	#else
 	ACE_DEBUG((LM_INFO, "(%t) win32 environment .\\softhsm2.conf\n"));
 	hsm.setenv("SOFTHSM2_CONF", ".\\softhsm2.conf", 1);
-#endif
+	#endif
 	CHsmProxy::emptyToken();
 	ACE_DEBUG((LM_INFO, "(%t) empty token folder\n"));
 
@@ -230,11 +250,11 @@ int main(int argc, char *argv[])
 	ACE_DEBUG((LM_INFO, "(%t) SlotID:%u Token:%s session ready\n", hsm.slotID(), hsm.token().label().c_str()));
 
 	//SE자신의 가상의 시리얼 넘버를 생성
-	char serialNo[SERIAL_NO_SIZE];
 	if (createSerialNo(hsm.token(),serialNo, SERIAL_NO_SIZE) != 0)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "SE serialNo creation failed"), -1);
 
 	ACE_DEBUG((LM_INFO, "(%t) serial number created\n"));
+#endif
 
 	ACE_INET_Addr remote_addr(server_port, server_host);
 	SE_SOCK_STREAM client_stream;
@@ -258,7 +278,7 @@ int main(int argc, char *argv[])
 	if (sendSerialNo(client_stream, serialNo) != 0) ACE_RETURN(-1);
 	ACE_DEBUG((LM_INFO, "(%t) serial number sent to gateway\n"));
 
-	if (registerKeys(client_stream, hsm.token().session()) != 0) ACE_RETURN(-1);
+	if (registerKeys(client_stream) != 0) ACE_RETURN(-1);
 	ACE_DEBUG((LM_INFO, "(%t) SE key registered\n"));
 
 	if (client_stream.close() == -1)
