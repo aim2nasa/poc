@@ -13,6 +13,8 @@
 #include "ace/OS_NS_stdlib.h"
 #include "ace/Truncate.h"
 
+#define USE_SOFTHSM
+
 #include "protocol.h"
 #ifdef USE_SOFTHSM
 #include "library.h"
