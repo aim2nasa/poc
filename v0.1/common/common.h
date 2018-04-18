@@ -1,13 +1,13 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define AES_MAX_KEY_SIZE	32	// 32*8 = 256bit , 본 프로젝트에서 사용가능한 최대의 Key size
-#define AES_KEY_SIZE		32	//본 프로젝트에서 사용할 AES의 Key size (128bit)
+#define AES_MAX_KEY_SIZE	32	//32*8 = 256bit , Maximum key size that can be assigned
+#define AES_KEY_SIZE		32	//AES Key size used in this project 
 
-#define TAG_KEY_LABEL	"GroupTagKey"	//토큰에서 Tag키를 찾기 위해 사용하는 라벨
-#define SE_KEY_LABEL	"SeKey"			//토큰에서 SE키를 찾기 위해 사용하는 라벨
+#define TAG_KEY_LABEL	"GroupTagKey"	//Label given for each Group Tag
+#define SE_KEY_LABEL	"SeKey"		//Label giben for each SE
 
-#define USE_SSL							//SSL(ACE SSL)을 사용하는 경우에 정의
+#define USE_SSL				//If we use SSL(ACE SSL) then USE_SSL must be defined Otherwise SSL disabled 
 
 #ifdef _WIN32
 #define MODEXPORT __declspec(dllexport)
