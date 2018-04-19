@@ -130,6 +130,8 @@ static int onTagKey(const char *buffer, unsigned int len)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hsm.token().session()), -1);
 
 	ACE_ASSERT(hTagKey != CK_INVALID_HANDLE);
+#elif USE_OPTEE
+	return (int)keyInject(&o,TEE_STORAGE_PRIVATE,TAG_KEY_LABEL,(uint8_t*)buffer,len);
 #endif
 	ACE_RETURN(0);
 }
@@ -145,6 +147,8 @@ static int onSeKey(const char *buffer, unsigned int len)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) Error in aesKeyInjection(session:%d)\n"), hsm.token().session()), -1);
 
 	ACE_ASSERT(hSeKey != CK_INVALID_HANDLE);
+#elif USE_OPTEE
+	return (int)keyInject(&o,TEE_STORAGE_PRIVATE,SE_KEY_LABEL,(uint8_t*)buffer,len);
 #endif
 	ACE_RETURN(0);
 }
