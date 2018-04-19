@@ -131,7 +131,13 @@ static int onTagKey(const char *buffer, unsigned int len)
 
 	ACE_ASSERT(hTagKey != CK_INVALID_HANDLE);
 #elif USE_OPTEE
-	return (int)keyInject(&o,TEE_STORAGE_PRIVATE,TAG_KEY_LABEL,(uint8_t*)buffer,len);
+	{
+		TEEC_Result res = keyInject(&o,TEE_STORAGE_PRIVATE,TAG_KEY_LABEL,(uint8_t*)buffer,len*8);
+		if(res!=TEEC_SUCCESS) 
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyInject(%s) failed 0x%x\n"),TAG_KEY_LABEL,res), -1);
+
+		ACE_DEBUG((LM_INFO, ACE_TEXT("%s key injected\n"),TAG_KEY_LABEL));
+	}
 #endif
 	ACE_RETURN(0);
 }
@@ -148,7 +154,13 @@ static int onSeKey(const char *buffer, unsigned int len)
 
 	ACE_ASSERT(hSeKey != CK_INVALID_HANDLE);
 #elif USE_OPTEE
-	return (int)keyInject(&o,TEE_STORAGE_PRIVATE,SE_KEY_LABEL,(uint8_t*)buffer,len);
+	{
+		TEEC_Result res = keyInject(&o,TEE_STORAGE_PRIVATE,SE_KEY_LABEL,(uint8_t*)buffer,len*8);
+		if(res!=TEEC_SUCCESS) 
+			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyInject(%s) failed 0x%x\n"),SE_KEY_LABEL,res), -1);
+
+		ACE_DEBUG((LM_INFO, ACE_TEXT("%s key injected\n"),SE_KEY_LABEL));
+	}
 #endif
 	ACE_RETURN(0);
 }
