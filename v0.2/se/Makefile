@@ -23,7 +23,8 @@ INCLUDES = $(COMMON_INCLUDES) $(GATEWAY_INCLUDES) $(SOFTHSM2_INCLUDES) $(OPENSSL
 LIBS = $(HSMPROXY_LIBS) $(SOFTHSM2_LIBS) $(OPENSSL_LIBS) $(ACE_LIBS)
 
 CXX = g++
-CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
+CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden -D USE_OPTEE
+CXXFLAGS += -I$(TEEC_EXPORT)/include -I$(OKEY_ROOT)
 
 TARGET = se
 OBJS = main.o

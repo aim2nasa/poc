@@ -13,13 +13,13 @@
 #include "ace/OS_NS_stdlib.h"
 #include "ace/Truncate.h"
 
-#define USE_SOFTHSM
-
 #include "protocol.h"
 #ifdef USE_SOFTHSM
 #include "library.h"
 #include "CToken.h"
 #include "CHsmProxy.h"
+#elif USE_OPTEE
+#include <okey.h>
 #endif
 
 #define SIZE_BUF (1024*8)
