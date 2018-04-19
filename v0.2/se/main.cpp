@@ -269,6 +269,14 @@ int main(int argc, char *argv[])
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "SE serialNo creation failed"), -1);
 
 	ACE_DEBUG((LM_INFO, "(%t) serial number created\n"));
+#elif USE_OPTEE
+	TEEC_Result res = initializeContext(NULL,&o);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("initializeContext failed 0x%x\n"),res), -1);
+
+	res = openSession(&o,TEEC_LOGIN_PUBLIC,NULL,NULL);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("openSession failed 0x%x\n"),res), -1);
 #endif
 
 	ACE_INET_Addr remote_addr(server_port, server_host);
@@ -299,6 +307,9 @@ int main(int argc, char *argv[])
 	if (client_stream.close() == -1)
 		ACE_ERROR_RETURN((LM_ERROR, "(%P|%t) %p \n", "close"), -1);
 
+#if USE_OPTEE
+	finalizeContext(&o);
+#endif
 	ACE_DEBUG((LM_INFO, "(%t) SE successfully initialized\n"));
 	return 0;
 }
