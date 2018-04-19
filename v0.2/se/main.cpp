@@ -237,17 +237,23 @@ int main(int argc, char *argv[])
 {
 #ifdef USE_SOFTHSM
 	ACE_DEBUG((LM_INFO, "configured to use softhsm\n"));
-#elif defined(USE_OPTEE)
-	ACE_DEBUG((LM_INFO, "configured to use optee\n"));
-#else
-	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Error predefine missing, define USE_SOFTHSM or USE_OPTEE\n")), -1);
-#endif
 	if (argc<6) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:se <host> <port> <label> <soPin> <userPin>\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9876)\n")));
 		ACE_RETURN(-1);
 	}
+#elif defined(USE_OPTEE)
+	ACE_DEBUG((LM_INFO, "configured to use optee\n"));
+	if (argc<3) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:se <host> <port>\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9876)\n")));
+		ACE_RETURN(-1);
+	}
+#else
+	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Error predefine missing, define USE_SOFTHSM or USE_OPTEE\n")), -1);
+#endif
 
 	const char *server_host;
 	ACE_OS::atoi(argv[1]) == 0 ? server_host = SERVER_HOST : server_host = argv[1];
