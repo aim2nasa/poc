@@ -21,11 +21,13 @@ ACE_LIBS = -L/usr/local/lib -lACE -lACE_SSL
 
 INCLUDES = $(COMMON_INCLUDES) $(GATEWAY_INCLUDES) $(SOFTHSM2_INCLUDES) $(OPENSSL_INCLUDES) $(HSMPROXY_INCLUDES)
 LIBS = $(HSMPROXY_LIBS) $(SOFTHSM2_LIBS) $(OPENSSL_LIBS) $(ACE_LIBS)
-LIBS += -lteec -L$(TEEC_EXPORT)/lib -lokey -L$(OKEY_ROOT)
 
 CXX = g++
-CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden -D USE_OPTEE
-CXXFLAGS += -I$(TEEC_EXPORT)/include -I$(OKEY_ROOT)
+CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
+
+#additional configuration when we use OPTEE
+CXXFLAGS += -D USE_OPTEE -I$(TEEC_EXPORT)/include -I$(OKEY_ROOT)
+LIBS += -lteec -L$(TEEC_EXPORT)/lib -lokey -L$(OKEY_ROOT)
 
 TARGET = se
 OBJS = main.o
