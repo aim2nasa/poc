@@ -4,7 +4,9 @@
 #include <ace/SOCK_Acceptor.h>
 #include <ace/Acceptor.h>
 #include <ace/Reactor_Notification_Strategy.h>
+#ifdef USE_SOFTHSM
 #include "CHsmProxy.h"
+#endif
 
 class Stream_Handler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
 private:
