@@ -10,7 +10,6 @@
 #include <ace/Acceptor.h>
 #include <ace/Reactor_Notification_Strategy.h>
 #include "CHsmProxy.h"
-#include "common.h"
 
 #include "CClientAcceptor.h"
 

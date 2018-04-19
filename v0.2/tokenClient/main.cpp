@@ -8,7 +8,6 @@
 #include "ace/OS_NS_stdlib.h"
 #include "ace/OS_NS_sys_time.h"
 #include "CHsmProxy.h"
-#include "common.h"
 
 #define SIZE_BUF 256
 
