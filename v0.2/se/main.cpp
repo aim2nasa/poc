@@ -108,6 +108,8 @@ static int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 
 	ACE_RETURN(0);
 }
+#elif USE_OPTEE
+okey o;
 #endif
 
 static int onTagKey(const char *buffer, unsigned int len)
