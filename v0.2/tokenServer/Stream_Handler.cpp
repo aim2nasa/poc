@@ -2,7 +2,10 @@
 #include "CClientAcceptor.h"
 
 Stream_Handler::Stream_Handler()
-: noti_(0, this, ACE_Event_Handler::WRITE_MASK), autheProcess_(false), pHsm_(NULL), hTagKey_(0), hSeKey_(0)
+: noti_(0, this, ACE_Event_Handler::WRITE_MASK), autheProcess_(false)
+#ifdef USE_SOFTHSM
+	, pHsm_(NULL), hTagKey_(0), hSeKey_(0)
+#endif
 {
 
 }
@@ -20,9 +23,11 @@ int Stream_Handler::open(void * p)
 			remote_addr_.get_host_addr(), remote_addr_.get_port_number()));
 	}
 	CClientAcceptor* ca = ((CClientAcceptor*)p);
+#ifdef USE_SOFTHSM
 	pHsm_ = ca->pHsm_;
 	hTagKey_ = ca->hTagKey_;
 	hSeKey_ = ca->hSeKey_;
+#endif
 	return 0;
 }
 
@@ -44,7 +49,9 @@ int Stream_Handler::handle_input(ACE_HANDLE handle)
 
 	unsigned long ulDataLen;
 	std::vector<unsigned char> vDecryptedData;
+#ifdef USE_SOFTHSM
 	decrypt(CHsmProxy::AES_ECB, hTagKey_, (unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
+#endif
 	ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 
 	if (!autheProcess_) {
@@ -69,7 +76,9 @@ int Stream_Handler::handle_input(ACE_HANDLE handle)
 
 	unsigned long ulEncryptedDataLen;
 	std::vector<unsigned char> vEncryptedData;
+#ifdef USE_SOFTHSM
 	encrypt(CHsmProxy::AES_ECB, hTagKey_, (unsigned char*)buf, bufferSize, vEncryptedData, ulEncryptedDataLen);
+#endif
 
 	ACE_Message_Block *mb;
 	ACE_NEW_RETURN(mb, ACE_Message_Block(ulEncryptedDataLen), -1);
@@ -124,7 +133,9 @@ int Stream_Handler::sendAuthRequestResult(unsigned char *data, unsigned long dat
 {
 	unsigned long ulEncryptedDataLen;
 	std::vector<unsigned char> vEncryptedData;
+#ifdef USE_SOFTHSM
 	encrypt(CHsmProxy::AES_ECB, hTagKey_, data, dataLen, vEncryptedData, ulEncryptedDataLen);
+#endif
 
 	ACE_Message_Block *mb;
 	ACE_NEW_RETURN(mb, ACE_Message_Block(ulEncryptedDataLen), -1);
@@ -133,6 +144,7 @@ int Stream_Handler::sendAuthRequestResult(unsigned char *data, unsigned long dat
 	return 0;
 }
 
+#ifdef USE_SOFTHSM
 void Stream_Handler::encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
 {
 	CHsmProxy &hsm = *pHsm_;
@@ -160,3 +172,4 @@ void Stream_Handler::decrypt(CHsmProxy::MechanismType mType, unsigned long hKey,
 	nRtn = hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen);
 	ACE_ASSERT( nRtn == 0);
 }
+#endif

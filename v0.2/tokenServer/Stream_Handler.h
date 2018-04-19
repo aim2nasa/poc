@@ -13,8 +13,10 @@ private:
 	ACE_INET_Addr remote_addr_;
 	ACE_Reactor_Notification_Strategy noti_;
 	bool autheProcess_;
+#ifdef USE_SOFTHSM
 	CHsmProxy *pHsm_;
 	unsigned long hTagKey_, hSeKey_;
+#endif
 
 public:
 	Stream_Handler();
@@ -25,8 +27,11 @@ public:
 	virtual int handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask);
 
 	int sendAuthRequestResult(unsigned char *data, unsigned long dataLen);
+
+#ifdef USE_SOFTHSM
 	void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
 	void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen);
+#endif
 };
 
 #endif
