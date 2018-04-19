@@ -13,6 +13,8 @@
 
 #ifdef USE_SOFTHSM
 #include "CHsmProxy.h"
+#elif USE_OPTEE
+#include <okey.h>
 #endif
 
 #define SERVER_PORT 9870
