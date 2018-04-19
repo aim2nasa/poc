@@ -277,6 +277,8 @@ int main(int argc, char *argv[])
 	res = openSession(&o,TEEC_LOGIN_PUBLIC,NULL,NULL);
 	if(res!=TEEC_SUCCESS)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("openSession failed 0x%x\n"),res), -1);
+
+	createSerialNo(serialNo,SERIAL_NO_SIZE);
 #endif
 
 	ACE_INET_Addr remote_addr(server_port, server_host);
