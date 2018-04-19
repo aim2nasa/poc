@@ -9,20 +9,26 @@
 #include <ace/Reactor.h>
 #include <ace/Acceptor.h>
 #include <ace/Reactor_Notification_Strategy.h>
-#include "CHsmProxy.h"
-
 #include "CClientAcceptor.h"
+
+#ifdef USE_SOFTHSM
+#include "CHsmProxy.h"
+#endif
 
 #define SERVER_PORT 9870
 
 int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
+#ifdef USE_SOFTHSM
+	ACE_DEBUG((LM_INFO, "configured to use softhsm\n"));
 	if (argc<3) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:tokenServer <port> <userPin>\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9870)\n")));
 		ACE_RETURN(-1);
 	}
-
+#else
+	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Error predefine missing, define USE_SOFTHSM or USE_OPTEE\n")), -1);
+#endif
 	u_short server_port;
 	ACE_OS::atoi(argv[1]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[1]);
 	ACE_DEBUG((LM_INFO, "(%t) gateway start at port:%u\n", server_port));
@@ -30,6 +36,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	ACE_INET_Addr listen;
 	listen.set(server_port);
 
+#ifdef USE_SOFTHSM
 	CHsmProxy hsm;
 #ifndef _WIN32
         hsm.setenv("SOFTHSM2_CONF", "./softhsm2-linux.conf", 1);
@@ -54,11 +61,14 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 	ACE_ASSERT(hSeKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
+#endif //USE_SOFTHSM
 
 	CClientAcceptor acceptor;
+#ifdef USE_SOFTHSM
 	acceptor.pHsm_ = &hsm;
 	acceptor.hTagKey_ = hTagKey;
 	acceptor.hSeKey_ = hSeKey;
+#endif //USE_SOFTHSM
 	acceptor.open(listen);
 
 	ACE_DEBUG((LM_INFO, "(%t) Running event loop...\n"));

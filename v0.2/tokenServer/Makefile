@@ -24,6 +24,7 @@ LIBS = $(HSMPROXY_LIBS) $(SOFTHSM2_LIBS) $(OPENSSL_LIBS) $(ACE_LIBS) -lpthread -
 
 CXX = g++
 CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
+CXXFLAGS += -D USE_SOFTHSM
 
 TARGET = tokenServer
 OBJS = main.o Stream_Handler.o
