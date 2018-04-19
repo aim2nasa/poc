@@ -110,6 +110,13 @@ static int createSerialNo(CToken &token, char *sn, unsigned int snSize)
 }
 #elif USE_OPTEE
 okey o;
+
+static void createSerialNo(char *sn,unsigned int snSize)
+{
+	srand(time(NULL));
+	unsigned int i,range=256;
+	for(i=0;i<snSize;i++) sn[i] = rand()%range;
+}
 #endif
 
 static int onTagKey(const char *buffer, unsigned int len)
