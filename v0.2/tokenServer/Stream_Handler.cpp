@@ -5,6 +5,8 @@ Stream_Handler::Stream_Handler()
 : noti_(0, this, ACE_Event_Handler::WRITE_MASK), autheProcess_(false)
 #ifdef USE_SOFTHSM
 	, pHsm_(NULL), hTagKey_(0), hSeKey_(0)
+#elif defined(USE_OPTEE)
+	, pO_(NULL), tagKey_(0), seKey_(0)
 #endif
 {
 
@@ -27,6 +29,10 @@ int Stream_Handler::open(void * p)
 	pHsm_ = ca->pHsm_;
 	hTagKey_ = ca->hTagKey_;
 	hSeKey_ = ca->hSeKey_;
+#elif defined(USE_OPTEE)
+	pO_ = ca->pO_;
+	tagKey_ = ca->tagKey_;
+	seKey_ = ca->seKey_;
 #endif
 	return 0;
 }
