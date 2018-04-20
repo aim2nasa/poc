@@ -98,11 +98,13 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	res = keyAllocOper(&o,true,keySize,&encOp);
 	if(res!=TEEC_SUCCESS)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyAllocOper(encode) failed 0x%x"),res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) encode operation handle:0x%x\n", encOp));
 
 	OperationHandle decOp;
 	res = keyAllocOper(&o,false,keySize,&decOp);
 	if(res!=TEEC_SUCCESS)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyAllocOper(decode) failed 0x%x"),res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) decode operation handle:0x%x\n", decOp));
 
 #endif //USE_SOFTHSM
 
