@@ -24,6 +24,8 @@ CHsmProxy hsm;	//전역변수
 void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
 void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen);
 int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsigned long hKey, char* buffer, const int bufferSize);
+#elif defined(USE_OPTEE)
+okey o;
 #endif
 
 int main(int argc, char *argv[])
