@@ -11,6 +11,7 @@
 #ifdef USE_SOFTHSM
 #include "CHsmProxy.h"
 #elif defined(USE_OPTEE)
+#include <common.h>
 #include <okey.h>
 #endif
 
@@ -92,6 +93,56 @@ int main(int argc, char *argv[])
 
 	ACE_ASSERT(hSeKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
+#elif defined(USE_OPTEE)
+	TEEC_Result res = initializeContext(NULL,&o);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("initializeContext failed 0x%x"), res), -1);
+
+	res = openSession(&o,TEEC_LOGIN_PUBLIC,NULL,NULL);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("openSession failed 0x%x"), res), -1);
+
+	uint32_t tagKey;
+	res = keyOpen(&o,TEE_STORAGE_PRIVATE,TAG_KEY_LABEL,&tagKey);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyOpen(%s) failed 0x%x"), TAG_KEY_LABEL,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) Tag key(0x%x) retrieved\n", tagKey));
+
+	size_t keySize = 256;	//TODO hardcode for the time being. need to be configurable and monitored through API in libokey
+
+	OperationHandle encOp;
+	res = keyAllocOper(&o,true,keySize,&encOp);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyAllocOper(encode) failed 0x%x"), res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) encode operation handle:0x%x\n", encOp));
+
+	OperationHandle decOp;
+	res = keyAllocOper(&o,false,keySize,&decOp);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyAllocOper(decode) failed 0x%x"), res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) decode operation handle:0x%x\n", decOp));
+
+	//inject key for operations
+	res = keySetkeyOper(&o,encOp,tagKey);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("encode keySetkeyOper(0x%x) failed 0x%x"), tagKey,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) setkey(0x%x) for encode operation(0x%x)\n", tagKey,encOp));
+
+	res = keySetkeyOper(&o,decOp,tagKey);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("decode keySetkeyOper(0x%x) failed 0x%x"), tagKey,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) setkey(0x%x) for decode operation(0x%x)\n", tagKey,decOp));
+
+	uint8_t shMemFactor = 1;
+	res = cipherInit(&o,encOp,shMemFactor);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("encode cipherInit(0x%x,%d) failed 0x%x"), encOp,shMemFactor,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) encode cipher initialized(0x%x) with shMemFactor=%d\n", encOp,shMemFactor));
+
+	res = cipherInit(&o,decOp,shMemFactor);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("decode cipherInit(0x%x,%d) failed 0x%x"), decOp,shMemFactor,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) decode cipher initialized(0x%x) with shMemFactor=%d\n", decOp,shMemFactor));
 #endif
 
 	size_t nRtn = 0;
