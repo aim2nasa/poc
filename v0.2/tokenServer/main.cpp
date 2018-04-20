@@ -11,10 +11,10 @@
 #include <ace/Reactor_Notification_Strategy.h>
 #include "CClientAcceptor.h"
 
-#include <common.h>
 #ifdef USE_SOFTHSM
 #include "CHsmProxy.h"
 #elif USE_OPTEE
+#include <common.h>
 #include <okey.h>
 #endif
 
