@@ -136,8 +136,8 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	acceptor.hSeKey_ = hSeKey;
 #elif defined(USE_OPTEE)
 	acceptor.pO_ = &o;
-	acceptor.tagKey_ = tagKey;
-	acceptor.seKey_ = seKey;
+	acceptor.encOp_ = encOp;
+	acceptor.decOp_ = decOp;
 #endif
 	acceptor.open(listen);
 

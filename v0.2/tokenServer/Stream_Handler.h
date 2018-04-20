@@ -22,7 +22,7 @@ private:
 	unsigned long hTagKey_, hSeKey_;
 #elif defined(USE_OPTEE)
 	okey *pO_;
-	uint32_t tagKey_,seKey_;
+	OperationHandle encOp_,decOp_;
 #endif
 
 public:

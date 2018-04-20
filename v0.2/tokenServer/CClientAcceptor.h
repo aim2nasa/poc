@@ -17,9 +17,9 @@ public:
 	CHsmProxy *pHsm_;
 	unsigned long hTagKey_, hSeKey_;
 #elif defined(USE_OPTEE)
-	CClientAcceptor() :pO_(NULL), tagKey_(0), seKey_(0){}
+	CClientAcceptor() :pO_(NULL), encOp_(0), decOp_(0){}
 	okey *pO_;
-	uint32_t tagKey_, seKey_;
+	OperationHandle encOp_,decOp_;
 #endif
 };
 
