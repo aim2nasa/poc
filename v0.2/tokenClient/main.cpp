@@ -27,6 +27,7 @@ int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsign
 int main(int argc, char *argv[])
 {
 #ifdef USE_SOFTHSM
+	ACE_DEBUG((LM_INFO, "configured to use softhsm\n"));
 	if (argc<4) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:tokenClient <host> <port> <userPin>\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
