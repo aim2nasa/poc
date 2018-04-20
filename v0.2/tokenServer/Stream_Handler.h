@@ -6,6 +6,8 @@
 #include <ace/Reactor_Notification_Strategy.h>
 #ifdef USE_SOFTHSM
 #include "CHsmProxy.h"
+#elif defined(USE_OPTEE)
+#include <okey.h>
 #endif
 
 class Stream_Handler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> {
@@ -18,6 +20,9 @@ private:
 #ifdef USE_SOFTHSM
 	CHsmProxy *pHsm_;
 	unsigned long hTagKey_, hSeKey_;
+#elif defined(USE_OPTEE)
+	okey *pO_;
+	uint32_t tagKey_,seKey_;
 #endif
 
 public:
