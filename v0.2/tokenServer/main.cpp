@@ -98,7 +98,11 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 	acceptor.pHsm_ = &hsm;
 	acceptor.hTagKey_ = hTagKey;
 	acceptor.hSeKey_ = hSeKey;
-#endif //USE_SOFTHSM
+#elif defined(USE_OPTEE)
+	acceptor.pO_ = &o;
+	acceptor.tagKey_ = tagKey;
+	acceptor.seKey_ = seKey;
+#endif
 	acceptor.open(listen);
 
 	ACE_DEBUG((LM_INFO, "(%t) Running event loop...\n"));
