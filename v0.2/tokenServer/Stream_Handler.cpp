@@ -178,4 +178,22 @@ void Stream_Handler::decrypt(CHsmProxy::MechanismType mType, unsigned long hKey,
 	nRtn = hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen);
 	ACE_ASSERT( nRtn == 0);
 }
+#elif defined(USE_OPTEE)
+TEEC_Result Stream_Handler::encrypt(unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
+{
+	TEEC_Result res = cipherUpdate(pO_,encOp_,data,dataLen);
+	if(res!=TEEC_SUCCESS) return res;
+
+	memcpy(&vEncryptedData.front(),outSharedMemory()->buffer,outSharedMemory()->size);
+	return res;
+}
+
+TEEC_Result Stream_Handler::decrypt(unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen)
+{
+	TEEC_Result res = cipherUpdate(pO_,decOp_,data,dataLen);
+	if(res!=TEEC_SUCCESS) return res;
+
+	memcpy(&vDecryptedData.front(),outSharedMemory()->buffer,outSharedMemory()->size);
+	return res;
+}
 #endif
