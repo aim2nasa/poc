@@ -57,6 +57,8 @@ int Stream_Handler::handle_input(ACE_HANDLE handle)
 	std::vector<unsigned char> vDecryptedData;
 #ifdef USE_SOFTHSM
 	decrypt(CHsmProxy::AES_ECB, hTagKey_, (unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
+#elif defined(USE_OPTEE)
+	decrypt((unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
 #endif
 	ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 
@@ -84,6 +86,8 @@ int Stream_Handler::handle_input(ACE_HANDLE handle)
 	std::vector<unsigned char> vEncryptedData;
 #ifdef USE_SOFTHSM
 	encrypt(CHsmProxy::AES_ECB, hTagKey_, (unsigned char*)buf, bufferSize, vEncryptedData, ulEncryptedDataLen);
+#elif defined(USE_OPTEE)
+	encrypt((unsigned char*)buf, bufferSize, vEncryptedData, ulEncryptedDataLen);
 #endif
 
 	ACE_Message_Block *mb;
@@ -141,6 +145,8 @@ int Stream_Handler::sendAuthRequestResult(unsigned char *data, unsigned long dat
 	std::vector<unsigned char> vEncryptedData;
 #ifdef USE_SOFTHSM
 	encrypt(CHsmProxy::AES_ECB, hTagKey_, data, dataLen, vEncryptedData, ulEncryptedDataLen);
+#elif defined(USE_OPTEE)
+	encrypt(data, dataLen, vEncryptedData, ulEncryptedDataLen);
 #endif
 
 	ACE_Message_Block *mb;
