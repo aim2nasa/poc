@@ -7,27 +7,35 @@
 #include "ace/OS_NS_unistd.h"
 #include "ace/OS_NS_stdlib.h"
 #include "ace/OS_NS_sys_time.h"
+
+#ifdef USE_SOFTHSM
 #include "CHsmProxy.h"
+#endif
 
 #define SIZE_BUF 256
 
 static char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9870;
 
+#ifdef USE_SOFTHSM
 CHsmProxy hsm;	//전역변수
-
 void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
 void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen);
 int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsigned long hKey, char* buffer, const int bufferSize);
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef USE_SOFTHSM
 	if (argc<4) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:tokenClient <host> <port> <userPin>\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9870)\n")));
 		ACE_RETURN(-1);
 	}
+#else
+	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Error predefine missing, define USE_SOFTHSM or USE_OPTEE\n")), -1);
+#endif
 
 	char *server_host = NULL;
 	ACE_OS::atoi(argv[1]) == 0 ? server_host = SERVER_HOST : server_host = argv[1];
@@ -45,6 +53,7 @@ int main(int argc, char *argv[])
 	else
 		ACE_DEBUG((LM_DEBUG, "(%P|%t) connected to %s \n", remote_addr.get_host_name()));
 
+#ifdef USE_SOFTHSM
 #ifndef _WIN32
 	hsm.setenv("SOFTHSM2_CONF", "./softhsm2-linux.conf", 1);
 #else
@@ -70,6 +79,7 @@ int main(int argc, char *argv[])
 
 	ACE_ASSERT(hSeKey != 0);
 	ACE_DEBUG((LM_INFO, "(%t) SE key(%d) retrieved\n", hSeKey));
+#endif
 
 	size_t nRtn = 0;
 	const int blockSize(0x10);
@@ -77,12 +87,14 @@ int main(int argc, char *argv[])
 	const int bufferSize = blockSize*NumBlock;
 	char *buffer = new char[bufferSize+1];	//+1:NULL을 삽입하기 위해서
 
+#ifdef USE_SOFTHSM
 	int nAuth;
 	if ((nAuth = authenticate(client_stream, CHsmProxy::AES_ECB, hTagKey, buffer, bufferSize)) != 0) {
 		std::cout << "Authentication failure : " <<nAuth<< std::endl;
 		return -1;
 	}
 	std::cout << "Authentication successful" << std::endl;
+#endif
 
 	std::cout << "press q and enter to finish" << std::endl;
 	while (true){
@@ -95,7 +107,9 @@ int main(int argc, char *argv[])
 
 		unsigned long ulEncryptedDataLen;
 		std::vector<unsigned char> vEncryptedData;
+#ifdef USE_SOFTHSM
 		encrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
+#endif
 
 		if ((nRtn = client_stream.send_n(&vEncryptedData.front(), ulEncryptedDataLen)) == -1) {
 			ACE_DEBUG((LM_DEBUG, "(%P|%t) Error send_n(%d)\n", nRtn));
@@ -117,7 +131,9 @@ int main(int argc, char *argv[])
 
 		unsigned long ulDecryptedDataLen;
 		std::vector<unsigned char> vDecryptedData;
+#ifdef USE_SOFTHSM
 		decrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, (unsigned long)nRtn, vDecryptedData, ulDecryptedDataLen);
+#endif
 		ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 	}
 	delete[] buffer;
@@ -128,6 +144,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+#ifdef USE_SOFTHSM
 void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
 {
 	int nRtn = hsm.encryptInit(mType, hKey);
@@ -195,3 +212,4 @@ int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsign
 	ACE_DEBUG((LM_INFO, "(%P|%t) AuthRequest:Done\n"));
 	return 0;
 }
+#endif
