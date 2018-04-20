@@ -117,6 +117,16 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("decode keySetkeyOper(0x%x) failed 0x%x"),tagKey,res), -1);
 	ACE_DEBUG((LM_INFO, "(%t) setkey(0x%x) for decode operation(0x%x)\n", tagKey,decOp));
 
+	uint8_t shMemFactor = 1;
+	res = cipherInit(&o,encOp,shMemFactor);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("encode cipherInit(0x%x,%d) failed 0x%x"),encOp,shMemFactor,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) encode cipher initialized(0x%x) with shMemFactor=%d\n", encOp,shMemFactor));
+
+	res = cipherInit(&o,decOp,shMemFactor);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("decode cipherInit(0x%x,%d) failed 0x%x"),decOp,shMemFactor,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) decode cipher initialized(0x%x) with shMemFactor=%d\n", decOp,shMemFactor));
 #endif //USE_SOFTHSM
 
 	CClientAcceptor acceptor;
