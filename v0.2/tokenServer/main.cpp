@@ -106,6 +106,17 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyAllocOper(decode) failed 0x%x"),res), -1);
 	ACE_DEBUG((LM_INFO, "(%t) decode operation handle:0x%x\n", decOp));
 
+	//inject key for operations
+	res = keySetkeyOper(&o,encOp,tagKey);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("encode keySetkeyOper(0x%x) failed 0x%x"),tagKey,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) setkey(0x%x) for encode operation(0x%x)\n", tagKey,encOp));
+
+	res = keySetkeyOper(&o,decOp,tagKey);
+	if(res!=TEEC_SUCCESS)
+		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("decode keySetkeyOper(0x%x) failed 0x%x"),tagKey,res), -1);
+	ACE_DEBUG((LM_INFO, "(%t) setkey(0x%x) for decode operation(0x%x)\n", tagKey,decOp));
+
 #endif //USE_SOFTHSM
 
 	CClientAcceptor acceptor;
