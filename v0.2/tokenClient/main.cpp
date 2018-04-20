@@ -10,6 +10,8 @@
 
 #ifdef USE_SOFTHSM
 #include "CHsmProxy.h"
+#elif defined(USE_OPTEE)
+#include <okey.h>
 #endif
 
 #define SIZE_BUF 256
@@ -30,6 +32,14 @@ int main(int argc, char *argv[])
 	ACE_DEBUG((LM_INFO, "configured to use softhsm\n"));
 	if (argc<4) {
 		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:tokenClient <host> <port> <userPin>\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
+		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9870)\n")));
+		ACE_RETURN(-1);
+	}
+#elif defined(USE_OPTEE)
+	ACE_DEBUG((LM_INFO, "configured to use optee\n"));
+	if (argc<3) {
+		ACE_ERROR((LM_ERROR, ACE_TEXT("usage:tokenClient <host> <port>\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      host:set 0 for defalut host(localhost)\n")));
 		ACE_ERROR((LM_ERROR, ACE_TEXT("      port:set 0 for defalut port(9870)\n")));
 		ACE_RETURN(-1);
