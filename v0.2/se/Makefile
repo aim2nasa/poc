@@ -26,8 +26,8 @@ CXX = g++
 CXXFLAGS = -g -O2 -Wall -Wextra -std=c++11 -fvisibility=hidden
 
 #additional configuration when we use OPTEE
-CXXFLAGS += -D USE_OPTEE -I$(TEEC_EXPORT)/include -I$(OKEY_ROOT)
-LIBS += -lteec -L$(TEEC_EXPORT)/lib -lokey -L$(OKEY_ROOT)
+CXXFLAGS += -D USE_OPTEE -I$(TEEC_EXPORT)/include -I$(OKEY_ROOT)/include
+LIBS += -lteec -L$(TEEC_EXPORT)/lib -lokey -L$(OKEY_ROOT)/lib
 
 TARGET = se
 OBJS = main.o
