@@ -32,8 +32,8 @@ ifeq ($(POC_HSM),SOFTHSM)
 
 	CXXFLAGS += -D USE_SOFTHSM
 else ifeq ($(POC_HSM),OPTEE)
-	INCLUDES += -I$(TEEC_EXPORT)/include -I$(OKEY_ROOT)
-	LIBS += -lteec -L$(TEEC_EXPORT)/lib -lokey -L$(OKEY_ROOT) 
+	INCLUDES += -I$(TEEC_EXPORT)/include -I$(OKEY_ROOT)/include
+	LIBS += -lteec -L$(TEEC_EXPORT)/lib -lokey -L$(OKEY_ROOT)/lib
 
 	CXXFLAGS += -D USE_OPTEE
 endif

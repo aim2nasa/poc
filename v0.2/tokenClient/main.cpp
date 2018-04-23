@@ -102,8 +102,13 @@ int main(int argc, char *argv[])
 	if(res!=TEEC_SUCCESS)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("openSession failed 0x%x"), res), -1);
 
+	uint32_t flags = TEE_DATA_FLAG_ACCESS_WRITE_META |
+			 TEE_DATA_FLAG_ACCESS_READ	 |
+			 TEE_DATA_FLAG_SHARE_READ	 |
+			 TEE_DATA_FLAG_ACCESS_WRITE	 |
+			 TEE_DATA_FLAG_SHARE_WRITE;
 	uint32_t tagKey;
-	res = keyOpen(&o,TEE_STORAGE_PRIVATE,TAG_KEY_LABEL,&tagKey);
+	res = keyOpen(&o,TEE_STORAGE_PRIVATE,TAG_KEY_LABEL,flags,&tagKey);
 	if(res!=TEEC_SUCCESS)
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyOpen(%s) failed 0x%x"), TAG_KEY_LABEL,res), -1);
 	ACE_DEBUG((LM_INFO, "(%t) Tag key(0x%x) retrieved\n", tagKey));
