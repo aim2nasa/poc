@@ -132,7 +132,12 @@ static int onTagKey(const char *buffer, unsigned int len)
 	ACE_ASSERT(hTagKey != CK_INVALID_HANDLE);
 #elif USE_OPTEE
 	{
-		TEEC_Result res = keyInject(&o,TEE_STORAGE_PRIVATE,TAG_KEY_LABEL,(uint8_t*)buffer,len*8);
+		uint32_t flags = TEE_DATA_FLAG_ACCESS_WRITE_META |
+				 TEE_DATA_FLAG_ACCESS_READ	 |
+				 TEE_DATA_FLAG_SHARE_READ	 |
+				 TEE_DATA_FLAG_ACCESS_WRITE	 |
+				 TEE_DATA_FLAG_SHARE_WRITE;
+		TEEC_Result res = keyInject(&o,TEE_STORAGE_PRIVATE,TAG_KEY_LABEL,(uint8_t*)buffer,len*8,flags);
 		if(res!=TEEC_SUCCESS) 
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyInject(%s) failed 0x%x\n"),TAG_KEY_LABEL,res), -1);
 
@@ -155,7 +160,12 @@ static int onSeKey(const char *buffer, unsigned int len)
 	ACE_ASSERT(hSeKey != CK_INVALID_HANDLE);
 #elif USE_OPTEE
 	{
-		TEEC_Result res = keyInject(&o,TEE_STORAGE_PRIVATE,SE_KEY_LABEL,(uint8_t*)buffer,len*8);
+		uint32_t flags = TEE_DATA_FLAG_ACCESS_WRITE_META |
+				 TEE_DATA_FLAG_ACCESS_READ	 |
+				 TEE_DATA_FLAG_SHARE_READ	 |
+				 TEE_DATA_FLAG_ACCESS_WRITE	 |
+				 TEE_DATA_FLAG_SHARE_WRITE;
+		TEEC_Result res = keyInject(&o,TEE_STORAGE_PRIVATE,SE_KEY_LABEL,(uint8_t*)buffer,len*8,flags);
 		if(res!=TEEC_SUCCESS) 
 			ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyInject(%s) failed 0x%x\n"),SE_KEY_LABEL,res), -1);
 
