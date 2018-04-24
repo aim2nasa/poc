@@ -43,6 +43,7 @@ int Stream_Handler::open(void * p)
 
 int Stream_Handler::handle_input(ACE_HANDLE handle)
 {
+	(void)handle;
 	//ACE_DEBUG((LM_INFO, "(%P|%t) Stream_Handler::handle_input start\n"));
 	const int bufferSize = blockSize*NumBlock;
 	char *buf = new char[bufferSize + 1];	//+1:NULL을 삽입하기 위해서
@@ -104,6 +105,7 @@ int Stream_Handler::handle_input(ACE_HANDLE handle)
 
 int Stream_Handler::handle_output(ACE_HANDLE handle)
 {
+	(void)handle;
 	//ACE_DEBUG((LM_INFO, "(%t) Stream_Handler::handle_output start\n"));
 	ACE_Message_Block *mb;
 	ACE_Time_Value nowait(ACE_OS::gettimeofday());
