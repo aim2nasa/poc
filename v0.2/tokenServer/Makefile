@@ -39,7 +39,7 @@ else ifeq ($(POC_HSM),OPTEE)
 endif
 
 TARGET = tokenServer
-OBJS = main.o Stream_Handler.o
+OBJS = main.o Stream_Handler.o encryptUtil.o
 
 all : $(TARGET)
 	@echo $@:$(TARGET)...
@@ -55,6 +55,10 @@ main.o : main.cpp
 Stream_Handler.o : Stream_Handler.h Stream_Handler.cpp
 	@echo $@...
 	$(CXX) -c Stream_Handler.cpp $(INCLUDES) $(CXXFLAGS) $(LIBS)
+
+encryptUtil.o : ../common/encryptUtil.h ../common/encryptUtil.cpp
+	@echo $@...
+	$(CXX) -c ../common/encryptUtil.cpp $(INCLUDES) $(CXXFLAGS) $(LIBS)
 
 clean:
 	@echo $@...

@@ -1,5 +1,6 @@
 #include "Stream_Handler.h"
 #include "CClientAcceptor.h"
+#include "../common/encryptUtil.h"
 
 Stream_Handler::Stream_Handler()
 : noti_(0, this, ACE_Event_Handler::WRITE_MASK), autheProcess_(false)
@@ -56,9 +57,9 @@ int Stream_Handler::handle_input(ACE_HANDLE handle)
 	unsigned long ulDataLen;
 	std::vector<unsigned char> vDecryptedData;
 #ifdef USE_SOFTHSM
-	decrypt(CHsmProxy::AES_ECB, hTagKey_, (unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
+	decrypt(*pHsm_,CHsmProxy::AES_ECB, hTagKey_, (unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
 #elif defined(USE_OPTEE)
-	decrypt((unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
+	decrypt(pO_,decOp_,(unsigned char*)buf, (unsigned long)recv_cnt, vDecryptedData, ulDataLen);
 #endif
 	ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 
@@ -85,9 +86,9 @@ int Stream_Handler::handle_input(ACE_HANDLE handle)
 	unsigned long ulEncryptedDataLen;
 	std::vector<unsigned char> vEncryptedData;
 #ifdef USE_SOFTHSM
-	encrypt(CHsmProxy::AES_ECB, hTagKey_, (unsigned char*)buf, bufferSize, vEncryptedData, ulEncryptedDataLen);
+	encrypt(*pHsm_,CHsmProxy::AES_ECB, hTagKey_, (unsigned char*)buf, bufferSize, vEncryptedData, ulEncryptedDataLen);
 #elif defined(USE_OPTEE)
-	encrypt((unsigned char*)buf, bufferSize, vEncryptedData, ulEncryptedDataLen);
+	encrypt(pO_,encOp_,(unsigned char*)buf, bufferSize, vEncryptedData, ulEncryptedDataLen);
 #endif
 
 	ACE_Message_Block *mb;
@@ -144,9 +145,9 @@ int Stream_Handler::sendAuthRequestResult(unsigned char *data, unsigned long dat
 	unsigned long ulEncryptedDataLen;
 	std::vector<unsigned char> vEncryptedData;
 #ifdef USE_SOFTHSM
-	encrypt(CHsmProxy::AES_ECB, hTagKey_, data, dataLen, vEncryptedData, ulEncryptedDataLen);
+	encrypt(*pHsm_,CHsmProxy::AES_ECB, hTagKey_, data, dataLen, vEncryptedData, ulEncryptedDataLen);
 #elif defined(USE_OPTEE)
-	encrypt(data, dataLen, vEncryptedData, ulEncryptedDataLen);
+	encrypt(pO_,encOp_,data, dataLen, vEncryptedData, ulEncryptedDataLen);
 #endif
 
 	ACE_Message_Block *mb;
@@ -155,51 +156,3 @@ int Stream_Handler::sendAuthRequestResult(unsigned char *data, unsigned long dat
 	this->putq(mb);
 	return 0;
 }
-
-#ifdef USE_SOFTHSM
-void Stream_Handler::encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
-{
-	CHsmProxy &hsm = *pHsm_;
-	int nRtn = hsm.encryptInit(mType, hKey);
-	ACE_ASSERT( nRtn == 0);
-	nRtn = hsm.encrypt(data, dataLen, NULL, &ulEncryptedDataLen);
-	ACE_ASSERT( nRtn == 0);
-	ACE_ASSERT(ulEncryptedDataLen == dataLen);
-
-	vEncryptedData.resize(ulEncryptedDataLen);
-	nRtn = hsm.encrypt(data, dataLen, &vEncryptedData.front(), &ulEncryptedDataLen);
-	ACE_ASSERT( nRtn == 0);
-	ACE_ASSERT(ulEncryptedDataLen == dataLen);
-}
-
-void Stream_Handler::decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen)
-{
-	CHsmProxy &hsm = *pHsm_;
-	int nRtn = hsm.decryptInit(mType, hKey);
-	ACE_ASSERT( nRtn == 0);
-	nRtn = hsm.decrypt(data, dataLen, NULL, &ulDecryptedDataLen);
-	ACE_ASSERT( nRtn == 0);
-
-	vDecryptedData.resize(ulDecryptedDataLen);
-	nRtn = hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen);
-	ACE_ASSERT( nRtn == 0);
-}
-#elif defined(USE_OPTEE)
-TEEC_Result Stream_Handler::encrypt(unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
-{
-	TEEC_Result res = cipherUpdate(pO_,encOp_,data,dataLen);
-	if(res!=TEEC_SUCCESS) return res;
-
-	memcpy(&vEncryptedData.front(),outSharedMemory()->buffer,outSharedMemory()->size);
-	return res;
-}
-
-TEEC_Result Stream_Handler::decrypt(unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen)
-{
-	TEEC_Result res = cipherUpdate(pO_,decOp_,data,dataLen);
-	if(res!=TEEC_SUCCESS) return res;
-
-	memcpy(&vDecryptedData.front(),outSharedMemory()->buffer,outSharedMemory()->size);
-	return res;
-}
-#endif

@@ -34,14 +34,6 @@ public:
 	virtual int handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask);
 
 	int sendAuthRequestResult(unsigned char *data, unsigned long dataLen);
-
-#ifdef USE_SOFTHSM
-	void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
-	void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen);
-#elif defined(USE_OPTEE)
-	TEEC_Result encrypt(unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
-	TEEC_Result decrypt(unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen);
-#endif
 };
 
 #endif
