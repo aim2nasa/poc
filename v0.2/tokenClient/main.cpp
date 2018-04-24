@@ -18,7 +18,7 @@
 
 #define SIZE_BUF 256
 
-static char* SERVER_HOST = "127.0.0.1";
+static const char* SERVER_HOST = "127.0.0.1";
 static u_short SERVER_PORT = 9870;
 
 #ifdef USE_SOFTHSM
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("Error predefine missing, define USE_SOFTHSM or USE_OPTEE\n")), -1);
 #endif
 
-	char *server_host = NULL;
+	const char *server_host = NULL;
 	ACE_OS::atoi(argv[1]) == 0 ? server_host = SERVER_HOST : server_host = argv[1];
 	u_short server_port;
 	ACE_OS::atoi(argv[2]) == 0 ? server_port = (u_short)SERVER_PORT : server_port = ACE_OS::atoi(argv[2]);
