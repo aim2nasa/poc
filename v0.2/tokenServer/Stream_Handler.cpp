@@ -2,6 +2,9 @@
 #include "CClientAcceptor.h"
 #include "../common/encryptUtil.h"
 
+const int Stream_Handler::blockSize = 0x10;
+const int Stream_Handler::NumBlock = 10;
+
 Stream_Handler::Stream_Handler()
 : noti_(0, this, ACE_Event_Handler::WRITE_MASK), autheProcess_(false)
 #ifdef USE_SOFTHSM
@@ -41,8 +44,6 @@ int Stream_Handler::open(void * p)
 int Stream_Handler::handle_input(ACE_HANDLE handle)
 {
 	//ACE_DEBUG((LM_INFO, "(%P|%t) Stream_Handler::handle_input start\n"));
-	const int blockSize(0x10);
-	const int NumBlock(10);
 	const int bufferSize = blockSize*NumBlock;
 	char *buf = new char[bufferSize + 1];	//+1:NULL을 삽입하기 위해서
 

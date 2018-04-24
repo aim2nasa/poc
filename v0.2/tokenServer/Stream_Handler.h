@@ -34,6 +34,9 @@ public:
 	virtual int handle_close(ACE_HANDLE handle, ACE_Reactor_Mask close_mask);
 
 	int sendAuthRequestResult(unsigned char *data, unsigned long dataLen);
+
+	static const int blockSize;
+	static const int NumBlock;
 };
 
 #endif
