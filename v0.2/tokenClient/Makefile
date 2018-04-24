@@ -39,7 +39,7 @@ else ifeq ($(POC_HSM),OPTEE)
 endif
 
 TARGET = tokenClient 
-OBJS = main.o
+OBJS = main.o encryptUtil.o
 
 all : $(TARGET)
 	@echo $@:$(TARGET)...
@@ -51,6 +51,10 @@ $(TARGET) : $(OBJS)
 main.o : main.cpp
 	@echo $@...
 	$(CXX) -c main.cpp $(INCLUDES) $(CXXFLAGS) $(LIBS)
+
+encryptUtil.o : ../common/encryptUtil.h ../common/encryptUtil.cpp
+	@echo $@...
+	$(CXX) -c ../common/encryptUtil.cpp $(INCLUDES) $(CXXFLAGS) $(LIBS)
 
 clean:
 	@echo $@...

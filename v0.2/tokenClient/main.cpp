@@ -14,6 +14,7 @@
 #include <common.h>
 #include <okey.h>
 #endif
+#include "../common/encryptUtil.h"
 
 #define SIZE_BUF 256
 
@@ -22,8 +23,6 @@ static u_short SERVER_PORT = 9870;
 
 #ifdef USE_SOFTHSM
 CHsmProxy hsm;	//전역변수
-void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen);
-void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen);
 int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsigned long hKey, char* buffer, const int bufferSize);
 #elif defined(USE_OPTEE)
 okey o;
@@ -173,7 +172,7 @@ int main(int argc, char *argv[])
 		unsigned long ulEncryptedDataLen;
 		std::vector<unsigned char> vEncryptedData;
 #ifdef USE_SOFTHSM
-		encrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
+		encrypt(hsm,CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
 #endif
 
 		if ((nRtn = client_stream.send_n(&vEncryptedData.front(), ulEncryptedDataLen)) == -1) {
@@ -197,7 +196,7 @@ int main(int argc, char *argv[])
 		unsigned long ulDecryptedDataLen;
 		std::vector<unsigned char> vDecryptedData;
 #ifdef USE_SOFTHSM
-		decrypt(CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, (unsigned long)nRtn, vDecryptedData, ulDecryptedDataLen);
+		decrypt(hsm,CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, (unsigned long)nRtn, vDecryptedData, ulDecryptedDataLen);
 #endif
 		ACE_DEBUG((LM_INFO, "Decrypt stream:%s\n", &vDecryptedData.front()));
 	}
@@ -210,32 +209,6 @@ int main(int argc, char *argv[])
 }
 
 #ifdef USE_SOFTHSM
-void encrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vEncryptedData, unsigned long &ulEncryptedDataLen)
-{
-	int nRtn = hsm.encryptInit(mType, hKey);
-	ACE_ASSERT(nRtn == 0);
-	nRtn = hsm.encrypt(data, dataLen, NULL, &ulEncryptedDataLen);
-	ACE_ASSERT(nRtn == 0);
-	ACE_ASSERT(ulEncryptedDataLen == dataLen);
-
-	vEncryptedData.resize(ulEncryptedDataLen);
-	nRtn = hsm.encrypt(data, dataLen, &vEncryptedData.front(), &ulEncryptedDataLen);
-	ACE_ASSERT( nRtn == 0);
-	ACE_ASSERT(ulEncryptedDataLen == dataLen);
-}
-
-void decrypt(CHsmProxy::MechanismType mType, unsigned long hKey, unsigned char *data, unsigned long dataLen, std::vector<unsigned char> &vDecryptedData, unsigned long &ulDecryptedDataLen)
-{
-	int nRtn = hsm.decryptInit(mType, hKey);
-	ACE_ASSERT( nRtn == 0);
-	nRtn = hsm.decrypt(data, dataLen, NULL, &ulDecryptedDataLen);
-	ACE_ASSERT( nRtn == 0);
-
-	vDecryptedData.resize(ulDecryptedDataLen);
-	nRtn = hsm.decrypt(data, dataLen, &vDecryptedData.front(), &ulDecryptedDataLen);
-	ACE_ASSERT( nRtn == 0);
-}
-
 int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsigned long hKey, char* buffer, const int bufferSize)
 {
 	ACE_OS::memset(buffer, 0, bufferSize);
@@ -243,7 +216,7 @@ int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsign
 
 	unsigned long ulEncryptedDataLen;
 	std::vector<unsigned char> vEncryptedData;
-	encrypt(CHsmProxy::AES_ECB, hKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
+	encrypt(hsm,CHsmProxy::AES_ECB, hKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
 
 	size_t size;
 	if ((size = stream.send_n(&vEncryptedData.front(), ulEncryptedDataLen)) == -1) {
@@ -266,7 +239,7 @@ int authenticate(ACE_SOCK_Stream &stream, CHsmProxy::MechanismType mType, unsign
 
 	unsigned long ulDecryptedDataLen;
 	std::vector<unsigned char> vDecryptedData;
-	decrypt(mType, hKey, (unsigned char*)buffer, (unsigned long)size, vDecryptedData, ulDecryptedDataLen);
+	decrypt(hsm,mType, hKey, (unsigned char*)buffer, (unsigned long)size, vDecryptedData, ulDecryptedDataLen);
 
 	std::string str = (char*)&vDecryptedData.front();
 	if (str != "AuthRequest:Done") {
