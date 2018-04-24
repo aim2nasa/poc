@@ -37,6 +37,8 @@ TEEC_Result encrypt(okey *pO,OperationHandle op,
 	TEEC_Result res = cipherUpdate(pO,op,data,dataLen);
 	if(res!=TEEC_SUCCESS) return res;
 
+	ulEncryptedDataLen = outSharedMemory()->size;
+	vEncryptedData.resize(ulEncryptedDataLen);
 	memcpy(&vEncryptedData.front(),outSharedMemory()->buffer,outSharedMemory()->size);
 	return res;
 }
@@ -47,6 +49,8 @@ TEEC_Result decrypt(okey *pO,OperationHandle op,
 	TEEC_Result res = cipherUpdate(pO,op,data,dataLen);
 	if(res!=TEEC_SUCCESS) return res;
 
+	ulDecryptedDataLen = outSharedMemory()->size;
+	vDecryptedData.resize(ulDecryptedDataLen);
 	memcpy(&vDecryptedData.front(),outSharedMemory()->buffer,outSharedMemory()->size);
 	return res;
 }
