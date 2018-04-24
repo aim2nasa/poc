@@ -154,6 +154,7 @@ int main(int argc, char *argv[])
 	char *buffer = new char[bufferSize+1];	//+1:NULL을 삽입하기 위해서
 
 	int nAuth;
+	ACE_DEBUG((LM_INFO, "(%t) Authenticating...\n"));
 #ifdef USE_SOFTHSM
 	if ((nAuth = authenticate(client_stream, CHsmProxy::AES_ECB, hTagKey, buffer, bufferSize)) != 0) {
 #elif defined(USE_OPTEE)
@@ -235,6 +236,8 @@ int authenticate(ACE_SOCK_Stream &stream, OperationHandle encOp, OperationHandle
 
 	unsigned long ulEncryptedDataLen;
 	std::vector<unsigned char> vEncryptedData;
+
+	ACE_DEBUG((LM_INFO, "(%t) encrypting(bufferSize:%d) for AuthRequest\n",bufferSize));
 #ifdef USE_SOFTHSM
 	encrypt(hsm,CHsmProxy::AES_ECB, hKey, (unsigned char*)buffer, bufferSize, vEncryptedData, ulEncryptedDataLen);
 #elif defined(USE_OPTEE)
@@ -243,6 +246,7 @@ int authenticate(ACE_SOCK_Stream &stream, OperationHandle encOp, OperationHandle
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("encrypt error res=0x%x\n"),res), -1);
 #endif
 
+	ACE_DEBUG((LM_INFO, "(%t) encrypt done\n"));
 	ACE_DEBUG((LM_DEBUG, "(%P|%t) ulEncryptedDataLen:%d\n",ulEncryptedDataLen));
 
 	size_t size;
