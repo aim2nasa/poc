@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 	ACE_DEBUG((LM_INFO, "(%t) decode cipher initialized(0x%x) with shMemFactor=%d\n", decOp,shMemFactor));
 #endif
 
-	size_t nRtn = 0;
+	ssize_t nRtn = 0;
 	char *buffer = new char[bufferSize+1];	//+1:NULL을 삽입하기 위해서
 
 	int nAuth;
@@ -249,7 +249,7 @@ int authenticate(ACE_SOCK_Stream &stream, OperationHandle encOp, OperationHandle
 	ACE_DEBUG((LM_INFO, "(%t) encrypt done\n"));
 	ACE_DEBUG((LM_DEBUG, "(%P|%t) ulEncryptedDataLen:%d\n",ulEncryptedDataLen));
 
-	size_t size;
+	ssize_t size;
 	if ((size = stream.send_n(&vEncryptedData.front(), ulEncryptedDataLen)) == -1) {
 		ACE_DEBUG((LM_ERROR, "(%P|%t) Error send_n(%d)\n", size));
 		return -1;
