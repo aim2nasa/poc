@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
 #ifdef USE_SOFTHSM
 		decrypt(hsm,CHsmProxy::AES_ECB, hTagKey, (unsigned char*)buffer, (unsigned long)nRtn, vDecryptedData, ulDecryptedDataLen);
 #elif defined(USE_OPTEE)
-		TEEC_Result res = decrypt(&o,decOp,(unsigned char*)buffer, (unsigned long)nRtn, vDecryptedData, ulDecryptedDataLen);
+		res = decrypt(&o,decOp,(unsigned char*)buffer, (unsigned long)nRtn, vDecryptedData, ulDecryptedDataLen);
 		if(res!=TEEC_SUCCESS){
 			ACE_DEBUG((LM_ERROR, "(%P|%t) decrypt error res=0x%x\n", res));
 			break;
@@ -269,7 +269,7 @@ int authenticate(ACE_SOCK_Stream &stream, OperationHandle encOp, OperationHandle
 #ifdef USE_SOFTHSM
 	decrypt(hsm,mType, hKey, (unsigned char*)buffer, (unsigned long)size, vDecryptedData, ulDecryptedDataLen);
 #elif defined(USE_OPTEE)
-	TEEC_Result res = decrypt(&o,decOp, (unsigned char*)buffer, (unsigned long)size, vDecryptedData, ulDecryptedDataLen);
+	res = decrypt(&o,decOp, (unsigned char*)buffer, (unsigned long)size, vDecryptedData, ulDecryptedDataLen);
 	if(res!=TEEC_SUCCESS) 
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("decrypt error res=0x%x\n"),res), -1);
 #endif
