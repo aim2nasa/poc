@@ -113,8 +113,6 @@ int main(int argc, char *argv[])
 		ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%P|%t) ") ACE_TEXT("keyOpen(%s) failed 0x%x"), TAG_KEY_LABEL,res), -1);
 	ACE_DEBUG((LM_INFO, "(%t) Tag key(0x%x) retrieved\n", tagKey));
 
-	size_t keySize = 256;	//TODO hardcode for the time being. need to be configurable and monitored through API in libokey
-
 	OperationHandle encOp;
 	res = keyAllocOper(&o,true,tagKey,&encOp);
 	if(res!=TEEC_SUCCESS)
