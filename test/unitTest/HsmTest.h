@@ -6,23 +6,31 @@
 
 class HsmTest : public ::testing::Test{
 protected:
-	HsmTest() :_module(NULL),_p11(NULL){}
+	HsmTest() :_moduleHandle(NULL), _p11(NULL){}
 	virtual ~HsmTest(){}
 
 	virtual void SetUp()
 	{
-		ASSERT_EQ(loadLibOnly(&_module, &_p11), 0);
+		char *module = NULL;
+		char message[256];
+		char *msg = message;
+		CK_C_GetFunctionList pGetFunctionList = loadLibrary(module, &_moduleHandle, &msg);
+		ASSERT_NE(pGetFunctionList, reinterpret_cast<CK_C_GetFunctionList>(NULL));
+
+		(*pGetFunctionList)(&_p11);
+		ASSERT_NE(_p11, reinterpret_cast<CK_FUNCTION_LIST_PTR>(NULL));
+
 		_p11->C_Finalize(NULL_PTR);
 		ASSERT_EQ(_p11->C_Initialize(NULL_PTR), CKR_OK);
 	}
 
 	virtual void TearDown()
 	{
-		ASSERT_NE(_module,reinterpret_cast<void*>(NULL));
-		unloadLib(_module);
+		ASSERT_NE(_moduleHandle, reinterpret_cast<void*>(NULL));
+		unloadLibrary(_moduleHandle);
 	}
 
-	void* _module;
+	void *_moduleHandle;
 public:
 	CK_FUNCTION_LIST_PTR _p11;
 };
