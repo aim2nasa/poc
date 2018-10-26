@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSL_Server", "SSL_Server\SS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSL_Client", "SSL_Client\SSL_Client.vcxproj", "{BCAC34C3-62F9-4E70-8526-160D3FD32172}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "helloWorldPub", "helloWorldPub\helloWorldPub.vcxproj", "{47899362-DEE6-47D1-BA6A-5C9A28338E64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -45,6 +47,12 @@ Global
 		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Release|Win32.ActiveCfg = Release|Win32
 		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Release|Win32.Build.0 = Release|Win32
 		{BCAC34C3-62F9-4E70-8526-160D3FD32172}.Release|x64.ActiveCfg = Release|x64
+		{47899362-DEE6-47D1-BA6A-5C9A28338E64}.Debug|Win32.ActiveCfg = Debug|Win32
+		{47899362-DEE6-47D1-BA6A-5C9A28338E64}.Debug|Win32.Build.0 = Debug|Win32
+		{47899362-DEE6-47D1-BA6A-5C9A28338E64}.Debug|x64.ActiveCfg = Debug|Win32
+		{47899362-DEE6-47D1-BA6A-5C9A28338E64}.Release|Win32.ActiveCfg = Release|Win32
+		{47899362-DEE6-47D1-BA6A-5C9A28338E64}.Release|Win32.Build.0 = Release|Win32
+		{47899362-DEE6-47D1-BA6A-5C9A28338E64}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
