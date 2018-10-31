@@ -67,11 +67,10 @@
       <AdditionalDependencies>dcpsisocpp.lib;ddskernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>del *.h
-del *.hpp
-del *.cpp
-idlpp -l isocpp HelloWorldData.idl</Command>
-      <Message>generating codes from idl</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,17 +95,23 @@ idlpp -l isocpp HelloWorldData.idl</Command>
       <AdditionalDependencies>dcpsisocpp.lib;ddskernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>del *.h
-del *.hpp
-del *.cpp
-idlpp -l isocpp HelloWorldData.idl</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <PreBuildEvent>
-      <Message>generating codes from idl</Message>
+      <Message>
+      </Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="HelloWorldData.idl" />
+    <CustomBuild Include="HelloWorldData.idl">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">idlpp -l isocpp HelloWorldData.idl</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HelloWorldData.cpp;HelloWorldDataDcps.cpp;HelloWorldDataDcps_impl.cpp;HelloWorldDataSplDcps.cpp;HelloWorldData.h;HelloWorldDataDcps.h;HelloWorldDataDcps_impl.h;HelloWorldDataSplDcps.h;HelloWorldData_DCPS.hpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HelloWorldData.cpp;HelloWorldDataDcps.cpp;HelloWorldDataDcps_impl.cpp;HelloWorldDataSplDcps.cpp;HelloWorldData.h;HelloWorldDataDcps.h;HelloWorldDataDcps_impl.h;HelloWorldDataSplDcps.h;HelloWorldData_DCPS.hpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">idlpp -l isocpp HelloWorldData.idl</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating C++ files from IDL</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating C++ files from IDL</Message>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HelloWorldData.cpp" />
