@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	dds::domain::DomainParticipant dp(0);
+	dds::topic::Topic<HelloWorldData::Msg> topic(dp, "Message");
 
 	std::cout << "end of pub" << std::endl;
 	return 0;
