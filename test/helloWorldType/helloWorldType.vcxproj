@@ -105,10 +105,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="HelloWorldData.idl">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">idlpp -l isocpp HelloWorldData.idl</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">idlpp -l isocpp -P OS_API_EXPORT HelloWorldData.idl</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HelloWorldData.cpp;HelloWorldDataDcps.cpp;HelloWorldDataDcps_impl.cpp;HelloWorldDataSplDcps.cpp;HelloWorldData.h;HelloWorldDataDcps.h;HelloWorldDataDcps_impl.h;HelloWorldDataSplDcps.h;HelloWorldData_DCPS.hpp;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HelloWorldData.cpp;HelloWorldDataDcps.cpp;HelloWorldDataDcps_impl.cpp;HelloWorldDataSplDcps.cpp;HelloWorldData.h;HelloWorldDataDcps.h;HelloWorldDataDcps_impl.h;HelloWorldDataSplDcps.h;HelloWorldData_DCPS.hpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">idlpp -l isocpp HelloWorldData.idl</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">idlpp -l isocpp -P OS_API_EXPORT HelloWorldData.idl</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating C++ files from IDL</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating C++ files from IDL</Message>
     </CustomBuild>
