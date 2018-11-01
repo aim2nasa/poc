@@ -65,6 +65,9 @@
       <AdditionalLibraryDirectories>$(OSPL_HOME)\lib;..\bin\helloWorldType\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>dcpsisocpp.lib;helloWorldType.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\bin\helloWorldType\$(Platform)\$(Configuration)\helloWorldType.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -86,6 +89,9 @@
       <AdditionalLibraryDirectories>$(OSPL_HOME)\lib;..\bin\helloWorldType\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>dcpsisocpp.lib;helloWorldType.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\bin\helloWorldType\$(Platform)\$(Configuration)\helloWorldType.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="pub.cpp" />
