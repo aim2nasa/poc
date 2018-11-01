@@ -56,7 +56,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\helloWorldType;$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\SACPP;$(OSPL_HOME)\include\dcps\C++\isocpp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\helloWorldType;..\helloWorldPub;$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\SACPP;$(OSPL_HOME)\include\dcps\C++\isocpp</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -74,7 +74,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\helloWorldType;$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\SACPP;$(OSPL_HOME)\include\dcps\C++\isocpp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\helloWorldType;..\helloWorldPub;$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\SACPP;$(OSPL_HOME)\include\dcps\C++\isocpp</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -86,7 +86,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\helloWorldPub\util.cpp" />
     <ClCompile Include="sub.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\helloWorldPub\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
