@@ -1,5 +1,6 @@
 #include <iostream>
 #include <HelloWorldData_DCPS.hpp>
+#include "util.h"
 
 int main(int argc, char* argv[])
 {
@@ -13,6 +14,7 @@ int main(int argc, char* argv[])
 	dds::pub::DataWriter<HelloWorldData::Msg> dw(pub, topic);
 	HelloWorldData::Msg message(1, argv[1]);
 	dw.write(message);
+	std::cout << "DW: " << message << std::endl;
 
 	std::cout << "end of pub" << std::endl;
 	return 0;
