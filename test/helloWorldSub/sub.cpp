@@ -1,4 +1,5 @@
 #include <iostream>
+#include <HelloWorldData_DCPS.hpp>
 
 int main(int argc, char* argv[])
 {
