@@ -18,39 +18,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HelloWorldData.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="HelloWorldDataDcps.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="HelloWorldDataDcps_impl.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="HelloWorldDataSplDcps.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
+    <CustomBuild Include="HelloWorldData.idl">
+      <Filter>IDL</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HelloWorldData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="HelloWorldDataDcps.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="HelloWorldDataDcps_impl.h">
+    <ClInclude Include="HelloWorldData_DCPS.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="HelloWorldDataSplDcps.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="HelloWorldData_DCPS.hpp">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="HelloWorldData.idl">
-      <Filter>IDL</Filter>
-    </CustomBuild>
+    <ClCompile Include="HelloWorldData.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="HelloWorldDataSplDcps.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

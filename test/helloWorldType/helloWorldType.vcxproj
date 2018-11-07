@@ -57,14 +57,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;HELLOWORLDTYPE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\SACPP;$(OSPL_HOME)\include\dcps\C++\isocpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\isocpp2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OSPL_HOME)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>dcpsisocpp.lib;ddskernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dcpsisocpp2d.lib;ddskernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -83,8 +83,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;HELLOWORLDTYPE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\SACPP;$(OSPL_HOME)\include\dcps\C++\isocpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\isocpp2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -92,7 +92,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(OSPL_HOME)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>dcpsisocpp.lib;ddskernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dcpsisocpp2.lib;ddskernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -105,26 +105,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="HelloWorldData.idl">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">idlpp -l isocpp -P OS_API_EXPORT HelloWorldData.idl</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HelloWorldData.cpp;HelloWorldDataDcps.cpp;HelloWorldDataDcps_impl.cpp;HelloWorldDataSplDcps.cpp;HelloWorldData.h;HelloWorldDataDcps.h;HelloWorldDataDcps_impl.h;HelloWorldDataSplDcps.h;HelloWorldData_DCPS.hpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HelloWorldData.cpp;HelloWorldDataDcps.cpp;HelloWorldDataDcps_impl.cpp;HelloWorldDataSplDcps.cpp;HelloWorldData.h;HelloWorldDataDcps.h;HelloWorldDataDcps_impl.h;HelloWorldDataSplDcps.h;HelloWorldData_DCPS.hpp;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">idlpp -l isocpp -P OS_API_EXPORT HelloWorldData.idl</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">idlpp -l isocpp2 -P OS_API_EXPORT HelloWorldData.idl</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HelloWorldData.h;HelloWorldData_DCPS.h;HelloWorldDataSplDcps.h;HelloWorldData.cpp;HelloWorldDataSplDcps.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HelloWorldData.h;HelloWorldData_DCPS.h;HelloWorldDataSplDcps.h;HelloWorldData.cpp;HelloWorldDataSplDcps.cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">idlpp -l isocpp2 -P OS_API_EXPORT HelloWorldData.idl</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating C++ files from IDL</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generating C++ files from IDL</Message>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HelloWorldData.cpp" />
-    <ClCompile Include="HelloWorldDataDcps.cpp" />
-    <ClCompile Include="HelloWorldDataDcps_impl.cpp" />
-    <ClCompile Include="HelloWorldDataSplDcps.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="HelloWorldData.h" />
-    <ClInclude Include="HelloWorldDataDcps.h" />
-    <ClInclude Include="HelloWorldDataDcps_impl.h" />
     <ClInclude Include="HelloWorldDataSplDcps.h" />
     <ClInclude Include="HelloWorldData_DCPS.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HelloWorldData.cpp" />
+    <ClCompile Include="HelloWorldDataSplDcps.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

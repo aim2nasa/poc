@@ -56,14 +56,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\helloWorldType;..\helloWorldPub;$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\SACPP;$(OSPL_HOME)\include\dcps\C++\isocpp</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>..\helloWorldType;..\helloWorldPub;$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\isocpp2</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OSPL_HOME)\lib;..\bin\helloWorldType\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>dcpsisocpp.lib;helloWorldType.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dcpsisocpp2d.lib;helloWorldType.lib;ddskernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\bin\helloWorldType\$(Platform)\$(Configuration)\helloWorldType.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
@@ -78,8 +78,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\helloWorldType;..\helloWorldPub;$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\SACPP;$(OSPL_HOME)\include\dcps\C++\isocpp</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>..\helloWorldType;..\helloWorldPub;$(OSPL_HOME)\include\sys;$(OSPL_HOME)\include\dcps\C++\isocpp2</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -87,7 +87,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(OSPL_HOME)\lib;..\bin\helloWorldType\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>dcpsisocpp.lib;helloWorldType.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dcpsisocpp2.lib;helloWorldType.lib;ddskernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\bin\helloWorldType\$(Platform)\$(Configuration)\helloWorldType.dll ..\bin\$(ProjectName)\$(Platform)\$(Configuration)</Command>
