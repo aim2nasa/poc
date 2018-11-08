@@ -171,3 +171,6 @@ $RECYCLE.BIN/
 /test/helloWorldType/*.cpp
 /test/helloWorldType/*.h
 /test/helloWorldType/*.hpp
+
+# google tes
+runTests
