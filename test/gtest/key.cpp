@@ -12,6 +12,4 @@ TEST(keyStoreTest, basic) {
 
 	for(int i=0;i<store.size_;i++)
 		ASSERT_EQ(store.key_[i],value);
-
-	delete [] store.key_;
 }
