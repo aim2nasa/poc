@@ -6,6 +6,7 @@
 class KeyStore{
 public:
 	KeyStore():size_(0),key_(0){}
+	~KeyStore(){ delete [] key_; }
 
 	size_t size_;
 	byte *key_;
