@@ -24,11 +24,13 @@ TEST(humanTest, ECB) {
 
 	std::string plainText = "AES ECB Test";
 	CryptoPP::ECB_Mode<CryptoPP::AES>::Encryption e;
+	e.SetKey(h.key_,h.size_);
 	std::string cipherText = h.transform(e,plainText);
 
 	ASSERT_NE(plainText,cipherText);
 
 	CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
+	d.SetKey(h.key_,h.size_);
 	std::string recoveredText = h.transform(d,cipherText);
 	ASSERT_EQ(plainText,recoveredText);
 }
