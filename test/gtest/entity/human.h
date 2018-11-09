@@ -8,7 +8,7 @@
 
 class Human : public KeyStore{
 public:
-	Human(){}
+	Human(){ memset(iv_,0,sizeof(iv_)); }
 	~Human(){}
 
 	template <typename T> 
@@ -21,6 +21,8 @@ public:
 		);	
 		return output;
 	}
+
+	byte iv_[CryptoPP::AES::BLOCKSIZE];
 };
 
 #endif
