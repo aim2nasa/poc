@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <entity/keyStore.h>
+#include <entity/human.h>
  
 TEST(keyStoreTest, basic) { 
 	KeyStore store;
@@ -12,4 +13,9 @@ TEST(keyStoreTest, basic) {
 
 	for(int i=0;i<store.size_;i++)
 		ASSERT_EQ(store.key_[i],value);
+}
+
+TEST(humanTest, basic) { 
+	Human h;
+	ASSERT_EQ(0,0);
 }
