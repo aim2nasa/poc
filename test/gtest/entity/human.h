@@ -13,8 +13,6 @@ public:
 
 	template <typename T> 
 	std::string transform(T e,std::string input){ 
-		e.SetKey(key_,size_);
-
 		std::string output;
 		CryptoPP::StringSource(input,true,
 			new CryptoPP::StreamTransformationFilter(e,
