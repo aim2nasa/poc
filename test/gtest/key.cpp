@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <entity/keyStore.h>
-#include <entity/human.h>
+#include <entity/node.h>
  
 TEST(keyStoreTest, basic) { 
 	KeyStore store;
@@ -15,8 +15,8 @@ TEST(keyStoreTest, basic) {
 		ASSERT_EQ(store.key_[i],value);
 }
 
-TEST(humanTest, ECB) { 
-	Human h;
+TEST(nodeTest, ECB) { 
+	Node h;
 
 	h.size_=32;
 	h.key_ = new byte[h.size_];
@@ -35,8 +35,8 @@ TEST(humanTest, ECB) {
 	ASSERT_EQ(plainText,recoveredText);
 }
 
-TEST(humanTest, CBC) { 
-	Human h;
+TEST(nodeTest, CBC) { 
+	Node h;
 
 	h.size_=32;
 	h.key_ = new byte[h.size_];
