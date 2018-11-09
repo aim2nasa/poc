@@ -15,7 +15,7 @@ TEST(keyStoreTest, basic) {
 		ASSERT_EQ(store.key_[i],value);
 }
 
-TEST(humanTest, basic) { 
+TEST(humanTest, ECB) { 
 	Human h;
 
 	h.size_=32;
