@@ -11,8 +11,8 @@ public:
 	Human(){}
 	~Human(){}
 
-	std::string ecbEncrypt(std::string input){ 
-		CryptoPP::ECB_Mode<CryptoPP::AES>::Encryption e;
+	template <typename T> 
+	std::string transform(T e,std::string input){ 
 		e.SetKey(key_,size_);
 
 		std::string output;
@@ -21,19 +21,6 @@ public:
 				new CryptoPP::StringSink(output)
 			)
 		);	
-		return output;
-	}
-
-	std::string ecbDecrypt(std::string input){
-		CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
-		d.SetKey(key_,size_);
-
-		std::string output;
-		CryptoPP::StringSource(input,true,
-			new CryptoPP::StreamTransformationFilter(d,
-				new CryptoPP::StringSink(output)
-			)
-		);
 		return output;
 	}
 };
