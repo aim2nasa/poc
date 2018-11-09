@@ -5,6 +5,7 @@
 #include <cryptopp/aes.h>
 #include <cryptopp/modes.h>
 #include <cryptopp/filters.h>
+#include <cryptopp/ccm.h>
 
 class Node : public KeyStore{
 public:
@@ -19,6 +20,19 @@ public:
 				new CryptoPP::StringSink(output)
 			)
 		);	
+		return output;
+	}
+
+	template <typename T>
+	std::string encrypt(T e,std::string aad,std::string input) {
+		e.SpecifyDataLengths(aad.size(),input.size(),0);
+		std::string output;
+		CryptoPP::AuthenticatedEncryptionFilter ef(e,new CryptoPP::StringSink(output));
+
+		ef.ChannelPut("AAD",(const byte*)aad.data(),aad.size());
+		ef.ChannelMessageEnd("AAD");
+		ef.ChannelPut("",(const byte*)input.data(),input.size());
+		ef.ChannelMessageEnd("");
 		return output;
 	}
 

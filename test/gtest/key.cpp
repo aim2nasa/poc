@@ -114,3 +114,18 @@ TEST(nodeTest, CTR) {
 	std::string recoveredText = h.transform(d,cipherText);
 	ASSERT_EQ(plainText,recoveredText);
 }
+
+TEST(nodeTest, AE_CCM) { 
+	Node h;
+
+	h.size_=32;
+	h.key_ = new byte[h.size_];
+	memset(h.key_,0,h.size_);
+
+	std::string plainText = "AES AE CCM Test";
+	CryptoPP::CCM<CryptoPP::AES,16>::Encryption e;
+	e.SetKeyWithIV(h.key_,h.size_,h.iv_);
+	std::string cipherText = h.encrypt(e,"AAD",plainText);
+
+	ASSERT_NE(plainText,cipherText);
+}
