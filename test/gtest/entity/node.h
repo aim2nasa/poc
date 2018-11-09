@@ -1,15 +1,15 @@
-#ifndef __HUMAN_H__
-#define __HUMAN_H__
+#ifndef __NODE_H__
+#define __NODE_H__
 
 #include "keyStore.h"
 #include <cryptopp/aes.h>
 #include <cryptopp/modes.h>
 #include <cryptopp/filters.h>
 
-class Human : public KeyStore{
+class Node : public KeyStore{
 public:
-	Human(){ memset(iv_,0,sizeof(iv_)); }
-	~Human(){}
+	Node(){ memset(iv_,0,sizeof(iv_)); }
+	~Node(){}
 
 	template <typename T> 
 	std::string transform(T e,std::string input){ 
