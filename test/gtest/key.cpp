@@ -54,3 +54,23 @@ TEST(nodeTest, CBC) {
 	std::string recoveredText = h.transform(d,cipherText);
 	ASSERT_EQ(plainText,recoveredText);
 }
+
+TEST(nodeTest, OFB) { 
+	Node h;
+
+	h.size_=32;
+	h.key_ = new byte[h.size_];
+	memset(h.key_,0,h.size_);
+
+	std::string plainText = "AES OFB Test";
+	CryptoPP::OFB_Mode<CryptoPP::AES>::Encryption e;
+	e.SetKeyWithIV(h.key_,h.size_,h.iv_);
+	std::string cipherText = h.transform(e,plainText);
+
+	ASSERT_NE(plainText,cipherText);
+
+	CryptoPP::OFB_Mode<CryptoPP::AES>::Decryption d;
+	d.SetKeyWithIV(h.key_,h.size_,h.iv_);
+	std::string recoveredText = h.transform(d,cipherText);
+	ASSERT_EQ(plainText,recoveredText);
+}
