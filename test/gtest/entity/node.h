@@ -6,6 +6,7 @@
 #include <cryptopp/modes.h>
 #include <cryptopp/filters.h>
 #include <cryptopp/ccm.h>
+#include <cryptopp/gcm.h>
 
 #define DECRYPT_OK			 			 0	
 #define FAIL_GET_LAST_RESULT 			-1	
