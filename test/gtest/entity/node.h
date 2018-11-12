@@ -31,15 +31,21 @@ public:
 	}
 
 	template <typename T>
-	std::string encrypt(T e,std::string aad,std::string input) {
+	std::string encrypt(T e,std::string aad,std::string input,int tagSize=0) {
 		e.SpecifyDataLengths(aad.size(),input.size(),0);
 		std::string output;
-		CryptoPP::AuthenticatedEncryptionFilter ef(e,new CryptoPP::StringSink(output));
 
-		ef.ChannelPut("AAD",(const byte*)aad.data(),aad.size());
-		ef.ChannelMessageEnd("AAD");
-		ef.ChannelPut("",(const byte*)input.data(),input.size());
-		ef.ChannelMessageEnd("");
+		CryptoPP::AuthenticatedEncryptionFilter *ef;
+		if(tagSize<=0)
+			ef = new CryptoPP::AuthenticatedEncryptionFilter(e,new CryptoPP::StringSink(output));
+		else
+			ef = new CryptoPP::AuthenticatedEncryptionFilter(e,new CryptoPP::StringSink(output),false,tagSize);
+
+		ef->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
+		ef->ChannelMessageEnd("AAD");
+		ef->ChannelPut("",(const byte*)input.data(),input.size());
+		ef->ChannelMessageEnd("");
+		delete ef;
 		return output;
 	}
 
@@ -53,24 +59,37 @@ public:
 
 		d.SpecifyDataLengths(aad.size(),enc.size(),0);
 
-		CryptoPP::AuthenticatedDecryptionFilter df(d,NULL,
-			CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION);
-		try{
-			df.ChannelPut("AAD",(const byte*)aad.data(),aad.size());
-			df.ChannelMessageEnd("AAD");
+		class Filter{
+		public:
+			Filter():df_(NULL){}
+			~Filter(){ delete df_; }
+			CryptoPP::AuthenticatedDecryptionFilter *df_;
+		};
 
-			df.ChannelPut("",(const byte*)enc.data(),enc.size());
-			df.ChannelPut("",(const byte*)tag.data(),tag.size());
-			df.ChannelMessageEnd("");
+		Filter f;
+		if(tagSize<=0)
+			f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
+				CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION);
+		else
+			f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
+				CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION,tagSize);
+
+		try{
+			f.df_->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
+			f.df_->ChannelMessageEnd("AAD");
+
+			f.df_->ChannelPut("",(const byte*)enc.data(),enc.size());
+			f.df_->ChannelPut("",(const byte*)tag.data(),tag.size());
+			f.df_->ChannelMessageEnd("");
 		}catch(CryptoPP::HashVerificationFilter::HashVerificationFailed& e){
 			return ERROR_HASH_VERIFY_FAILED;
 		}
 
-		if(!df.GetLastResult()) return FAIL_GET_LAST_RESULT;
+		if(!f.df_->GetLastResult()) return FAIL_GET_LAST_RESULT;
 
-		df.SetRetrievalChannel("");
-		output.resize((size_t)df.MaxRetrievable());
-		df.Get( (byte*)output.data(),output.size());
+		f.df_->SetRetrievalChannel("");
+		output.resize((size_t)f.df_->MaxRetrievable());
+		f.df_->Get( (byte*)output.data(),output.size());
 
 		return DECRYPT_OK; 
 	}
