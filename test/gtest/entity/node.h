@@ -11,6 +11,7 @@
 #define FAIL_GET_LAST_RESULT 			-1	
 #define ERROR_TAG_SIZE_NOT_MATCH 	-100
 #define ERROR_WRONG_INPUT_TAG_SIZE	-101
+#define ERROR_HASH_VERIFY_FAILED 	-102
 
 class Node : public KeyStore{
 public:
@@ -53,13 +54,16 @@ public:
 
 		CryptoPP::AuthenticatedDecryptionFilter df(d,NULL,
 			CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION);
+		try{
+			df.ChannelPut("AAD",(const byte*)aad.data(),aad.size());
+			df.ChannelMessageEnd("AAD");
 
-		df.ChannelPut("AAD",(const byte*)aad.data(),aad.size());
-		df.ChannelMessageEnd("AAD");
-
-		df.ChannelPut("",(const byte*)enc.data(),enc.size());
-		df.ChannelPut("",(const byte*)tag.data(),tag.size());
-		df.ChannelMessageEnd("");
+			df.ChannelPut("",(const byte*)enc.data(),enc.size());
+			df.ChannelPut("",(const byte*)tag.data(),tag.size());
+			df.ChannelMessageEnd("");
+		}catch(CryptoPP::HashVerificationFilter::HashVerificationFailed& e){
+			return ERROR_HASH_VERIFY_FAILED;
+		}
 
 		if(!df.GetLastResult()) return FAIL_GET_LAST_RESULT;
 
