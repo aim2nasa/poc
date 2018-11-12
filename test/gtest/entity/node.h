@@ -19,6 +19,20 @@ public:
 	Node(){ memset(iv_,0,sizeof(iv_)); }
 	~Node(){}
 
+	class EFilter{
+	public:
+		EFilter():ef_(NULL){}
+		~EFilter(){ delete ef_; }
+		CryptoPP::AuthenticatedEncryptionFilter *ef_;
+	};
+
+	class DFilter{
+	public:
+		DFilter():df_(NULL){}
+		~DFilter(){ delete df_; }
+		CryptoPP::AuthenticatedDecryptionFilter *df_;
+	};
+
 	template <typename T> 
 	std::string transform(T e,std::string input){ 
 		std::string output;
@@ -35,17 +49,16 @@ public:
 		e.SpecifyDataLengths(aad.size(),input.size(),0);
 		std::string output;
 
-		CryptoPP::AuthenticatedEncryptionFilter *ef;
+		EFilter f;
 		if(tagSize<=0)
-			ef = new CryptoPP::AuthenticatedEncryptionFilter(e,new CryptoPP::StringSink(output));
+			f.ef_ = new CryptoPP::AuthenticatedEncryptionFilter(e,new CryptoPP::StringSink(output));
 		else
-			ef = new CryptoPP::AuthenticatedEncryptionFilter(e,new CryptoPP::StringSink(output),false,tagSize);
+			f.ef_ = new CryptoPP::AuthenticatedEncryptionFilter(e,new CryptoPP::StringSink(output),false,tagSize);
 
-		ef->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
-		ef->ChannelMessageEnd("AAD");
-		ef->ChannelPut("",(const byte*)input.data(),input.size());
-		ef->ChannelMessageEnd("");
-		delete ef;
+		f.ef_->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
+		f.ef_->ChannelMessageEnd("AAD");
+		f.ef_->ChannelPut("",(const byte*)input.data(),input.size());
+		f.ef_->ChannelMessageEnd("");
 		return output;
 	}
 
@@ -59,14 +72,7 @@ public:
 
 		d.SpecifyDataLengths(aad.size(),enc.size(),0);
 
-		class Filter{
-		public:
-			Filter():df_(NULL){}
-			~Filter(){ delete df_; }
-			CryptoPP::AuthenticatedDecryptionFilter *df_;
-		};
-
-		Filter f;
+		DFilter f;
 		if(tagSize<=0)
 			f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
 				CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION);
