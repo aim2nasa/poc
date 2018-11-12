@@ -128,4 +128,10 @@ TEST(nodeTest, AE_CCM) {
 	std::string cipherText = h.encrypt(e,"AAD",plainText);
 
 	ASSERT_NE(plainText,cipherText);
+
+	CryptoPP::CCM<CryptoPP::AES,16>::Decryption d;
+	d.SetKeyWithIV(h.key_,h.size_,h.iv_);
+	std::string recoveredText;
+	ASSERT_EQ(h.decrypt(d,16,"AAD",cipherText,recoveredText),DECRYPT_OK);
+	ASSERT_EQ(plainText,recoveredText);
 }
