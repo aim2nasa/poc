@@ -1,7 +1,8 @@
 #ifndef __KEY_STORE_H__
 #define __KEY_STORE_H__
 
-#include <cryptopp/config.h>
+#include <cstddef>
+typedef unsigned char byte; 
 
 class KeyStore{
 public:
