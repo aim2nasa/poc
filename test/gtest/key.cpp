@@ -134,4 +134,11 @@ TEST(nodeTest, AE_CCM) {
 	std::string recoveredText;
 	ASSERT_EQ(h.decrypt(d,16,"AAD",cipherText,recoveredText),DECRYPT_OK);
 	ASSERT_EQ(plainText,recoveredText);
+
+	//compromise encryption result while maintaing MAC same
+	std::string comCipherText = cipherText;
+	comCipherText[0]=0;
+	ASSERT_NE(comCipherText,cipherText);
+
+	ASSERT_EQ(h.decrypt(d,16,"AAD",comCipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
 }
