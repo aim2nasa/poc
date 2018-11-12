@@ -5,7 +5,7 @@ ifeq ($(shell echo $(TEST_DEBUG)|tr [a-z] [A-Z]),YES)
 endif
 
 TARGET = runTests
-SRCS = main.cpp base.cpp key.cpp
+SRCS = main.cpp base.cpp key.cpp entity/keyStore.h entity/node.h
 OBJS = ${SRCS:.cpp=.o}
 
 GTEST_LIBRARIES = -lgtest -lpthread
