@@ -142,3 +142,31 @@ TEST(nodeTest, AE_CCM) {
 
 	ASSERT_EQ(h.decrypt(d,16,"AAD",comCipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
 }
+
+TEST(nodeTest, AE_GCM) { 
+	Node h;
+
+	h.size_=32;
+	h.key_ = new byte[h.size_];
+	memset(h.key_,0,h.size_);
+
+	std::string plainText = "AES AE GCM Test";
+	CryptoPP::GCM<CryptoPP::AES>::Encryption e;
+	e.SetKeyWithIV(h.key_,h.size_,h.iv_);
+	std::string cipherText = h.encrypt(e,"AAD",plainText);
+
+	ASSERT_NE(plainText,cipherText);
+
+	CryptoPP::GCM<CryptoPP::AES>::Decryption d;
+	d.SetKeyWithIV(h.key_,h.size_,h.iv_);
+	std::string recoveredText;
+	ASSERT_EQ(h.decrypt(d,16,"AAD",cipherText,recoveredText),DECRYPT_OK);
+	ASSERT_EQ(plainText,recoveredText);
+
+	//compromise encryption result while maintaing MAC same
+	std::string comCipherText = cipherText;
+	comCipherText[0]=0;
+	ASSERT_NE(comCipherText,cipherText);
+
+	ASSERT_EQ(h.decrypt(d,16,"AAD",comCipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
+}
