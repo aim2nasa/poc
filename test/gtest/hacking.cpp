@@ -25,14 +25,15 @@ TEST(hackingTest, unauthorised_Subscription) {
 	ASSERT_EQ(memcmp(Alice.key_,Bob.key_,Alice.size_),0);
 	ASSERT_EQ(memcmp(Alice.iv_,Bob.iv_,CryptoPP::AES::BLOCKSIZE),0);
 
+	int tagSize = 16;
+	std::string cipherText;
 	//Secret message fron Alice to Bob
 	{
-		int tagSize = 16;
 		//Encryption from Alice
 		std::string message = "Hello Bob";
 		CryptoPP::GCM<CryptoPP::AES>::Encryption e;
 		e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
-		std::string cipherText = Alice.encrypt(e,"AAD",message,tagSize);
+		cipherText = Alice.encrypt(e,"AAD",message,tagSize);
 		ASSERT_NE(message,cipherText);
 
 		//Decryption from Bob
@@ -40,5 +41,20 @@ TEST(hackingTest, unauthorised_Subscription) {
 		d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
 		std::string recoveredText;
 		ASSERT_EQ(Bob.decrypt(d,tagSize,"AAD",cipherText,recoveredText),DECRYPT_OK);
+	}
+
+	//Eve, doesn't have the key Alice and Bob share
+	{
+		Node Eve;
+		Eve.size_ = 32;
+		Eve.key_ = new byte[Eve.size_];
+		ASSERT_NE(memcmp(Eve.key_,Alice.key_,Eve.size_),0);
+		ASSERT_NE(memcmp(Eve.iv_,Alice.iv_,CryptoPP::AES::BLOCKSIZE),0);
+
+		//Eavesdrop Alice's message, decryption has to end up fail because Eve doesn't have key,iv
+		CryptoPP::GCM<CryptoPP::AES>::Decryption d;
+		d.SetKeyWithIV(Eve.key_,Eve.size_,Eve.iv_);
+		std::string recoveredText;
+		ASSERT_EQ(Eve.decrypt(d,tagSize,"AAD",cipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
 	}
 }
