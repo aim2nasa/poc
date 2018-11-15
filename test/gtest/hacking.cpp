@@ -56,5 +56,6 @@ TEST(hackingTest, unauthorised_Subscription) {
 		d.SetKeyWithIV(Eve.key_,Eve.size_,Eve.iv_);
 		std::string recoveredText;
 		ASSERT_EQ(Eve.decrypt(d,tagSize,"AAD",cipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
+		ASSERT_EQ(recoveredText.size(),0);
 	}
 }
