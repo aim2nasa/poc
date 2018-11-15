@@ -41,6 +41,7 @@ TEST(hackingTest, unauthorised_Subscription) {
 		d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
 		std::string recoveredText;
 		ASSERT_EQ(Bob.decrypt(d,tagSize,"AAD",cipherText,recoveredText),DECRYPT_OK);
+		ASSERT_EQ(recoveredText,message);
 	}
 
 	//Eve, doesn't have the key Alice and Bob share
@@ -98,6 +99,7 @@ TEST(hackingTest, unauthorised_Publication) {
 		d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
 		std::string recoveredText;
 		ASSERT_EQ(Bob.decrypt(d,tagSize,"AAD",cipherText,recoveredText),DECRYPT_OK);
+		ASSERT_EQ(recoveredText,message);
 	}
 
 	//Trudy, doesn't have the key Alice and Bob share(No authorization)
