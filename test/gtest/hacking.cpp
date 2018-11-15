@@ -51,7 +51,8 @@ TEST(hackingTest, unauthorised_Subscription) {
 		ASSERT_NE(memcmp(Eve.key_,Alice.key_,Eve.size_),0);
 		ASSERT_NE(memcmp(Eve.iv_,Alice.iv_,CryptoPP::AES::BLOCKSIZE),0);
 
-		//Eavesdrop Alice's message, decryption has to end up fail because Eve doesn't have key,iv
+		//Eavesdrop Alice's encrypted message(i.e. cipherText)
+		//Decryption has to end up fail because Eve doesn't have key,iv
 		CryptoPP::GCM<CryptoPP::AES>::Decryption d;
 		d.SetKeyWithIV(Eve.key_,Eve.size_,Eve.iv_);
 		std::string recoveredText;
