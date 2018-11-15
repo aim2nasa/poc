@@ -94,3 +94,38 @@ TEST(hackingTest, unauthorised_Publication) {
 	ASSERT_EQ(Bob.decrypt(d,tagSize,"AAD",cipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
 	ASSERT_EQ(recoveredText.size(),0);
 }
+
+TEST(hackingTest, tampering_replay) { 
+	//Alice and Bob
+	Node Alice,Bob;
+
+	int tagSize = 16;
+	std::string cipherText;
+	AliceToBob(Alice,Bob,tagSize,cipherText);
+
+	//Mallory, has the same key Alice and Bob share
+	Node Mallory;
+	Mallory.size_ = Alice.size_;
+	Mallory.key_ = new byte[Mallory.size_];
+	memcpy(Mallory.key_,Alice.key_,Alice.size_);
+	memcpy(Mallory.iv_,Alice.iv_,CryptoPP::AES::BLOCKSIZE);
+
+	ASSERT_EQ(Alice.size_,Mallory.size_);
+	ASSERT_EQ(memcmp(Mallory.key_,Alice.key_,Mallory.size_),0);
+	ASSERT_EQ(memcmp(Mallory.iv_,Alice.iv_,CryptoPP::AES::BLOCKSIZE),0);
+
+	//Mallory Tampers data
+	std::string malloryMessage = "I don't love you, Bob";
+	CryptoPP::GCM<CryptoPP::AES>::Encryption e;
+	e.SetKeyWithIV(Mallory.key_,Mallory.size_,Mallory.iv_);
+	std::string tamperedCipherText = Mallory.encrypt(e,"AAD",malloryMessage,tagSize);
+	ASSERT_NE(malloryMessage,tamperedCipherText);
+
+	//Tampered message from Mallory transferred to Bob (Replay)
+	//MAC verification is ok and Bob has no choice but to believe this message is from Alice
+	CryptoPP::GCM<CryptoPP::AES>::Decryption d;
+	d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
+	std::string recoveredText;
+	ASSERT_EQ(Bob.decrypt(d,tagSize,"AAD",tamperedCipherText,recoveredText),DECRYPT_OK);
+	ASSERT_EQ(recoveredText,malloryMessage);
+}
