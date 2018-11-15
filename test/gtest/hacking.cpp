@@ -24,7 +24,7 @@ void AliceToBob(Node &Alice,Node &Bob,int tagSize,std::string &cipherText)
 
 	//Secret message fron Alice to Bob
 	//Encryption from Alice
-	std::string message = "Hello Bob";
+	std::string message = "I love you, Bob";
 	CryptoPP::GCM<CryptoPP::AES>::Encryption e;
 	e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
 	cipherText = Alice.encrypt(e,"AAD",message,tagSize);
