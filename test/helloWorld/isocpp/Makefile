@@ -9,7 +9,7 @@ TARGET_SUB = sub
 SRCS_SUB = HelloWorldSub.cpp util.cpp
 OBJS_SUB = ${SRCS_SUB:.cpp=.o}
 
-IDL = HelloWorldData.idl
+IDL = ../idl/HelloWorldData.idl
 IDLGD = gen
 
 OSPL_CPP_INCLUDES = -I$(OSPL_HOME)/include/dcps/C++
