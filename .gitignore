@@ -5,6 +5,16 @@
 *.suo
 *.user
 *.sln.docstates
+test/helloWorld/isocpp/gen/*.cpp
+test/helloWorld/isocpp/gen/*.h*
+test/helloWorld/isocpp/*.so
+test/helloWorld/isocpp/pub
+test/helloWorld/isocpp/sub
+test/helloWorld/isocpp2/gen/*.cpp
+test/helloWorld/isocpp2/gen/*.h*
+test/helloWorld/isocpp2/*.so
+test/helloWorld/isocpp2/pub
+test/helloWorld/isocpp2/sub
 
 # Build results
 
