@@ -15,6 +15,8 @@ test/helloWorld/isocpp2/gen/*.h*
 test/helloWorld/isocpp2/*.so
 test/helloWorld/isocpp2/pub
 test/helloWorld/isocpp2/sub
+test/multicast/sender
+test/multicast/listener
 
 # Build results
 
