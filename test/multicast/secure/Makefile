@@ -1,6 +1,6 @@
 CXX = g++
 
-TARGET = secsender
+TARGET = sender
 SRCS = sender.cpp
 OBJS = ${SRCS:.cpp=.o}
 
