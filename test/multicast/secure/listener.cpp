@@ -14,7 +14,7 @@
 int main(int argc, char *argv[])
 {
     struct sockaddr_in addr;
-    int fd, nbytes,addrlen;
+    int fd, nbytes;
     struct ip_mreq mreq;
     char msgbuf[MSGBUFSIZE];
     int enable=1;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     }
 
     while (1) {
-        addrlen=sizeof(addr);
+        socklen_t addrlen=sizeof(addr);
         if ((nbytes=recvfrom(fd,msgbuf,MSGBUFSIZE,0,
                             (struct sockaddr *)&addr,&addrlen)) < 0) {
               perror("recvfrom");
