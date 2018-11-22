@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <entity/keyStore.h>
+#include <entity/node.h>
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345
@@ -58,6 +60,17 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    Node Bob;
+    Bob.size_ = 32;
+    Bob.key_ = new byte[Bob.size_];
+    memset(Bob.key_,0,Bob.size_);
+    memset(Bob.iv_,0,CryptoPP::AES::BLOCKSIZE);
+
+    int tagSize = 16,rtn;
+    CryptoPP::GCM<CryptoPP::AES>::Decryption d;
+    d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
+    std::string recoveredText;
+
     while (1) {
         socklen_t addrlen=sizeof(addr);
         if ((nbytes=recvfrom(fd,msgbuf,MSGBUFSIZE,0,
@@ -67,5 +80,12 @@ int main(int argc, char *argv[])
 	     }
         msgbuf[nbytes]=0;
         puts(msgbuf);
+
+        if((rtn=Bob.decrypt(d,tagSize,"AAD",msgbuf,recoveredText))!=DECRYPT_OK) {
+            perror("decrypt error");
+            return rtn;
+        }
+        printf("decrypted:");
+        puts(recoveredText.c_str());
     }
 }
