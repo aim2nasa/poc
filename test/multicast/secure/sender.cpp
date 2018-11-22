@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
      }
 
      if ((fd=socket(AF_INET,SOCK_DGRAM,0)) < 0) {
-         perror("socket");
+         printf("fail to create socket\n");
          return -1;
      }
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
      while (1) {
          if (sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr)) < 0) {
-             perror("sendto");
+             printf("sendto failed\n");
              return -1;
          }
          sleep(1);
