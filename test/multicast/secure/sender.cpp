@@ -37,8 +37,19 @@ int main(int argc, char *argv[])
      addr.sin_addr.s_addr = inet_addr(MULTICAST_GROUP);
      addr.sin_port=htons(MULTICAST_PORT);
      
+     Node Alice;
+     Alice.size_= 32;
+     Alice.key_ = new byte[Alice.size_];
+     memset(Alice.key_,0,Alice.size_);
+     memset(Alice.iv_,0,CryptoPP::AES::BLOCKSIZE);
+
+     int tagSize = 16;
+     CryptoPP::GCM<CryptoPP::AES>::Encryption e;
+     e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
+     std::string cipherText = Alice.encrypt(e,"AAD",message,tagSize);
+
      while (1) {
-         if (sendto(fd,message,strlen(message),0,(struct sockaddr *) &addr,sizeof(addr)) < 0) {
+         if (sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr)) < 0) {
              perror("sendto");
              return -1;
          }
