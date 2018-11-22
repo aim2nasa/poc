@@ -32,14 +32,14 @@ int main(int argc, char *argv[])
     }
 
     if ((fd=socket(AF_INET,SOCK_DGRAM,0)) < 0) {
-        perror("socket");
+        printf("fail to create socket\n");
         return -1;
     }
 
     //allow multiple sockets to use the same PORT number 
     //if enable=1 then reuse, otherwise no reuse
     if (setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,&enable,sizeof(enable)) < 0) {
-        perror("Reusing ADDR failed");
+        printf("Reusing ADDR failed\n");
         return -1;
     }
 
@@ -49,14 +49,14 @@ int main(int argc, char *argv[])
     addr.sin_port=htons(MULTICAST_PORT);
      
     if (bind(fd,(struct sockaddr *) &addr,sizeof(addr)) < 0) {
-        perror("bind");
+        printf("bind failed\n");
         return -1;
     }
      
     mreq.imr_multiaddr.s_addr=inet_addr(MULTICAST_GROUP);
     mreq.imr_interface.s_addr=htonl(INADDR_ANY);
     if (setsockopt(fd,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq)) < 0) {
-        perror("setsockopt");
+        printf("setsockopt failed\n");
         return -1;
     }
 
@@ -75,14 +75,14 @@ int main(int argc, char *argv[])
         socklen_t addrlen=sizeof(addr);
         if ((nbytes=recvfrom(fd,msgbuf,MSGBUFSIZE,0,
                             (struct sockaddr *)&addr,&addrlen)) < 0) {
-              perror("recvfrom");
+              printf("recvfrom failed\n");
               return -1;
 	     }
         msgbuf[nbytes]=0;
         puts(msgbuf);
 
         if((rtn=Bob.decrypt(d,tagSize,"AAD",msgbuf,recoveredText))!=DECRYPT_OK) {
-            perror("decrypt error");
+            printf("decrypt error(%d)\n",rtn);
             return rtn;
         }
         printf("decrypted:");
