@@ -81,11 +81,11 @@ int main(int argc, char *argv[])
         msgbuf[nbytes]=0;
         puts(msgbuf);
 
+        printf("decrypt:");
         if((rtn=Bob.decrypt(d,tagSize,"AAD",msgbuf,recoveredText))!=DECRYPT_OK) {
-            printf("decrypt error(%d)\n",rtn);
-            return rtn;
+            printf("error(%d)\n",rtn);
+        }else{
+            puts(recoveredText.c_str());
         }
-        printf("decrypted:");
-        puts(recoveredText.c_str());
     }
 }
