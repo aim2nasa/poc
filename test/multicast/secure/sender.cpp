@@ -15,15 +15,19 @@
 int main(int argc, char *argv[])
 {
      struct sockaddr_in addr;
-     int fd, cnt;
+     int fd, cnt,key,iv;
      struct ip_mreq mreq;
      char *message = NULL;
 
-     if(argc>1) {
+     if(argc>3) {
          message = argv[1];
          printf("message:%s\n",message);
+         key = atoi(argv[2]);
+         iv = atoi(argv[3]);
+         printf("key=%d,iv=%d\n",key,iv);
      }else{
-         printf("usage: sender <message>\n");
+         printf("usage: sender <message> <key> <iv>\n");
+         printf("      key,iv: any integer value, Arrays are filled with given integer recpectively\n");
          return -1;
      }
 
@@ -40,8 +44,8 @@ int main(int argc, char *argv[])
      Node Alice;
      Alice.size_= 32;
      Alice.key_ = new byte[Alice.size_];
-     memset(Alice.key_,0,Alice.size_);
-     memset(Alice.iv_,0,CryptoPP::AES::BLOCKSIZE);
+     memset(Alice.key_,key,Alice.size_);
+     memset(Alice.iv_,iv,CryptoPP::AES::BLOCKSIZE);
 
      int tagSize = 16;
      CryptoPP::GCM<CryptoPP::AES>::Encryption e;

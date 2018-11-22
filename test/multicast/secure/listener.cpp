@@ -16,18 +16,22 @@
 int main(int argc, char *argv[])
 {
     struct sockaddr_in addr;
-    int fd, nbytes;
+    int fd, nbytes,key,iv;
     struct ip_mreq mreq;
     char msgbuf[MSGBUFSIZE];
     int enable=1;
 
-    if(argc>1) {
+    if(argc>3) {
         enable = (atoi(argv[1])==1)?1:0;
         printf("reuse socket address:");
         (enable)?printf("activated\n"):printf("deactivated\n");
+        key = atoi(argv[2]);
+		  iv = atoi(argv[3]);
+        printf("key=%d,iv=%d\n",key,iv);
     }else{
-        printf("usage: listener <reuse>\n");
+        printf("usage: listener <reuse> <key> <iv>\n");
         printf("     reuse: don't reuse socket address(0),reuse socket address(1)\n");
+        printf("     key,iv: any integer value, Arrays are filled with given integer recpectively\n");
         return -1;
     }
 
@@ -63,8 +67,8 @@ int main(int argc, char *argv[])
     Node Bob;
     Bob.size_ = 32;
     Bob.key_ = new byte[Bob.size_];
-    memset(Bob.key_,0,Bob.size_);
-    memset(Bob.iv_,0,CryptoPP::AES::BLOCKSIZE);
+    memset(Bob.key_,key,Bob.size_);
+    memset(Bob.iv_,iv,CryptoPP::AES::BLOCKSIZE);
 
     int tagSize = 16,rtn;
     CryptoPP::GCM<CryptoPP::AES>::Decryption d;
