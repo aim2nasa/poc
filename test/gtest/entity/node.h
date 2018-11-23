@@ -46,13 +46,15 @@ public:
 
 	template <typename T>
 	std::string encrypt(T e,std::string aad,std::string input,int tagSize=0) {
-		e.SpecifyDataLengths(aad.size(),input.size(),0);
+		//e.SpecifyDataLengths(aad.size(),input.size(),0);
 		std::string output;
 
 		EFilter f;
+		/*
 		if(tagSize<=0)
 			f.ef_ = new CryptoPP::AuthenticatedEncryptionFilter(e,new CryptoPP::StringSink(output));
 		else
+		*/
 			f.ef_ = new CryptoPP::AuthenticatedEncryptionFilter(e,new CryptoPP::StringSink(output),false,tagSize);
 
 		f.ef_->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
@@ -70,22 +72,23 @@ public:
 		if(input.size()!=(enc.size()+tag.size())) return ERROR_TAG_SIZE_NOT_MATCH;
 		if(tag.size()!=tagSize) return ERROR_WRONG_INPUT_TAG_SIZE;
 
-		d.SpecifyDataLengths(aad.size(),enc.size(),0);
+		// d.SpecifyDataLengths(aad.size(),enc.size(),0);
 
 		DFilter f;
+		/*
 		if(tagSize<=0)
 			f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
 				CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION);
 		else
+		*/
 			f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
-				CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION,tagSize);
+				CryptoPP::AuthenticatedDecryptionFilter::MAC_AT_BEGIN | CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION,tagSize);
 
 		try{
-			f.df_->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
-			f.df_->ChannelMessageEnd("AAD");
-
-			f.df_->ChannelPut("",(const byte*)enc.data(),enc.size());
 			f.df_->ChannelPut("",(const byte*)tag.data(),tag.size());
+			f.df_->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
+			f.df_->ChannelPut("",(const byte*)enc.data(),enc.size());
+			f.df_->ChannelMessageEnd("AAD");
 			f.df_->ChannelMessageEnd("");
 		}catch(CryptoPP::HashVerificationFilter::HashVerificationFailed& e){
 			return ERROR_HASH_VERIFY_FAILED;
