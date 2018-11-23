@@ -48,9 +48,10 @@ int main(int argc, char *argv[])
      memset(Alice.iv_,iv,CryptoPP::AES::BLOCKSIZE);
 
      int tagSize = 16;
+     std::string adata(16, (char)0x00);
      CryptoPP::GCM<CryptoPP::AES>::Encryption e;
      e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
-     std::string cipherText = Alice.encrypt(e,"AAD",message,tagSize);
+     std::string cipherText = Alice.encrypt(e,adata,message,tagSize);
 
      while (1) {
          if (sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr)) < 0) {

@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
     CryptoPP::GCM<CryptoPP::AES>::Decryption d;
     d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
     std::string recoveredText;
+    std::string adata(16, (char)0x00);
 
     while (1) {
         socklen_t addrlen=sizeof(addr);
@@ -86,7 +87,7 @@ int main(int argc, char *argv[])
         puts(msgbuf);
 
         printf("decrypt:");
-        if((rtn=Bob.decrypt(d,tagSize,"AAD",msgbuf,recoveredText))!=DECRYPT_OK) {
+        if((rtn=Bob.decrypt(d,tagSize,adata,msgbuf,recoveredText))!=DECRYPT_OK) {
             printf("error(%d)\n",rtn);
         }else{
             puts(recoveredText.c_str());
