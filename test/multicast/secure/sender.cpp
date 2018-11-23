@@ -53,11 +53,15 @@ int main(int argc, char *argv[])
      e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
      std::string cipherText = Alice.encrypt(e,adata,message,tagSize);
 
+     int i=0;
+     ssize_t bytes;
      while (1) {
-         if (sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr)) < 0) {
+         if ((bytes=sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0) {
              printf("sendto failed\n");
              return -1;
          }
+         printf("\r[%d] %zdbytes",++i,bytes);
+         fflush(stdout);
          sleep(1);
      }
      return 0;
