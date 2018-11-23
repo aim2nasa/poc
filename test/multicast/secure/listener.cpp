@@ -83,10 +83,8 @@ int main(int argc, char *argv[])
               printf("recvfrom failed\n");
               return -1;
 	     }
-        msgbuf[nbytes]=0;
-        puts(msgbuf);
 
-        printf("decrypt:");
+        printf("[%d]",nbytes);
         if((rtn=Bob.decrypt(d,tagSize,adata,msgbuf,recoveredText))!=DECRYPT_OK) {
             printf("error(%d)\n",rtn);
         }else{
