@@ -1,5 +1,4 @@
 CXX = g++
-CXXFLAGS = -D PUBKEY_SECURITY
 
 TARGET = sender listener
 
