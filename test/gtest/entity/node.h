@@ -7,12 +7,15 @@
 #include <cryptopp/filters.h>
 #include <cryptopp/ccm.h>
 #include <cryptopp/gcm.h>
+#include <stdexcept>
 
 #define DECRYPT_OK			 			 0	
 #define FAIL_GET_LAST_RESULT 			-1	
 #define ERROR_TAG_SIZE_NOT_MATCH 	-100
 #define ERROR_WRONG_INPUT_TAG_SIZE	-101
 #define ERROR_HASH_VERIFY_FAILED 	-102
+#define ERROR_OUT_OF_RANGE       	-103
+#define ERROR_UNCAUGHT_EXCEPTION  	-1000
 
 class Node : public KeyStore{
 public:
@@ -64,39 +67,42 @@ public:
 
 	template <typename T>
 	int decrypt(T d,int tagSize,std::string aad,std::string input,std::string& output) {
-		std::string enc = input.substr(0,input.size()-tagSize);
-		std::string tag = input.substr(input.size()-tagSize);
-
-		if(input.size()!=(enc.size()+tag.size())) return ERROR_TAG_SIZE_NOT_MATCH;
-		if(tag.size()!=tagSize) return ERROR_WRONG_INPUT_TAG_SIZE;
-
-		d.SpecifyDataLengths(aad.size(),enc.size(),0);
-
-		DFilter f;
-		if(tagSize<=0)
-			f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
-				CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION);
-		else
-			f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
-				CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION,tagSize);
-
 		try{
+			std::string enc = input.substr(0,input.size()-tagSize);
+			std::string tag = input.substr(input.size()-tagSize);
+
+			if(input.size()!=(enc.size()+tag.size())) return ERROR_TAG_SIZE_NOT_MATCH;
+			if(tag.size()!=tagSize) return ERROR_WRONG_INPUT_TAG_SIZE;
+
+			d.SpecifyDataLengths(aad.size(),enc.size(),0);
+
+			DFilter f;
+			if(tagSize<=0)
+				f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
+					CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION);
+			else
+				f.df_ = new CryptoPP::AuthenticatedDecryptionFilter(d,NULL,
+					CryptoPP::AuthenticatedDecryptionFilter::THROW_EXCEPTION,tagSize);
+
 			f.df_->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
 			f.df_->ChannelMessageEnd("AAD");
 
 			f.df_->ChannelPut("",(const byte*)enc.data(),enc.size());
 			f.df_->ChannelPut("",(const byte*)tag.data(),tag.size());
 			f.df_->ChannelMessageEnd("");
+
+			if(!f.df_->GetLastResult()) return FAIL_GET_LAST_RESULT;
+
+			f.df_->SetRetrievalChannel("");
+			output.resize((size_t)f.df_->MaxRetrievable());
+			f.df_->Get( (byte*)output.data(),output.size());
 		}catch(CryptoPP::HashVerificationFilter::HashVerificationFailed& e){
 			return ERROR_HASH_VERIFY_FAILED;
+		}catch(const std::out_of_range& oor){
+			return ERROR_OUT_OF_RANGE;
+		}catch(...){
+			return ERROR_UNCAUGHT_EXCEPTION;
 		}
-
-		if(!f.df_->GetLastResult()) return FAIL_GET_LAST_RESULT;
-
-		f.df_->SetRetrievalChannel("");
-		output.resize((size_t)f.df_->MaxRetrievable());
-		f.df_->Get( (byte*)output.data(),output.size());
-
 		return DECRYPT_OK; 
 	}
 
