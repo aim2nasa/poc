@@ -19,6 +19,12 @@ int main(int argc, char *argv[])
      struct ip_mreq mreq;
      char *message = NULL;
 
+#ifdef PUBKEY_SECURITY
+     printf("Publish key security activated\n");
+#else
+     printf("Publish key security is not activated\n");
+#endif
+
      if(argc>3) {
          message = argv[1];
          printf("message:%s\n",message);
@@ -54,7 +60,6 @@ int main(int argc, char *argv[])
      std::string cipherText;
 
 #ifdef PUBKEY_SECURITY
-     printf("Publish key security activated\n");
 	  if(fopen("pubKey","r")==NULL) { //pubKey mocks actual key file
          printf("No publish key(pubKey),Unauthorized to use encryption module\n");
 	      return 0;
@@ -63,7 +68,6 @@ int main(int argc, char *argv[])
          printf("Publish key confirmed\n");
 	  }
 #else
-     printf("Publish key security is not activated\n");
      cipherText = Alice.encrypt(e,adata,message,tagSize);
 #endif
 
