@@ -1,4 +1,5 @@
 CXX = g++
+CXXFLAGS = -D PUBKEY_SECURITY
 
 TARGET = sender listener
 
@@ -19,7 +20,7 @@ listener : listener.o
 
 %.o : %.cpp
 	@echo $@:$<...
-	$(CXX) -c $< $(INCLUDES)
+	$(CXX) -c $< $(CXXFLAGS) $(INCLUDES)
 
 clean:
 	@echo $@...

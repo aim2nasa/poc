@@ -51,7 +51,21 @@ int main(int argc, char *argv[])
      std::string adata(16, (char)0x00);
      CryptoPP::GCM<CryptoPP::AES>::Encryption e;
      e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
-     std::string cipherText = Alice.encrypt(e,adata,message,tagSize);
+     std::string cipherText;
+
+#ifdef PUBKEY_SECURITY
+     printf("Publish key security activated\n");
+	  if(fopen("pubKey","r")==NULL) { //pubKey mocks actual key file
+         printf("No publish key(pubKey),Unauthorized to use encryption module\n");
+	      return 0;
+     }else{
+         cipherText = Alice.encrypt(e,adata,message,tagSize);
+         printf("Publish key confirmed\n");
+	  }
+#else
+     printf("Publish key security is not activated\n");
+     cipherText = Alice.encrypt(e,adata,message,tagSize);
+#endif
 
      int i=0;
      ssize_t bytes;
