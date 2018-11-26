@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
         printf("[%d]",nbytes);
         if((rtn=Bob.decrypt(d,tagSize,adata,msgbuf,recoveredText))!=DECRYPT_OK) {
-            printf("error(%d)\n",rtn);
+            printf("%s\n",Node::errToStr(rtn).c_str());
         }else{
             puts(recoveredText.c_str());
         }
