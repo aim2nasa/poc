@@ -106,6 +106,34 @@ public:
 		return DECRYPT_OK; 
 	}
 
+	static std::string errToStr(int errCode){
+		switch(errCode){
+		case DECRYPT_OK:
+			return "Decrypt ok";
+			break;
+		case FAIL_GET_LAST_RESULT:
+			return "Fail get last result";
+			break;
+		case ERROR_TAG_SIZE_NOT_MATCH:
+			return "Error tag size not match";
+			break;
+		case ERROR_WRONG_INPUT_TAG_SIZE:
+			return "Error wrong input tag size";
+			break;
+		case ERROR_HASH_VERIFY_FAILED:
+			return "Error hash verify failed";
+			break;
+		case ERROR_OUT_OF_RANGE:
+			return "Error out of range";
+			break;
+		case ERROR_UNCAUGHT_EXCEPTION:
+			return "Error uncaught exception";
+			break;
+		default:
+			return "Undefined error code";
+		}
+	}
+
 	byte iv_[CryptoPP::AES::BLOCKSIZE];
 };
 
