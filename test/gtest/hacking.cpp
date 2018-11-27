@@ -6,6 +6,7 @@ void AliceToBob(Node &Alice,Node &Bob,int tagSize,std::string &cipherText)
 {
 	int kv = 3; //ranom value
 	int ivv = 4; //ranom value
+	std::string adata(16,(char)0x00);
 
 	//Alice
 	Alice.size_=32;
@@ -27,19 +28,21 @@ void AliceToBob(Node &Alice,Node &Bob,int tagSize,std::string &cipherText)
 	std::string message = "I love you, Bob";
 	CryptoPP::GCM<CryptoPP::AES>::Encryption e;
 	e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
-	cipherText = Alice.encrypt(e,"AAD",message,tagSize);
+	cipherText = Alice.encrypt(e,adata,message,tagSize);
 	ASSERT_NE(message,cipherText);
 
 	//Decryption from Bob
 	CryptoPP::GCM<CryptoPP::AES>::Decryption d;
 	d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
 	std::string recoveredText;
-	ASSERT_EQ(Bob.decrypt(d,tagSize,"AAD",cipherText,recoveredText),DECRYPT_OK);
+	ASSERT_EQ(Bob.decrypt(d,tagSize,adata,cipherText,recoveredText),DECRYPT_OK);
 	ASSERT_EQ(recoveredText,message);
 }
  
 TEST(hackingTest, unauthorised_Subscription) { 
 	ASSERT_EQ(16,sizeof(Node::iv_));
+
+	std::string adata(16,(char)0x00);
 
 	//Alice and Bob
 	Node Alice,Bob;
@@ -60,11 +63,13 @@ TEST(hackingTest, unauthorised_Subscription) {
 	CryptoPP::GCM<CryptoPP::AES>::Decryption d;
 	d.SetKeyWithIV(Eve.key_,Eve.size_,Eve.iv_);
 	std::string recoveredText;
-	ASSERT_EQ(Eve.decrypt(d,tagSize,"AAD",cipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
+	ASSERT_EQ(Eve.decrypt(d,tagSize,adata,cipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
 	ASSERT_EQ(recoveredText.size(),0);
 }
 
 TEST(hackingTest, unauthorised_Publication) { 
+	std::string adata(16,(char)0x00);
+
 	//Alice and Bob
 	Node Alice,Bob;
 
@@ -83,7 +88,7 @@ TEST(hackingTest, unauthorised_Publication) {
 	std::string trudyMessage = "Bob you idiot";
 	CryptoPP::GCM<CryptoPP::AES>::Encryption e;
 	e.SetKeyWithIV(Trudy.key_,Trudy.size_,Trudy.iv_);
-	cipherText = Trudy.encrypt(e,"AAD",trudyMessage,tagSize);
+	cipherText = Trudy.encrypt(e,adata,trudyMessage,tagSize);
 	ASSERT_NE(trudyMessage,cipherText);
 
 	//Bob receives message from Trudy
@@ -91,11 +96,13 @@ TEST(hackingTest, unauthorised_Publication) {
 	CryptoPP::GCM<CryptoPP::AES>::Decryption d;
 	d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
 	std::string recoveredText;
-	ASSERT_EQ(Bob.decrypt(d,tagSize,"AAD",cipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
+	ASSERT_EQ(Bob.decrypt(d,tagSize,adata,cipherText,recoveredText),ERROR_HASH_VERIFY_FAILED);
 	ASSERT_EQ(recoveredText.size(),0);
 }
 
 TEST(hackingTest, tampering_replay) { 
+	std::string adata(16,(char)0x00);
+
 	//Alice and Bob
 	Node Alice,Bob;
 
@@ -118,7 +125,7 @@ TEST(hackingTest, tampering_replay) {
 	std::string malloryMessage = "I don't love you, Bob";
 	CryptoPP::GCM<CryptoPP::AES>::Encryption e;
 	e.SetKeyWithIV(Mallory.key_,Mallory.size_,Mallory.iv_);
-	std::string tamperedCipherText = Mallory.encrypt(e,"AAD",malloryMessage,tagSize);
+	std::string tamperedCipherText = Mallory.encrypt(e,adata,malloryMessage,tagSize);
 	ASSERT_NE(malloryMessage,tamperedCipherText);
 
 	//Tampered message from Mallory transferred to Bob (Replay)
@@ -126,6 +133,6 @@ TEST(hackingTest, tampering_replay) {
 	CryptoPP::GCM<CryptoPP::AES>::Decryption d;
 	d.SetKeyWithIV(Bob.key_,Bob.size_,Bob.iv_);
 	std::string recoveredText;
-	ASSERT_EQ(Bob.decrypt(d,tagSize,"AAD",tamperedCipherText,recoveredText),DECRYPT_OK);
+	ASSERT_EQ(Bob.decrypt(d,tagSize,adata,tamperedCipherText,recoveredText),DECRYPT_OK);
 	ASSERT_EQ(recoveredText,malloryMessage);
 }
