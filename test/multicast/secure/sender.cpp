@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <entity/keyStore.h>
 #include <entity/node.h>
+#include "FraudDetect.h"
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345
@@ -41,6 +42,8 @@ int main(int argc, char *argv[])
          printf("fail to create socket\n");
          return -1;
      }
+
+     FraudDetect fdetect;
 
      memset(&addr,0,sizeof(addr));
      addr.sin_family = AF_INET;
