@@ -9,7 +9,7 @@ LIBS = $(CRYPTOPP_LIBRARIES)
 all : $(TARGET)
 	@echo $@:$(TARGET)...
 
-sender : sender.o
+sender : sender.o FraudDetect.o
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(LIBS)
 
