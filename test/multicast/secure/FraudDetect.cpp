@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <stdio.h>
+#include "ErrorCode.h"
 
 FraudDetect::FraudDetect()
 {
