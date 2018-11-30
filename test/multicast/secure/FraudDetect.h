@@ -6,7 +6,7 @@ public:
 	FraudDetect();
 	~FraudDetect();
 
-    int init(int port,int backlog=1);
+    int init(int port,int backlog=0);
     int run();
 
     int sock_;
