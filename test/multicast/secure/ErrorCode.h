@@ -6,5 +6,6 @@
 #define ERROR_BIND      -11
 #define ERROR_LISTEN    -12
 #define ERROR_RECEIVE   -13
+#define ERROR_CONNECT   -14
 
 #endif
