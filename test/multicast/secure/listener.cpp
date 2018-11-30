@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    printf("Collector initilaizing...\n");
     Collector col;
     int errRtn;
     if((errRtn=col.init("127.0.0.1",9191))!=OK)
