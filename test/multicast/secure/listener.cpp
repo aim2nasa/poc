@@ -67,11 +67,13 @@ int main(int argc, char *argv[])
     }
 
     printf("Collector initilaizing...\n");
-    Collector col;
+    Collector *pCol;
     int errRtn;
-    if((errRtn=col.init("127.0.0.1",9191))!=OK)
+    if((errRtn=pCol->init("127.0.0.1",9191))!=OK){
+        delete pCol;
+        pCol = NULL;
         printf("Collector init failed(%d)\n",errRtn);
-    else
+    }else
         printf("Collector init successful(%d)\n",errRtn);
 
     Node Bob;
@@ -91,6 +93,7 @@ int main(int argc, char *argv[])
         if ((nbytes=recvfrom(fd,msgbuf,MSGBUFSIZE,0,
                             (struct sockaddr *)&addr,&addrlen)) < 0) {
             printf("recvfrom failed\n");
+            delete pCol;
             return -1;
         }
         msgbuf[nbytes]=0;
@@ -99,6 +102,7 @@ int main(int argc, char *argv[])
         if((rtn=Bob.decrypt(d,tagSize,adata,msgbuf,recoveredText))!=DECRYPT_OK) {
             printf("%s\n",Node::errToStr(rtn).c_str());
         }else{
+            if(pCol) pCol->collect(msgbuf,nbytes);
             puts(recoveredText.c_str());
         }
     }
