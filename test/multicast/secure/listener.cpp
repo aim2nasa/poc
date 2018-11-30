@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         printf("reuse socket address:");
         (enable)?printf("activated\n"):printf("deactivated\n");
         key = atoi(argv[2]);
-		  iv = atoi(argv[3]);
+        iv = atoi(argv[3]);
         printf("key=%d,iv=%d\n",key,iv);
     }else{
         printf("usage: listener <reuse> <key> <iv>\n");
