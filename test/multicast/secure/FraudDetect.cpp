@@ -2,6 +2,9 @@
 #include <sys/socket.h>
 #include <netinet/ip.h>
 #include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <stdio.h>
 
 FraudDetect::FraudDetect()
 {
@@ -9,6 +12,7 @@ FraudDetect::FraudDetect()
 
 FraudDetect::~FraudDetect()
 {
+    close(sock_);
 }
 
 int FraudDetect::init(int port,int backlog)
@@ -27,4 +31,18 @@ int FraudDetect::init(int port,int backlog)
     if(listen(sock_,backlog) < 0) return ERROR_LISTEN;
 
     return OK;
+}
+
+int FraudDetect::run()
+{
+    int clientSock;
+    struct sockaddr_in clientAddr;
+    char buffer[1024];
+
+    socklen_t addrLen = sizeof(clientAddr);
+    while((clientSock = accept(sock_, (struct sockaddr *)&clientAddr, &addrLen)) > 0){
+        printf("clinet ip : %s\n", inet_ntoa(clientAddr.sin_addr));
+    }
+    close(clientSock);
+    return 0;
 }
