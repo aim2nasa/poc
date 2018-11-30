@@ -7,6 +7,7 @@ public:
 	~Collector();
 
     int init(const char* ip,int port);
+    int collect(const void* buf,unsigned int len,int flags=0);
 
     int sock_;
 };
