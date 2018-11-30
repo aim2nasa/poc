@@ -30,3 +30,8 @@ int Collector::init(const char* ip,int port)
     if(connect(sock_, (struct sockaddr *)&addr, sizeof(addr)) < 0) return ERROR_CONNECT;
     return OK;
 }
+
+int Collector::collect(const void* buf,unsigned int len,int flags)
+{
+    return send(sock_,buf,len,flags);
+}
