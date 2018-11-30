@@ -70,6 +70,8 @@ int main(int argc, char *argv[])
     int errRtn;
     if((errRtn=col.init("127.0.0.1",9191))!=OK)
         printf("Collector init failed(%d)\n",errRtn);
+    else
+        printf("Collector init successful(%d)\n",errRtn);
 
     Node Bob;
     Bob.size_ = 32;
