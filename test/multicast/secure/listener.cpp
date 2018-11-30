@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <entity/keyStore.h>
 #include <entity/node.h>
+#include "Collector.h"
+#include "ErrorCode.h"
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345
@@ -63,6 +65,11 @@ int main(int argc, char *argv[])
         printf("setsockopt failed\n");
         return -1;
     }
+
+    Collector col;
+    int errRtn;
+    if((errRtn=col.init("127.0.0.1",9191))!=OK)
+        printf("Collector init failed(%d)\n",errRtn);
 
     Node Bob;
     Bob.size_ = 32;
