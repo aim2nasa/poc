@@ -90,9 +90,9 @@ int main(int argc, char *argv[])
         socklen_t addrlen=sizeof(addr);
         if ((nbytes=recvfrom(fd,msgbuf,MSGBUFSIZE,0,
                             (struct sockaddr *)&addr,&addrlen)) < 0) {
-              printf("recvfrom failed\n");
-              return -1;
-	     }
+            printf("recvfrom failed\n");
+            return -1;
+        }
         msgbuf[nbytes]=0;
 
         printf("[%d]",nbytes);
