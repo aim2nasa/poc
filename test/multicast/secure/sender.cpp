@@ -9,6 +9,7 @@
 #include <entity/keyStore.h>
 #include <entity/node.h>
 #include "FraudDetect.h"
+#include "ErrorCode.h"
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345
@@ -44,6 +45,11 @@ int main(int argc, char *argv[])
     }
 
     FraudDetect fdetect;
+    int errRtn;
+    if((errRtn=fdetect.init(9191))!=OK)
+        printf("FraudDetect init failed(%d)\n",errRtn);
+    else
+        printf("FraudDetect init successful(%d)\n",errRtn);
 
     memset(&addr,0,sizeof(addr));
     addr.sin_family = AF_INET;
