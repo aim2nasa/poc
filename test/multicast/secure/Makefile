@@ -4,7 +4,7 @@ TARGET = sender listener
 
 INCLUDES = -I$(shell pwd)/../../gtest
 CRYPTOPP_LIBRARIES = -lcryptopp
-LIBS = $(CRYPTOPP_LIBRARIES)
+LIBS = $(CRYPTOPP_LIBRARIES) -lpthread
 
 all : $(TARGET)
 	@echo $@:$(TARGET)...

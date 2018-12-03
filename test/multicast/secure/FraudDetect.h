@@ -7,8 +7,10 @@ public:
 	~FraudDetect();
 
     int init(int port,int backlog=0);
-    int run();
+    int start(void *arg);
 
+protected:
+    static void* run(void *arg);
     int sock_;
 };
 

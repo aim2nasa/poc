@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 #include "ErrorCode.h"
+#include <pthread.h>
 
 FraudDetect::FraudDetect()
 {
@@ -34,16 +35,13 @@ int FraudDetect::init(int port,int backlog)
     return OK;
 }
 
-int FraudDetect::run()
+int FraudDetect::start(void *arg)
 {
-    int clientSock;
-    struct sockaddr_in clientAddr;
-    char buffer[1024];
+    pthread_t p_thread;
+    return pthread_create(&p_thread,NULL,run,arg);
+}
 
-    socklen_t addrLen = sizeof(clientAddr);
-    while((clientSock = accept(sock_, (struct sockaddr *)&clientAddr, &addrLen)) > 0){
-        printf("clinet ip : %s\n", inet_ntoa(clientAddr.sin_addr));
-    }
-    close(clientSock);
+void* FraudDetect::run(void *arg)
+{
     return 0;
 }
