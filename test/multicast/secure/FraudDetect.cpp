@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include "ErrorCode.h"
 #include <pthread.h>
+#include "message.h"
+#include <sys/msg.h>
 
 FraudDetect::FraudDetect()
 {
@@ -43,5 +45,14 @@ int FraudDetect::start(void *arg)
 
 void* FraudDetect::run(void *arg)
 {
+    int msqid = *(int*)arg;
+    struct message msg;
+    long msgtype = 1;
+    while(1)
+    {
+        if(-1!=msgrcv(msqid,(void*)&msg,sizeof(msg.body),msgtype,MSG_NOERROR | IPC_NOWAIT)){
+            printf("%s\n",msg.body);
+        }
+    }
     return 0;
 }
