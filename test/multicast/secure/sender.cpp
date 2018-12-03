@@ -48,8 +48,10 @@ int main(int argc, char *argv[])
     int errRtn;
     if((errRtn=fdetect.init(9191))!=OK)
         printf("FraudDetect init failed(%d)\n",errRtn);
-    else
+    else{
+        fdetect.start(NULL);
         printf("FraudDetect init successful(%d)\n",errRtn);
+    }
 
     memset(&addr,0,sizeof(addr));
     addr.sin_family = AF_INET;
