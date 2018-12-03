@@ -10,6 +10,8 @@
 #include <entity/node.h>
 #include "FraudDetect.h"
 #include "ErrorCode.h"
+#include "message.h"
+#include <sys/msg.h>
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345
@@ -44,12 +46,20 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    struct message Msg;
+    int msqid;
+    if(-1==(msqid=msgget((key_t)1234,IPC_CREAT | 0666))) {
+        printf("fail to get SystemV message queue\n");
+        return -1;
+    }
+    printf("SystemV message queue:%d\n",msqid);
+
     FraudDetect fdetect;
     int errRtn;
     if((errRtn=fdetect.init(9191))!=OK)
         printf("FraudDetect init failed(%d)\n",errRtn);
     else{
-        fdetect.start(NULL);
+        fdetect.start((void*)&msqid);
         printf("FraudDetect init successful(%d)\n",errRtn);
     }
 
@@ -87,6 +97,12 @@ int main(int argc, char *argv[])
     while (1) {
         if ((bytes=sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0) {
             printf("sendto failed\n");
+            return -1;
+        }
+        Msg.type = 1;
+        sprintf(Msg.body,"%s-%d",message,i);
+        if(-1==msgsnd(msqid,(void *)&Msg,sizeof(Msg.body),IPC_NOWAIT)){
+            printf("msgsnd fail\n");
             return -1;
         }
         printf("\r[%d] %zdbytes",++i,bytes);
