@@ -9,7 +9,7 @@ LIBS = $(CRYPTOPP_LIBRARIES) -lpthread
 all : $(TARGET)
 	@echo $@:$(TARGET)...
 
-sender : sender.o FraudDetect.o
+sender : sender.o FraudDetect.o ErrorCode.o
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(LIBS)
 
