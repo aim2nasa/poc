@@ -7,9 +7,7 @@
 #include <stdio.h>
 #include "ErrorCode.h"
 #include <pthread.h>
-#include "message.h"
 #include <sys/msg.h>
-#include <vector>
 
 FraudDetect::FraudDetect()
 {
@@ -42,6 +40,14 @@ int FraudDetect::start(void *arg)
 {
     pthread_t p_thread;
     return pthread_create(&p_thread,NULL,run,arg);
+}
+
+bool FraudDetect::exist(std::vector<message>& q,const char *buff,unsigned int buffSize)
+{
+    for(std::vector<message>::iterator it = q.begin(); it != q.end(); ++it){
+        if(memcmp((*it).body,buff,buffSize)==0) return true;
+    }
+    return false;
 }
 
 void* FraudDetect::run(void *arg)
