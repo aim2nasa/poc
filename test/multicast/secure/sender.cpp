@@ -101,18 +101,24 @@ int main(int argc, char *argv[])
             printf("sendto failed\n");
             return -1;
         }
-        Msg.type = 1;
-        Msg.size = cipherText.size();
-        memcpy(Msg.body,cipherText.c_str(),Msg.size);
-        while(-1==msgsnd(msqid,(void *)&Msg,sizeof(Msg.body),IPC_NOWAIT)){
-            printf("@");
-            int err = errno;
-            if(err==EAGAIN) {
-                struct message oldMsg;
-                msgrcv(msqid,(void*)&oldMsg,sizeof(oldMsg),0,MSG_NOERROR | IPC_NOWAIT); //remove 1 from queue
-            }else{
-                printf(" msgsnd fail(%d)\n",err);
-                break;
+
+        //FraudDetect takes the port(9191). Once it's started then any later bind attempts will fail
+        //In such a case, you must not 'msgsnd'
+        if(errRtn==OK)
+        {
+            Msg.type = 1;
+            Msg.size = cipherText.size();
+            memcpy(Msg.body,cipherText.c_str(),Msg.size);
+            while(-1==msgsnd(msqid,(void *)&Msg,sizeof(Msg.body),IPC_NOWAIT)){
+                printf("@");
+                int err = errno;
+                if(err==EAGAIN) {
+                    struct message oldMsg;
+                    msgrcv(msqid,(void*)&oldMsg,sizeof(oldMsg),0,MSG_NOERROR | IPC_NOWAIT); //remove 1 from queue
+                }else{
+                    printf(" msgsnd fail(%d)\n",err);
+                    break;
+                }
             }
         }
         printf("\r[%d] %zdbytes",++i,bytes);
