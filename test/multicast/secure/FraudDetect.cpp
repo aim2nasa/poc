@@ -58,7 +58,7 @@ void* FraudDetect::run(void *arg)
     long msgtyp = 0;
     std::queue<message> q;
     while((clientSock = accept(p->sock_, (struct sockaddr *)&clientAddr,&addrLen)) > 0){
-        printf("clinet ip : %s\n", inet_ntoa(clientAddr.sin_addr));
+        printf("\nclient ip : %s\n", inet_ntoa(clientAddr.sin_addr));
         
         while(1) {
             if((rcvLen = recv(clientSock, buffer,sizeof(buffer), 0)) < 0){
