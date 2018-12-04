@@ -13,10 +13,10 @@ public:
 
     int init(int port,int backlog=0);
     int start(void *arg);
+    static void* run(void *arg);
 
     int msqid_;
 protected:
-    static void* run(void *arg);
     static bool exist(std::vector<message>& q,const char *buff,unsigned int buffSize);
     int sock_;
 };
