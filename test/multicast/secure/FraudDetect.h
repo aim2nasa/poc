@@ -1,6 +1,8 @@
 #ifndef __FRAUDDETECT_H__
 #define __FRAUDDETECT_H__
 
+#define MAX_QUEUE 5
+
 class FraudDetect{
 public:
 	FraudDetect();

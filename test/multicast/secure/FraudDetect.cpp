@@ -68,7 +68,7 @@ void* FraudDetect::run(void *arg)
             printf("<%zd>",rcvLen);
             while(1) {
                 if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
-                    while(q.size()>=5) { q.pop(); printf("~"); }
+                    while(q.size()>=MAX_QUEUE) { q.pop(); printf("~"); }
                     q.push(msg);
                     printf("+");
                 }else{
