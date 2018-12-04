@@ -13,7 +13,7 @@ sender : sender.o FraudDetect.o ErrorCode.o
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(LIBS)
 
-listener : listener.o Collector.o
+listener : listener.o Collector.o ErrorCode.o
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(LIBS)
 
