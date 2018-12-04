@@ -3,6 +3,7 @@
 
 struct message {
     long type;
+    unsigned int size;
     char body[256];
 };
 

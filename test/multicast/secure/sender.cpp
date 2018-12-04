@@ -100,7 +100,8 @@ int main(int argc, char *argv[])
             return -1;
         }
         Msg.type = 1;
-        sprintf(Msg.body,"%s-%d",message,i);
+        Msg.size = cipherText.size();
+        memcpy(Msg.body,cipherText.c_str(),Msg.size);
         if(-1==msgsnd(msqid,(void *)&Msg,sizeof(Msg.body),IPC_NOWAIT)){
             printf("msgsnd fail\n");
             return -1;
