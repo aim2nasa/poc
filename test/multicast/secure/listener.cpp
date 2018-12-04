@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     }
 
     printf("Collector initilaizing...\n");
-    Collector *pCol;
+    Collector *pCol=new Collector();
     int errRtn;
     if((errRtn=pCol->init("127.0.0.1",9191))!=OK){
         delete pCol;
