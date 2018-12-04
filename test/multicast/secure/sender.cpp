@@ -12,6 +12,7 @@
 #include "ErrorCode.h"
 #include "message.h"
 #include <sys/msg.h>
+#include <errno.h>
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345
@@ -103,9 +104,16 @@ int main(int argc, char *argv[])
         Msg.type = 1;
         Msg.size = cipherText.size();
         memcpy(Msg.body,cipherText.c_str(),Msg.size);
-        if(-1==msgsnd(msqid,(void *)&Msg,sizeof(Msg.body),IPC_NOWAIT)){
-            printf("msgsnd fail\n");
-            return -1;
+        while(-1==msgsnd(msqid,(void *)&Msg,sizeof(Msg.body),IPC_NOWAIT)){
+            printf("@");
+            int err = errno;
+            if(err==EAGAIN) {
+                struct message oldMsg;
+                msgrcv(msqid,(void*)&oldMsg,sizeof(oldMsg),0,MSG_NOERROR | IPC_NOWAIT); //remove 1 from queue
+            }else{
+                printf(" msgsnd fail(%d)\n",err);
+                break;
+            }
         }
         printf("\r[%d] %zdbytes",++i,bytes);
         fflush(stdout);
