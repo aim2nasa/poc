@@ -8,4 +8,6 @@
 #define ERROR_RECEIVE   -13
 #define ERROR_CONNECT   -14
 
+const char* errToMsg(int code);
+
 #endif

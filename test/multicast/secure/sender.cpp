@@ -58,11 +58,11 @@ int main(int argc, char *argv[])
     FraudDetect fdetect;
     int errRtn;
     if((errRtn=fdetect.init(9191))!=OK)
-        printf("FraudDetect init failed(%d)\n",errRtn);
+        printf("FraudDetect init failed(%s)\n",errToMsg(errRtn));
     else{
         fdetect.msqid_ = msqid;
         fdetect.start((void*)&fdetect);
-        printf("FraudDetect init successful(%d)\n",errRtn);
+        printf("FraudDetect init successful(%s)\n",errToMsg(errRtn));
     }
 
     memset(&addr,0,sizeof(addr));
