@@ -59,7 +59,8 @@ int main(int argc, char *argv[])
     if((errRtn=fdetect.init(9191))!=OK)
         printf("FraudDetect init failed(%d)\n",errRtn);
     else{
-        fdetect.start((void*)&msqid);
+        fdetect.msqid_ = msqid;
+        fdetect.start((void*)&fdetect);
         printf("FraudDetect init successful(%d)\n",errRtn);
     }
 
