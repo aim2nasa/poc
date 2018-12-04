@@ -79,10 +79,13 @@ void* FraudDetect::run(void *arg)
                     q.push_back(msg);
                     printf("+");
                 }else{
-                    printf("(%zd).\n",q.size());
+                    printf("(%zd).",q.size());
                     break;
                 }
             }
+            (exist(q,buffer,rcvLen))?printf("O"):printf("X");
+            printf("\n");
+            fflush(stdout);
         }
         close(clientSock);
     }
