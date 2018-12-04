@@ -51,7 +51,7 @@ void* FraudDetect::run(void *arg)
     while(1)
     {
         if(-1!=msgrcv(msqid,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
-            printf("%s\n",msg.body);
+            printf("(%u)",msg.size);
         }
     }
     return 0;
