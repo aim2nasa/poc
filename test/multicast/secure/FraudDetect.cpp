@@ -45,14 +45,35 @@ int FraudDetect::start(void *arg)
 
 void* FraudDetect::run(void *arg)
 {
+    printf("\nwaiting for client..\n");
     FraudDetect* p = (FraudDetect*)arg;
+
+    struct sockaddr_in clientAddr;
+    socklen_t addrLen = sizeof(clientAddr);
+    int clientSock;
+    ssize_t rcvLen;
+    char buffer[1024];
     struct message msg;
     long msgtyp = 0;
-    while(1)
-    {
-        if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
-            printf("(%u)",msg.size);
+    while((clientSock = accept(p->sock_, (struct sockaddr *)&clientAddr,&addrLen)) > 0){
+        printf("clinet ip : %s\n", inet_ntoa(clientAddr.sin_addr));
+        
+        while(1) {
+            if((rcvLen = recv(clientSock, buffer,sizeof(buffer), 0)) < 0){
+                printf("error recv_len=%zd\n",rcvLen);
+                break;
+            }
+            printf("<%zd>",rcvLen);
+            while(1) {
+                if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
+                    printf("+");
+                }else{
+                    printf(".\n");
+                    break;
+                }
+            }
         }
+        close(clientSock);
     }
     return 0;
 }
