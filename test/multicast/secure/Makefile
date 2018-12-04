@@ -1,6 +1,6 @@
 CXX = g++
 
-TARGET = sender listener
+TARGET = sender listener detect
 
 INCLUDES = -I$(shell pwd)/../../gtest
 CRYPTOPP_LIBRARIES = -lcryptopp
@@ -14,6 +14,10 @@ sender : sender.o FraudDetect.o ErrorCode.o
 	$(CXX) -o $@ $^ $(LIBS)
 
 listener : listener.o Collector.o ErrorCode.o
+	@echo $@:$^...
+	$(CXX) -o $@ $^ $(LIBS)
+
+detect : detect.o FraudDetect.o ErrorCode.o
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(LIBS)
 
