@@ -8,8 +8,6 @@
 #include <unistd.h>
 #include <entity/keyStore.h>
 #include <entity/node.h>
-#include "FraudDetect.h"
-#include "ErrorCode.h"
 #include "message.h"
 #include <sys/msg.h>
 #include <errno.h>
@@ -28,6 +26,12 @@ int main(int argc, char *argv[])
     printf("Publish key security activated\n");
 #else
     printf("Publish key security is not activated\n");
+#endif
+
+#ifdef SENDER_DETECT
+    printf("Fraud Detecting activated\n");
+#else
+    printf("Fraud Detecting deactivated\n");
 #endif
 
     if(argc>3) {
@@ -54,16 +58,6 @@ int main(int argc, char *argv[])
         return -1;
     }
     printf("SystemV message queue:%d\n",msqid);
-
-    FraudDetect fdetect;
-    int errRtn;
-    if((errRtn=fdetect.init(9191))!=OK)
-        printf("FraudDetect init failed(%s)\n",errToMsg(errRtn));
-    else{
-        fdetect.msqid_ = msqid;
-        fdetect.start((void*)&fdetect);
-        printf("FraudDetect init successful(%s)\n",errToMsg(errRtn));
-    }
 
     memset(&addr,0,sizeof(addr));
     addr.sin_family = AF_INET;
@@ -102,10 +96,7 @@ int main(int argc, char *argv[])
             return -1;
         }
 
-        //FraudDetect takes the port(9191). Once it's started then any later bind attempts will fail
-        //In such a case, you must not 'msgsnd'
-        if(errRtn==OK)
-        {
+#ifdef SENDER_DETECT
             Msg.type = 1;
             Msg.size = cipherText.size();
             memcpy(Msg.body,cipherText.c_str(),Msg.size);
@@ -120,7 +111,7 @@ int main(int argc, char *argv[])
                     break;
                 }
             }
-        }
+#endif
         printf("\r[%d] %zdbytes",++i,bytes);
         fflush(stdout);
         sleep(1);
