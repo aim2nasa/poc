@@ -9,6 +9,7 @@ public:
     int init(int port,int backlog=0);
     int start(void *arg);
 
+    int msqid_;
 protected:
     static void* run(void *arg);
     int sock_;

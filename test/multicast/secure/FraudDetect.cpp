@@ -45,12 +45,12 @@ int FraudDetect::start(void *arg)
 
 void* FraudDetect::run(void *arg)
 {
-    int msqid = *(int*)arg;
+    FraudDetect* p = (FraudDetect*)arg;
     struct message msg;
     long msgtyp = 0;
     while(1)
     {
-        if(-1!=msgrcv(msqid,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
+        if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
             printf("(%u)",msg.size);
         }
     }
