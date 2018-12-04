@@ -65,6 +65,7 @@ void* FraudDetect::run(void *arg)
                 printf("error recv_len=%zd\n",rcvLen);
                 break;
             }
+            if(rcvLen==0) break;
             printf("<%zd>",rcvLen);
             while(1) {
                 if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
