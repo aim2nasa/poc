@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
     if((errRtn=pCol->init("127.0.0.1",9191))!=OK){
         delete pCol;
         pCol = NULL;
-        printf("Collector init failed(%d)\n",errRtn);
+        printf("Collector init failed(%s)\n",errToMsg(errRtn));
     }else
-        printf("Collector init successful(%d)\n",errRtn);
+        printf("Collector init successful(%s)\n",errToMsg(errRtn));
 
     Node Bob;
     Bob.size_ = 32;
