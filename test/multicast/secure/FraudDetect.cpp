@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include "message.h"
 #include <sys/msg.h>
+#include <queue>
 
 FraudDetect::FraudDetect()
 {
@@ -55,6 +56,7 @@ void* FraudDetect::run(void *arg)
     char buffer[1024];
     struct message msg;
     long msgtyp = 0;
+    std::queue<message> q;
     while((clientSock = accept(p->sock_, (struct sockaddr *)&clientAddr,&addrLen)) > 0){
         printf("clinet ip : %s\n", inet_ntoa(clientAddr.sin_addr));
         
@@ -66,9 +68,11 @@ void* FraudDetect::run(void *arg)
             printf("<%zd>",rcvLen);
             while(1) {
                 if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
+                    while(q.size()>=5) { q.pop(); printf("~"); }
+                    q.push(msg);
                     printf("+");
                 }else{
-                    printf(".\n");
+                    printf("(%zd).\n",q.size());
                     break;
                 }
             }
