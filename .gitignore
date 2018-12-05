@@ -19,6 +19,7 @@ test/multicast/unsecure/sender
 test/multicast/unsecure/listener
 test/multicast/secure/sender
 test/multicast/secure/listener
+test/multicast/secure/detect
 
 # Build results
 
