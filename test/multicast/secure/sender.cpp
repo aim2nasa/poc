@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+#ifdef SENDER_DETECT
     struct message Msg;
     int msqid;
     if(-1==(msqid=msgget((key_t)1234,IPC_CREAT | 0666))) {
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     printf("SystemV message queue:%d\n",msqid);
+#endif
 
     memset(&addr,0,sizeof(addr));
     addr.sin_family = AF_INET;
