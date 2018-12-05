@@ -17,8 +17,12 @@ test/helloWorld/isocpp2/pub
 test/helloWorld/isocpp2/sub
 test/multicast/unsecure/sender
 test/multicast/unsecure/listener
-test/multicast/secure/sender
-test/multicast/secure/listener
+test/multicast/secure/pub
+test/multicast/secure/pubs
+test/multicast/secure/pubd
+test/multicast/secure/pubsd
+test/multicast/secure/sub
+test/multicast/secure/subd
 test/multicast/secure/detect
 
 # Build results
