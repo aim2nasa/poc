@@ -23,6 +23,12 @@ int main(int argc, char *argv[])
     char msgbuf[MSGBUFSIZE];
     int enable=1;
 
+#ifdef LISTENER_DETECT
+    printf("Fraud Detecting activated\n");
+#else
+    printf("Fraud Detecting deactivated\n");
+#endif
+
     if(argc>3) {
         enable = (atoi(argv[1])==1)?1:0;
         printf("reuse socket address:");
@@ -66,8 +72,10 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    Collector *pCol = NULL;
+#ifdef LISTENER_DETECT
     printf("Collector initilaizing...\n");
-    Collector *pCol=new Collector();
+    pCol=new Collector();
     int errRtn;
     if((errRtn=pCol->init("127.0.0.1",9191))!=OK){
         delete pCol;
@@ -75,6 +83,7 @@ int main(int argc, char *argv[])
         printf("Collector init failed(%s)\n",errToMsg(errRtn));
     }else
         printf("Collector init successful(%s)\n",errToMsg(errRtn));
+#endif
 
     Node Bob;
     Bob.size_ = 32;
