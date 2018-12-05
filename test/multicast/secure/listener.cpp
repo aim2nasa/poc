@@ -24,22 +24,41 @@ int main(int argc, char *argv[])
     int enable=1;
 
 #ifdef LISTENER_DETECT
+    const char* ip;
+    int port;
     printf("Fraud Detecting activated\n");
 #else
     printf("Fraud Detecting deactivated\n");
 #endif
 
+#ifdef LISTENER_DETECT
+    if(argc>5) {
+#else
     if(argc>3) {
+#endif
         enable = (atoi(argv[1])==1)?1:0;
         printf("reuse socket address:");
         (enable)?printf("activated\n"):printf("deactivated\n");
         key = atoi(argv[2]);
         iv = atoi(argv[3]);
         printf("key=%d,iv=%d\n",key,iv);
+#ifdef LISTENER_DETECT
+        ip = argv[4];
+        port = atoi(argv[5]);
+        printf("fraud detector ip=%s,port=%d\n",ip,port);
+#endif
     }else{
+#ifdef LISTENER_DETECT
+        printf("usage: listener <reuse> <key> <iv> <ip> <port>\n");
+#else
         printf("usage: listener <reuse> <key> <iv>\n");
+#endif
         printf("     reuse: don't reuse socket address(0),reuse socket address(1)\n");
         printf("     key,iv: any integer value, Arrays are filled with given integer recpectively\n");
+#ifdef LISTENER_DETECT
+        printf("     ip: fraud detector ip\n");
+        printf("     port: fraud detector port\n");
+#endif
         return -1;
     }
 
@@ -77,7 +96,7 @@ int main(int argc, char *argv[])
     printf("Collector initilaizing...\n");
     pCol=new Collector();
     int errRtn;
-    if((errRtn=pCol->init("127.0.0.1",9191))!=OK){
+    if((errRtn=pCol->init(ip,port))!=OK){
         delete pCol;
         pCol = NULL;
         printf("Collector init failed(%s)\n",errToMsg(errRtn));
