@@ -9,21 +9,17 @@ LIBS = $(CRYPTOPP_LIBRARIES) -lpthread
 all : $(TARGET)
 	@echo $@:$(TARGET)...
 
-sender : sender.o FraudDetect.o ErrorCode.o
+sender : sender.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ $(LIBS)
+	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
-listener : listener.o Collector.o ErrorCode.o
+listener : listener.cpp Collector.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ $(LIBS)
+	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
-detect : detect.o FraudDetect.o ErrorCode.o
+detect : detect.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ $(LIBS)
-
-%.o : %.cpp
-	@echo $@:$<...
-	$(CXX) -c $< $(CXXFLAGS) $(INCLUDES)
+	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
 clean:
 	@echo $@...
