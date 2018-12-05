@@ -128,8 +128,7 @@ int main(int argc, char *argv[])
 
         printf("[%d]",nbytes);
 
-        std::string cipher(msgbuf,nbytes);
-        if((rtn=Bob.decrypt(d,tagSize,adata,cipher,recoveredText))!=DECRYPT_OK) {
+        if((rtn=Bob.decrypt(d,tagSize,adata,std::string(msgbuf,nbytes),recoveredText))!=DECRYPT_OK) {
             printf("%s\n",Node::errToStr(rtn).c_str());
         }else{
             if(pCol) pCol->collect(msgbuf,nbytes);
