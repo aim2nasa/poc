@@ -1,6 +1,6 @@
 CXX = g++
 
-TARGET = sender listener detect
+TARGET = pub sub detect
 
 INCLUDES = -I$(shell pwd)/../../gtest
 CRYPTOPP_LIBRARIES = -lcryptopp
@@ -9,11 +9,11 @@ LIBS = $(CRYPTOPP_LIBRARIES) -lpthread
 all : $(TARGET)
 	@echo $@:$(TARGET)...
 
-sender : sender.cpp FraudDetect.cpp ErrorCode.cpp
+pub : sender.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
-listener : listener.cpp Collector.cpp ErrorCode.cpp
+sub : listener.cpp Collector.cpp ErrorCode.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
