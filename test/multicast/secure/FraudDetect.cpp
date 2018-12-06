@@ -63,6 +63,13 @@ void* FraudDetect::run(void *arg)
     struct message msg;
     long msgtyp = 0;
     std::vector<message> q;
+
+    int tagSize = 16;
+    CryptoPP::GCM<CryptoPP::AES>::Decryption d;
+    d.SetKeyWithIV(p->Bob_.key_,p->Bob_.size_,p->Bob_.iv_);
+    std::string recoveredText;
+    std::string adata(16, (char)0x00);
+
     while((clientSock = accept(p->sock_, (struct sockaddr *)&clientAddr,&addrLen)) > 0){
         printf("\nclient ip : %s\n", inet_ntoa(clientAddr.sin_addr));
         
@@ -83,11 +90,29 @@ void* FraudDetect::run(void *arg)
                     break;
                 }
             }
-            (exist(q,buffer,rcvLen))?printf("O"):printf("X");
+
+            if(p->Bob_.size_>0) {
+                int rtn;
+                if((rtn=p->Bob_.decrypt(d,tagSize,adata,std::string(buffer,rcvLen),recoveredText))!=DECRYPT_OK){
+                    printf(" %s",Node::errToStr(rtn).c_str());
+                }else{
+                    printf(" %s",recoveredText.c_str());
+                }
+            }
+
+            (exist(q,buffer,rcvLen))?printf(" [O]"):printf(" [X]");
             printf("\n");
             fflush(stdout);
         }
         close(clientSock);
     }
     return 0;
+}
+
+void FraudDetect::setKeys(int size,int key,int iv)
+{
+    Bob_.size_ = size;
+    Bob_.key_ = new byte[Bob_.size_];
+    memset(Bob_.key_,key,Bob_.size_);
+    memset(Bob_.iv_,iv,CryptoPP::AES::BLOCKSIZE);
 }
