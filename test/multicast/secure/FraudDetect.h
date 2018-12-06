@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "message.h"
+#include <entity/node.h>
 
 #define MAX_QUEUE 5
 
@@ -14,11 +15,13 @@ public:
     int init(int port,int backlog=0);
     int start(void *arg);
     static void* run(void *arg);
+    void setKeys(int size,int key,int iv);
 
     int msqid_;
 protected:
     static bool exist(std::vector<message>& q,const char *buff,unsigned int buffSize);
     int sock_;
+    Node Bob_;
 };
 
 #endif
