@@ -78,21 +78,22 @@ int main(int argc, char *argv[])
     e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
     std::string cipherText;
 
-#ifdef PUBKEY_SECURITY
-	if(fopen("pubKey","r")==NULL) { //pubKey mocks actual key file
-        printf("No publish key(pubKey),Unauthorized to use encryption module\n");
-        return 0;
-    }else{
-        cipherText = Alice.encrypt(e,adata,message,tagSize);
-        printf("Publish key confirmed\n");
-    }
-#else
-    cipherText = Alice.encrypt(e,adata,message,tagSize);
-#endif
-
     int i=0;
     ssize_t bytes;
+    char buffer[1024];
     while (1) {
+        sprintf(buffer,"%s-%d",message,i);
+#ifdef PUBKEY_SECURITY
+	    if(fopen("pubKey","r")==NULL) { //pubKey mocks actual key file
+            printf("No publish key(pubKey),Unauthorized to use encryption module\n");
+            return 0;
+        }else{
+            cipherText = Alice.encrypt(e,adata,buffer,tagSize);
+        }
+#else
+        cipherText = Alice.encrypt(e,adata,buffer,tagSize);
+#endif
+
         if ((bytes=sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0) {
             printf("sendto failed\n");
             return -1;
