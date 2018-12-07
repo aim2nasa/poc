@@ -68,37 +68,37 @@ void* FraudDetect::run(void *arg)
     std::string recoveredText;
     std::string adata(16, (char)0x00);
 
+    while(1) {
+        if((rcvLen = recv(p->sock_, buffer,sizeof(buffer), 0)) < 0){
+            printf("error recv_len=%zd\n",rcvLen);
+            break;
+        }
+        if(rcvLen==0) break;
+        printf("<%zd>",rcvLen);
         while(1) {
-            if((rcvLen = recv(p->sock_, buffer,sizeof(buffer), 0)) < 0){
-                printf("error recv_len=%zd\n",rcvLen);
+            if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
+                while(q.size()>=MAX_QUEUE) { q.erase(q.begin()); printf("~"); }
+                q.push_back(msg);
+                printf("+");
+            }else{
+                printf("(%zd).",q.size());
                 break;
             }
-            if(rcvLen==0) break;
-            printf("<%zd>",rcvLen);
-            while(1) {
-                if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
-                    while(q.size()>=MAX_QUEUE) { q.erase(q.begin()); printf("~"); }
-                    q.push_back(msg);
-                    printf("+");
-                }else{
-                    printf("(%zd).",q.size());
-                    break;
-                }
-            }
-
-            if(p->Bob_.size_>0) {
-                int rtn;
-                if((rtn=p->Bob_.decrypt(d,tagSize,adata,std::string(buffer,rcvLen),recoveredText))!=DECRYPT_OK){
-                    printf(" %s",Node::errToStr(rtn).c_str());
-                }else{
-                    printf(" %s",recoveredText.c_str());
-                }
-            }
-
-            (exist(q,buffer,rcvLen))?printf(" [O]"):printf(" [X]");
-            printf("\n");
-            fflush(stdout);
         }
+
+        if(p->Bob_.size_>0) {
+            int rtn;
+            if((rtn=p->Bob_.decrypt(d,tagSize,adata,std::string(buffer,rcvLen),recoveredText))!=DECRYPT_OK){
+                printf(" %s",Node::errToStr(rtn).c_str());
+            }else{
+                printf(" %s",recoveredText.c_str());
+            }
+        }
+
+        (exist(q,buffer,rcvLen))?printf(" [O]"):printf(" [X]");
+        printf("\n");
+        fflush(stdout);
+    }
     return 0;
 }
 
