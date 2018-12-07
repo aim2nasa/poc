@@ -20,7 +20,7 @@ FraudDetect::~FraudDetect()
 
 int FraudDetect::init(int port,int backlog)
 {
-    if((sock_ = socket(AF_INET, SOCK_STREAM, 0))<0){
+    if((sock_ = socket(AF_INET, SOCK_DGRAM, 0))<0){
         return ERROR_SOCKET;
     }
 
@@ -31,8 +31,6 @@ int FraudDetect::init(int port,int backlog)
     addr.sin_port = htons(port);
 
     if(bind(sock_, (struct sockaddr *)&addr, sizeof(addr)) < 0) return ERROR_BIND;
-    if(listen(sock_,backlog) < 0) return ERROR_LISTEN;
-
     return OK;
 }
 
@@ -70,11 +68,8 @@ void* FraudDetect::run(void *arg)
     std::string recoveredText;
     std::string adata(16, (char)0x00);
 
-    while((clientSock = accept(p->sock_, (struct sockaddr *)&clientAddr,&addrLen)) > 0){
-        printf("\nclient ip : %s\n", inet_ntoa(clientAddr.sin_addr));
-        
         while(1) {
-            if((rcvLen = recv(clientSock, buffer,sizeof(buffer), 0)) < 0){
+            if((rcvLen = recv(p->sock_, buffer,sizeof(buffer), 0)) < 0){
                 printf("error recv_len=%zd\n",rcvLen);
                 break;
             }
@@ -104,8 +99,6 @@ void* FraudDetect::run(void *arg)
             printf("\n");
             fflush(stdout);
         }
-        close(clientSock);
-    }
     return 0;
 }
 

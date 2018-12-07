@@ -18,7 +18,7 @@ Collector::~Collector()
 
 int Collector::init(const char* ip,int port)
 {
-    if((sock_ = socket(AF_INET, SOCK_STREAM, 0))<0) ERROR_SOCKET;
+    if((sock_ = socket(AF_INET, SOCK_DGRAM, 0))<0) ERROR_SOCKET;
 
     struct sockaddr_in addr;
 
