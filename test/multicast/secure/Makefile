@@ -1,4 +1,5 @@
 CXX = g++
+CXXFLAGS = -g -ggdb
 
 TARGET = pub pubs pubd pubsd sub subd detect
 
@@ -11,31 +12,31 @@ all : $(TARGET)
 
 pub : sender.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
 pubs : sender.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ -D PUBKEY_SECURITY $(INCLUDES) $(LIBS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) -D PUBKEY_SECURITY $(INCLUDES) $(LIBS)
 
 pubd : sender.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ -D SENDER_DETECT $(INCLUDES) $(LIBS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) -D SENDER_DETECT $(INCLUDES) $(LIBS)
 
 pubsd : sender.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ -D PUBKEY_SECURITY -D SENDER_DETECT $(INCLUDES) $(LIBS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) -D PUBKEY_SECURITY -D SENDER_DETECT $(INCLUDES) $(LIBS)
 
 sub : listener.cpp Collector.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
 subd : listener.cpp Collector.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ -D LISTENER_DETECT $(INCLUDES) $(LIBS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) -D LISTENER_DETECT $(INCLUDES) $(LIBS)
 
 detect : detect.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
-	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
 clean:
 	@echo $@...
