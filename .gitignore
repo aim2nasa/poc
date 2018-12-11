@@ -24,6 +24,7 @@ test/multicast/secure/pubsd
 test/multicast/secure/sub
 test/multicast/secure/subd
 test/multicast/secure/detect
+test/monitor/mon
 
 # Build results
 
