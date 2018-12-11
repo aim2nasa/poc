@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "helloWorldSub", "helloWorld
 		{25F36D67-694E-4CEF-9B76-3393D4C1388A} = {25F36D67-694E-4CEF-9B76-3393D4C1388A}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "monitor", "monitor\monitor.vcxproj", "{C6B37AD7-777D-4621-BACD-B75927E91C39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -75,6 +77,12 @@ Global
 		{40F643A0-1745-4212-A8A2-78432CBD2F00}.Release|Win32.ActiveCfg = Release|Win32
 		{40F643A0-1745-4212-A8A2-78432CBD2F00}.Release|Win32.Build.0 = Release|Win32
 		{40F643A0-1745-4212-A8A2-78432CBD2F00}.Release|x64.ActiveCfg = Release|Win32
+		{C6B37AD7-777D-4621-BACD-B75927E91C39}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C6B37AD7-777D-4621-BACD-B75927E91C39}.Debug|Win32.Build.0 = Debug|Win32
+		{C6B37AD7-777D-4621-BACD-B75927E91C39}.Debug|x64.ActiveCfg = Debug|Win32
+		{C6B37AD7-777D-4621-BACD-B75927E91C39}.Release|Win32.ActiveCfg = Release|Win32
+		{C6B37AD7-777D-4621-BACD-B75927E91C39}.Release|Win32.Build.0 = Release|Win32
+		{C6B37AD7-777D-4621-BACD-B75927E91C39}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
