@@ -5,6 +5,7 @@ pthread_mutex_t mtx;
 void *run(void *arg)
 {
     std::cout<<"name:"<<(char*)arg<<std::endl;
+    return 0;
 }
 
 int main(int argc, char *argv[])
