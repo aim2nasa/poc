@@ -94,11 +94,6 @@ int main(int argc, char *argv[])
         cipherText = Alice.encrypt(e,adata,buffer,tagSize);
 #endif
 
-        if ((bytes=sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0) {
-            printf("sendto failed\n");
-            return -1;
-        }
-
 #ifdef SENDER_DETECT
             Msg.type = 1;
             Msg.size = cipherText.size();
@@ -115,6 +110,10 @@ int main(int argc, char *argv[])
                 }
             }
 #endif
+        if ((bytes=sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0) {
+            printf("sendto failed\n");
+            return -1;
+        }
         printf("\r[%d] %zdbytes",++i,bytes);
         fflush(stdout);
         sleep(1);
