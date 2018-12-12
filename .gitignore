@@ -27,6 +27,8 @@ test/multicast/secure/detect
 test/monitor/mon
 test/thread/t1
 test/thread/t1l
+test/shm/counter
+test/shm/show_counter
 
 # Build results
 
