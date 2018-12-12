@@ -26,6 +26,7 @@ test/multicast/secure/subd
 test/multicast/secure/detect
 test/monitor/mon
 test/thread/t1
+test/thread/t1l
 
 # Build results
 
