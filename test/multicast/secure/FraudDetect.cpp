@@ -48,6 +48,16 @@ bool FraudDetect::exist(std::vector<message>& q,const char *buff,unsigned int bu
     return false;
 }
 
+int FraudDetect::existOrder(std::vector<message>& q,const char *buff,unsigned int buffSize)
+{
+    int i=1;
+    for(std::vector<message>::iterator it = q.begin(); it != q.end(); ++it){
+        if(memcmp((*it).body,buff,buffSize)==0) return i;
+        i++;
+    }
+    return -1;
+}
+
 void* FraudDetect::run(void *arg)
 {
     printf("\nwaiting for client..\n");
@@ -95,8 +105,9 @@ void* FraudDetect::run(void *arg)
             }
         }
 
-        (exist(q,buffer,rcvLen))?printf(" [O]"):printf(" [X]");
-        printf("\n");
+        int order;
+        ((order=existOrder(q,buffer,rcvLen))>0)?printf(" [O]"):printf(" [X]");
+        printf(" %d/%zd\n",order,q.size());
         fflush(stdout);
     }
     return 0;

@@ -20,6 +20,7 @@ public:
     int msqid_;
 protected:
     static bool exist(std::vector<message>& q,const char *buff,unsigned int buffSize);
+    static int existOrder(std::vector<message>& q,const char *buff,unsigned int buffSize);
     int sock_;
     Node Bob_;
 };
