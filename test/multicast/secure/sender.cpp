@@ -95,13 +95,13 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef SENDER_DETECT
-            Msg.type = 1;
-            Msg.size = cipherText.size();
-            memcpy(Msg.body,cipherText.c_str(),Msg.size);
-            while(-1==msgsnd(msqid,(void *)&Msg,sizeof(Msg.body),IPC_NOWAIT)){
-                struct message oldMsg;
-                msgrcv(msqid,(void*)&oldMsg,sizeof(oldMsg),0,MSG_NOERROR | IPC_NOWAIT); //remove 1 from queue
-            }
+        Msg.type = 1;
+        Msg.size = cipherText.size();
+        memcpy(Msg.body,cipherText.c_str(),Msg.size);
+        while(-1==msgsnd(msqid,(void *)&Msg,sizeof(Msg.body),IPC_NOWAIT)){
+            struct message oldMsg;
+            msgrcv(msqid,(void*)&oldMsg,sizeof(oldMsg),0,MSG_NOERROR | IPC_NOWAIT); //remove 1 from queue
+        }
 #endif
         if ((bytes=sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0) {
             printf("sendto failed\n");
