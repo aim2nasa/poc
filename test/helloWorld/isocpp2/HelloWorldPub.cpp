@@ -15,9 +15,11 @@ int main(int argc,char* argv[])
   dds::pub::DataWriter<HelloWorldData::Msg> dw(pub,topic);
 
   HelloWorldData::Msg message(1,argv[1]);
-  dw.write(message);
-  std::cout<<"DW: "<<message<<std::endl;
-  usleep(1000000);
+  while(1) {
+    dw.write(message);
+    std::cout<<"DW: "<<message<<std::endl;
+    sleep(1);
+  }
 
   std::cout<<"pub end"<<std::endl;
   return 0;
