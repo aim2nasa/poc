@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
             printf("sendto failed\n");
             return -1;
         }
-        printf("\r[%d] %zdbytes",++i,bytes);
+        printf("\r[%d] %s (%zdbytes)",++i,buffer,bytes);
         fflush(stdout);
         sleep(1);
     }
