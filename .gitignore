@@ -25,6 +25,7 @@ test/multicast/secure/sub
 test/multicast/secure/subd
 test/multicast/secure/detect
 test/monitor/mon
+test/monitor/mond
 test/thread/t1
 test/thread/t1l
 test/shm/counter
