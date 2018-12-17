@@ -126,13 +126,12 @@ int main(int argc, char *argv[])
         }
         msgbuf[nbytes]=0;
 
-        printf("[%d]",nbytes);
-
         if((rtn=Bob.decrypt(d,tagSize,adata,std::string(msgbuf,nbytes),recoveredText))!=DECRYPT_OK) {
-            printf("%s\n",Node::errToStr(rtn).c_str());
+            printf("%s",Node::errToStr(rtn).c_str());
         }else{
             if(pCol) pCol->collect(msgbuf,nbytes);
-            puts(recoveredText.c_str());
+            printf("%s",recoveredText.c_str());
         }
+        printf(" (%dbytes)\n",nbytes);
     }
 }
