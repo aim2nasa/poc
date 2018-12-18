@@ -84,7 +84,8 @@ int main(int argc, char *argv[])
     while (1) {
         sprintf(buffer,"%s-%d",message,i);
 #ifdef PUBKEY_SECURITY
-	    if(fopen("pubKey","r")==NULL) { //pubKey mocks actual key file
+        FILE *fp;
+        if((fp=fopen("pubKey","r"))==NULL) { //pubKey mocks actual key file
             printf("No publish key(pubKey),Unauthorized to use encryption module\n");
             return 0;
         }else{
@@ -104,12 +105,18 @@ int main(int argc, char *argv[])
         }
 #endif
         if ((bytes=sendto(fd,cipherText.c_str(),cipherText.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0) {
+#ifdef PUBKEY_SECURITY
+            fclose(fp);
+#endif
             printf("sendto failed\n");
             return -1;
         }
         printf("\r[%d] %s (%zdbytes)",++i,buffer,bytes);
         fflush(stdout);
         sleep(1);
+#ifdef PUBKEY_SECURITY
+        fclose(fp);
+#endif
     }
     return 0;
 }
