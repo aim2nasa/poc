@@ -51,6 +51,9 @@ int main(int argc, char *argv[])
     std::cout<<"2.Test using test()"<<std::endl;
     m.test();
 
+    std::cout<<"3. To be identical calling with #1(to reach to CTest::test() methond)"<<std::endl;
+    m.test().test()->test();
+
     std::cout<<"end of main"<<std::endl;
     return 0;
 }
