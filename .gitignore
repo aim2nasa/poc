@@ -32,6 +32,7 @@ test/shm/counter
 test/shm/show_counter
 test/c++change/op_cpp11
 test/c++change/op_cppold
+test/c++/operator/oper
 
 # Build results
 
