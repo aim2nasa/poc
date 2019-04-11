@@ -1,7 +1,7 @@
 CXX = g++
 
 TARGET = runTests
-SRCS = main.cpp base.cpp
+SRCS = main.cpp base.cpp mcnet.cpp
 OBJS = ${SRCS:.cpp=.o}
 
 GTEST_LIBRARIES = -lgtest -lpthread
