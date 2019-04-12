@@ -4,7 +4,7 @@
 typedef unsigned char byte;
 
 TEST(IMcNetTest, send) { 
-    class CTest : public IMcNet{
+    class CMcNet : public IMcNet{
     public:
         int join(IRecv *rcv) { return -1; }
         ssize_t send(const void *buf, size_t len)
@@ -15,12 +15,12 @@ TEST(IMcNetTest, send) {
     };
 
 	ASSERT_EQ(sizeof("abc"), 4);
-    CTest t;
+    CMcNet t;
 	ASSERT_EQ(t.send("abc",3), 3);
 }
 
 TEST(IMcNetTest, sendRecv) { 
-    class CSender : public IMcNet{
+    class CMcNet : public IMcNet{
     public:
         int join(IRecv *rcv)
         {
@@ -48,7 +48,7 @@ TEST(IMcNetTest, sendRecv) {
     }; 
 
     CReceiver r;
-    CSender s; 
+    CMcNet s; 
     ASSERT_EQ(s.join(&r),0);
     ASSERT_EQ(s.send("abc",3),3);
 }
@@ -80,7 +80,7 @@ TEST(IMcNetTest, set) {
 
 TEST(IMcNetTest, multiReceivers)
 {
-    class CSender : public IMcNet{
+    class CMcNet : public IMcNet{
     public:
         int join(IRecv *rcv)
         {
@@ -113,7 +113,7 @@ TEST(IMcNetTest, multiReceivers)
     }; 
 
     CReceiver r1("R1"),r2("R2"),r3("R3");
-    CSender s;
+    CMcNet s;
     ASSERT_EQ(s.join(&r1),0);
     ASSERT_EQ(s.join(&r1),-1);  //already exist
     ASSERT_EQ(s.join(&r2),0);
