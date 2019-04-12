@@ -43,6 +43,8 @@ TEST(IMcNetTest, sendRecv) {
         ssize_t recv(void *buf,size_t len)
         {
             std::cout<<"CReceiver::recv="<<len<<std::endl;
+            for(size_t i=0;i<len;i++) std::cout<<*(reinterpret_cast<char*>(buf)+i);
+            std::cout<<std::endl;
             return len;
         }
     }; 
