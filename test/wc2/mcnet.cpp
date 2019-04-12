@@ -6,6 +6,7 @@ TEST(IMcNetTest, send) {
 
     class CTest : public IMcNet{
     public:
+        int join(IRecv *rcv) { return -1; }
         ssize_t send(const void *buf, size_t len)
         {
             std::vector<byte> b((byte*)buf,(byte*)buf+len);
