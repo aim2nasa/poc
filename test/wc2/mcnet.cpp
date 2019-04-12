@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include "imcnet.h"
 
-TEST(IMcNetTest, send) { 
-    typedef unsigned char byte;
+typedef unsigned char byte;
 
+TEST(IMcNetTest, send) { 
     class CTest : public IMcNet{
     public:
         int join(IRecv *rcv) { return -1; }
@@ -20,8 +20,6 @@ TEST(IMcNetTest, send) {
 }
 
 TEST(IMcNetTest, sendRecv) { 
-    typedef unsigned char byte;
-
     class CSender : public IMcNet{
     public:
         int join(IRecv *rcv)
@@ -56,8 +54,6 @@ TEST(IMcNetTest, sendRecv) {
 }
 
 TEST(IMcNetTest, set) { 
-    typedef unsigned char byte;
-
     std::set<IRecv*> tb;
 
     class CReceiver : public IRecv{
@@ -84,8 +80,6 @@ TEST(IMcNetTest, set) {
 
 TEST(IMcNetTest, multiReceivers)
 {
-    typedef unsigned char byte;
-
     class CSender : public IMcNet{
     public:
         int join(IRecv *rcv)
