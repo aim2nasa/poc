@@ -54,3 +54,30 @@ TEST(IMcNetTest, sendRecv) {
     ASSERT_EQ(s.join(&r),0);
     ASSERT_EQ(s.send("abc",3),3);
 }
+
+TEST(IMcNetTest, set) { 
+    typedef unsigned char byte;
+
+    std::set<IRecv*> tb;
+
+    class CReceiver : public IRecv{
+        ssize_t recv(void *buf,size_t len) {return 0;}
+    };
+    
+    CReceiver c1;
+
+    std::pair<std::set<IRecv*>::iterator,bool> ret;
+
+    ret=tb.insert(&c1);
+    ASSERT_EQ(ret.second,true);
+    ret=tb.insert(&c1);
+    ASSERT_EQ(ret.second,false); //already exist
+
+    CReceiver c2,c3;
+    ret=tb.insert(&c2);
+    ASSERT_EQ(ret.second,true);
+    ret=tb.insert(&c3);
+    ASSERT_EQ(ret.second,true);
+
+    ASSERT_EQ(tb.size(),3);
+}
