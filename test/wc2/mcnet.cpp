@@ -122,3 +122,27 @@ TEST(IMcNetTest, multiReceivers)
 
     ASSERT_EQ(s.send("abc",3),3);
 }
+
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+class CRcv{
+public:
+    CRcv():fd_(-1),enable_(1){}
+    ~CRcv(){ close(fd_); }
+
+    int init()
+    {
+        if((fd_=socket(AF_INET,SOCK_DGRAM,0))<0) return -1;
+        if(setsockopt(fd_,SOL_SOCKET,SO_REUSEADDR,&enable_,sizeof(enable_)) < 0) return -1;
+    }
+
+    int fd_;
+    int enable_;
+    struct sockaddr_in addr;
+};
+
+TEST(IMcNetTest, multicast)
+{
+    CRcv r;
+}
