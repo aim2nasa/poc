@@ -167,9 +167,10 @@ public:
         addr_.sin_port=port;
         if(bind(fd_,(struct sockaddr *) &addr_,sizeof(addr_))<0) return -1;
 
-        mreq_.imr_multiaddr.s_addr=inet_addr(ip);
-        mreq_.imr_interface.s_addr=htonl(INADDR_ANY);
-        if(setsockopt(fd_,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq_,sizeof(mreq_)) < 0) return -1;
+        struct ip_mreq mreq;
+        mreq.imr_multiaddr.s_addr=inet_addr(ip);
+        mreq.imr_interface.s_addr=htonl(INADDR_ANY);
+        if(setsockopt(fd_,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq)) < 0) return -1;
 
         bufSize_ = bufSize;
         buf_ = new char[bufSize_];
@@ -208,7 +209,6 @@ public:
     int fd_;
     int enable_;
     struct sockaddr_in addr_;
-    struct ip_mreq mreq_;
     char *buf_;
     size_t bufSize_;
     pthread_t thread_;
