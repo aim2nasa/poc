@@ -107,12 +107,13 @@ TEST(IMcNetTest, multiReceivers)
         CReceiver(std::string name):name_(name){}
         ssize_t recv(void *buf,size_t len)
         {
-            std::cout<<"CReceiver("<<name_<<")::recv="<<len<<std::endl;
-            for(size_t i=0;i<len;i++) std::cout<<*(reinterpret_cast<char*>(buf)+i);
-            std::cout<<std::endl;
+            str_ = reinterpret_cast<char*>(buf);
+            len_ = len;
             return len;
         }
         std::string name_;
+        std::string str_;
+        size_t len_;
     }; 
 
     CReceiver r1("R1"),r2("R2"),r3("R3");
@@ -124,6 +125,16 @@ TEST(IMcNetTest, multiReceivers)
     ASSERT_EQ(s.tb_.size(),3);
 
     ASSERT_EQ(s.send("abc",3),3);
+
+    ASSERT_EQ(r1.name_,"R1");
+    ASSERT_EQ(r1.str_,"abc");
+    ASSERT_EQ(r1.len_,3);
+    ASSERT_EQ(r2.name_,"R2");
+    ASSERT_EQ(r2.str_,"abc");
+    ASSERT_EQ(r2.len_,3);
+    ASSERT_EQ(r3.name_,"R3");
+    ASSERT_EQ(r3.str_,"abc");
+    ASSERT_EQ(r3.len_,3);
 }
 
 #include <sys/socket.h>
