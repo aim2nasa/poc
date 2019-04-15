@@ -40,17 +40,20 @@ TEST(IMcNetTest, sendRecv) {
     public:
         ssize_t recv(void *buf,size_t len)
         {
-            std::cout<<"CReceiver::recv="<<len<<std::endl;
-            for(size_t i=0;i<len;i++) std::cout<<*(reinterpret_cast<char*>(buf)+i);
-            std::cout<<std::endl;
+            str_ = reinterpret_cast<char*>(buf);
+            len_ = len;
             return len;
         }
+        std::string str_;
+        size_t len_;
     }; 
 
     CReceiver r;
     CMcNet s; 
     ASSERT_EQ(s.join(&r),0);
     ASSERT_EQ(s.send("abc",3),3);
+    ASSERT_EQ(r.str_,"abc");
+    ASSERT_EQ(r.len_,3);
 }
 
 TEST(IMcNetTest, set) { 
