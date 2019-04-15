@@ -40,6 +40,7 @@ TEST(IMcNetTest, sendRecv) {
     public:
         ssize_t recv(void *buf,size_t len)
         {
+            reinterpret_cast<char*>(buf)[len]=0;
             str_ = reinterpret_cast<char*>(buf);
             len_ = len;
             return len;
@@ -107,6 +108,7 @@ TEST(IMcNetTest, multiReceivers)
         CReceiver(std::string name):name_(name){}
         ssize_t recv(void *buf,size_t len)
         {
+            reinterpret_cast<char*>(buf)[len]=0;
             str_ = reinterpret_cast<char*>(buf);
             len_ = len;
             return len;
@@ -244,6 +246,7 @@ class CCb : public ICallback{
 public:
     ssize_t data(void *buf,size_t len)
     {
+        reinterpret_cast<char*>(buf)[len]=0;
         str_=reinterpret_cast<char*>(buf);
         len_ = len;
     }
