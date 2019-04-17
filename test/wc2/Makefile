@@ -1,10 +1,11 @@
 CXX = g++
+CXXFLAGS = -std=c++11 
 
 TARGET = runTests
 SRCS = main.cpp base.cpp mcnet.cpp
 OBJS = ${SRCS:.cpp=.o}
 
-GTEST_LIBRARIES = -lgtest -lpthread
+GTEST_LIBRARIES = -L/usr/local/lib -lgtest -lpthread
 LIBS = $(GTEST_LIBRARIES)
 
 all : $(TARGET)
