@@ -284,4 +284,5 @@ TEST(MockTest, basic)
 {
     MockCb m;
     EXPECT_CALL(m,data(0,0)).Times(1);
+    m.data(0,0);
 }
