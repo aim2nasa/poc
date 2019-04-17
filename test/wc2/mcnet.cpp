@@ -299,15 +299,38 @@ TEST(MockTest, virtualSend)
 {
     class VNet : public INet{
     public:
+        VNet():len_(0){}
         virtual int init(const char *ip,ushort port) { return 0; }
-        virtual ssize_t send(const void *buf,size_t len) { return 0; }
-        virtual ssize_t recv(void *buf,size_t len) { return 0; }
+        virtual ssize_t send(const void *buf,size_t len)
+        {
+            msg_=reinterpret_cast<const char*>(buf);
+            len_=len;
+            return len_;
+        }
+        virtual ssize_t recv(void *buf,size_t len) //Nonblocking function just for testing
+        {
+            memcpy(buf,msg_.c_str(),len);
+            return len_;
+        }
         virtual int close() { return 0; }
+
+        std::string msg_;
+        size_t len_;
     };
 
     VNet vn;
     INet *n = &vn;
+
+    char msg[]={"abcde"};   //message to send
+    size_t len=sizeof(msg); //size of message to send
+    ASSERT_EQ(len,6);
+
     ASSERT_EQ(n->init(MULTICAST_GROUP,MULTICAST_PORT),0);
-    ASSERT_EQ(n->send("abcde",5),0);
-    ASSERT_EQ(n->close(),0);
+    ASSERT_EQ(n->send(msg,len),len);
+    ASSERT_EQ(vn.msg_,std::string(msg));
+    ASSERT_EQ(vn.len_,len);
+
+    char buf[128];
+    ASSERT_EQ(n->recv(buf,sizeof(buf)),len);
+    ASSERT_EQ(memcmp(buf,msg,len),0);
 }
