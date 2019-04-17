@@ -5,7 +5,7 @@ TARGET = runTests
 SRCS = main.cpp base.cpp mcnet.cpp
 OBJS = ${SRCS:.cpp=.o}
 
-GTEST_LIBRARIES = -L/usr/local/lib -lgtest -lpthread
+GTEST_LIBRARIES = -L/usr/local/lib -lgtest -lpthread -lgmock
 LIBS = $(GTEST_LIBRARIES)
 
 all : $(TARGET)
