@@ -286,3 +286,39 @@ TEST(MockTest, basic)
     EXPECT_CALL(m,data(0,0)).Times(1);
     m.data(0,0);
 }
+
+struct INet{
+    virtual ~INet() {}
+    virtual int init(const char *ip,ushort port)=0;
+    virtual ssize_t send(const void *buf,size_t len)=0;
+    virtual ssize_t recv(void *buf,size_t len)=0;
+    virtual int close()=0;
+};
+
+TEST(MockTest, virtualSend)
+{
+    class CNet{
+    public:
+        CNet():net_(0){}
+        int init(const char *ip,ushort port) { return net_->init(ip,port); }
+        ssize_t send(const void *buf,size_t len) { return net_->send(buf,len); } 
+        ssize_t recv(void *buf,size_t len) { return net_->recv(buf,len); }
+        int close() { return net_->close(); }
+        INet *net_;
+    };
+
+    class VNet : public INet{
+    public:
+        virtual int init(const char *ip,ushort port) { return 0; }
+        virtual ssize_t send(const void *buf,size_t len) { return 0; }
+        virtual ssize_t recv(void *buf,size_t len) { return 0; }
+        virtual int close() { return 0; }
+    };
+
+    VNet vn;
+    CNet n;
+    n.net_ = &vn;
+    ASSERT_EQ(n.init(MULTICAST_GROUP,MULTICAST_PORT),0);
+    ASSERT_EQ(n.send("abcde",5),0);
+    ASSERT_EQ(n.close(),0);
+}
