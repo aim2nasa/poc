@@ -272,3 +272,15 @@ TEST(IMcNetTest, multicast)
     ASSERT_EQ(cb.str_,"abcde");
     ASSERT_EQ(cb.len_,5);
 }
+
+#include "gmock/gmock.h"
+
+class MockCb : public ICallback{
+public:
+    MOCK_METHOD2(data,ssize_t(void *buf,size_t len));
+};
+
+TEST(MockTest, basic)
+{
+    MockCb m;
+}
