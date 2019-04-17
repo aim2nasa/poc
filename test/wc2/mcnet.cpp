@@ -295,16 +295,6 @@ struct INet{
     virtual int close()=0;
 };
 
-class CNet{
-public:
-    CNet():net_(0){}
-    int init(const char *ip,ushort port) { return net_->init(ip,port); }
-    ssize_t send(const void *buf,size_t len) { return net_->send(buf,len); } 
-    ssize_t recv(void *buf,size_t len) { return net_->recv(buf,len); }
-    int close() { return net_->close(); }
-    INet *net_;
-};
-
 TEST(MockTest, virtualSend)
 {
     class VNet : public INet{
