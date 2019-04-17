@@ -295,18 +295,18 @@ struct INet{
     virtual int close()=0;
 };
 
+class CNet{
+public:
+    CNet():net_(0){}
+    int init(const char *ip,ushort port) { return net_->init(ip,port); }
+    ssize_t send(const void *buf,size_t len) { return net_->send(buf,len); } 
+    ssize_t recv(void *buf,size_t len) { return net_->recv(buf,len); }
+    int close() { return net_->close(); }
+    INet *net_;
+};
+
 TEST(MockTest, virtualSend)
 {
-    class CNet{
-    public:
-        CNet():net_(0){}
-        int init(const char *ip,ushort port) { return net_->init(ip,port); }
-        ssize_t send(const void *buf,size_t len) { return net_->send(buf,len); } 
-        ssize_t recv(void *buf,size_t len) { return net_->recv(buf,len); }
-        int close() { return net_->close(); }
-        INet *net_;
-    };
-
     class VNet : public INet{
     public:
         virtual int init(const char *ip,ushort port) { return 0; }
@@ -316,9 +316,8 @@ TEST(MockTest, virtualSend)
     };
 
     VNet vn;
-    CNet n;
-    n.net_ = &vn;
-    ASSERT_EQ(n.init(MULTICAST_GROUP,MULTICAST_PORT),0);
-    ASSERT_EQ(n.send("abcde",5),0);
-    ASSERT_EQ(n.close(),0);
+    INet *n = &vn;
+    ASSERT_EQ(n->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+    ASSERT_EQ(n->send("abcde",5),0);
+    ASSERT_EQ(n->close(),0);
 }
