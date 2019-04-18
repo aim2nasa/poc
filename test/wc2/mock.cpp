@@ -176,3 +176,35 @@ TEST(MockTest, realMultiSendRecv)
     VReceiver vr(vs.q_);
     runMulti(&vs,&vr);
 }
+
+TEST(MockTest, realMulticast)
+{
+    Sender s;
+    Receiver r1,r2,r3;
+    ISender *si = &s;
+    IReceiver *ri[] = {&r1,&r2,&r3};
+
+    ASSERT_EQ(sizeof(ri)/sizeof(IReceiver*),3);
+
+    ASSERT_EQ(si->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++)
+        ASSERT_EQ(ri[i]->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+
+    char msg[]={"HelloMulticast"};  //message to send
+    size_t len=sizeof(msg);         //size of message to send
+    ASSERT_EQ(len,strlen(msg)+1);   //sizeof accounts for NULL at the end
+
+    ASSERT_EQ(si->send(msg,len),len);
+
+    char buf[128];
+    memset(buf,0,sizeof(buf));
+    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++){
+        ASSERT_EQ(ri[i]->recv(buf,sizeof(buf)),len);
+        ASSERT_EQ(memcmp(buf,msg,len),0);
+        memset(buf,0,sizeof(buf));
+    }
+
+    ASSERT_EQ(si->close(),0);
+    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++)
+        ASSERT_EQ(ri[i]->close(),0);
+}
