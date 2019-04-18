@@ -141,3 +141,38 @@ TEST(MockTest, realFakeTogether)
     VReceiver vr(vs.q_);
     run(&vs,&vr);
 }
+
+void sendRecv(ISender *si,IReceiver *ri,const char* msg, size_t msgSize)
+{
+    ASSERT_EQ(si->send(msg,msgSize),msgSize);
+
+    char buf[128];
+    ASSERT_EQ(ri->recv(buf,sizeof(buf)),msgSize);
+    ASSERT_EQ(memcmp(buf,msg,msgSize),0);
+}
+
+void runMulti(ISender *si,IReceiver *ri)
+{
+    ASSERT_EQ(si->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+    ASSERT_EQ(ri->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+
+    sendRecv(si,ri,"1",sizeof("1"));
+    sendRecv(si,ri,"22",sizeof("22"));
+    sendRecv(si,ri,"333",sizeof("333"));
+    sendRecv(si,ri,"4444",sizeof("4444"));
+    sendRecv(si,ri,"55555",sizeof("55555"));
+
+    ASSERT_EQ(si->close(),0);
+    ASSERT_EQ(ri->close(),0);
+}
+
+TEST(MockTest, realMultiSendRecv)
+{
+    Sender s;
+    Receiver r;
+    runMulti(&s,&r);
+
+    VSender vs;
+    VReceiver vr(vs.q_);
+    runMulti(&vs,&vr);
+}
