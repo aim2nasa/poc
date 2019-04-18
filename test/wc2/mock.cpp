@@ -126,6 +126,9 @@ void run(ISender *si,IReceiver *ri)
     char buf[128];
     ASSERT_EQ(ri->recv(buf,sizeof(buf)),len);
     ASSERT_EQ(memcmp(buf,msg,len),0);
+
+    ASSERT_EQ(si->close(),0);
+    ASSERT_EQ(ri->close(),0);
 }
 
 TEST(MockTest, realFakeTogether)
