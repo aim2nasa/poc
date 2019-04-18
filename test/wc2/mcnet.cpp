@@ -334,3 +334,47 @@ TEST(MockTest, virtualSend)
     ASSERT_EQ(n->recv(buf,sizeof(buf)),len);
     ASSERT_EQ(memcmp(buf,msg,len),0);
 }
+
+#include "SafeQueue.h"
+
+TEST(MockTest, vnetDesignExperiment1)
+{
+    class VNet : public INet{
+    public:
+        VNet(){}
+        virtual int init(const char *ip,ushort port) { return 0; }
+        virtual ssize_t send(const void *buf,size_t len)
+        {
+            std::vector<byte> b;
+            for(size_t i=0;i<len;i++) b.push_back(reinterpret_cast<const char*>(buf)[i]);
+            q_.enqueue(b);
+            return b.size();
+        }
+        virtual ssize_t recv(void *buf,size_t len)
+        {
+            if(q_.front().size()>len) return -1;
+
+            std::vector<byte> b = q_.dequeue();
+            memcpy(buf,b.data(),b.size());
+            return b.size();
+        }
+        virtual int close() { return 0; }
+
+    private:
+        SafeQueue<std::vector<byte>> q_;
+    };
+
+    VNet vn;
+    INet *n = &vn;
+
+    char msg[]={"abcde"};   //message to send
+    size_t len=sizeof(msg); //size of message to send
+    ASSERT_EQ(len,6);
+
+    ASSERT_EQ(n->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+    ASSERT_EQ(n->send(msg,len),len);
+
+    char buf[128];
+    ASSERT_EQ(n->recv(buf,sizeof(buf)),len);
+    ASSERT_EQ(memcmp(buf,msg,len),0);
+}
