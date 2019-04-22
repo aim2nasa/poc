@@ -25,26 +25,38 @@ struct IReceiver : public ISession{
     virtual ssize_t recv(void *buf,size_t len)=0;
 };
 
+typedef SafeQueue<std::vector<byte>> Que;
+
 class VSender : public ISender{
 public:
     VSender(){}
-    virtual int init(const char *ip,ushort port) { return 0; }
+    virtual int init(const char *ip,ushort port)
+    {
+        group.clear();
+        return 0;
+    }
     virtual ssize_t send(const void *buf,size_t len)
     {
         std::vector<byte> b;
         for(size_t i=0;i<len;i++) b.push_back(reinterpret_cast<const char*>(buf)[i]);
-        q_.enqueue(b);
+        for(std::vector<Que*>::iterator it=group.begin();it!=group.end();it++) (*it)->enqueue(b);
         return b.size();
     }
     virtual int close() { return 0; }
 
-    SafeQueue<std::vector<byte>> q_;
+    static std::vector<Que*> group;
 };
+
+std::vector<Que*> VSender::group;
 
 class VReceiver : public IReceiver{
 public:
-    VReceiver(SafeQueue<std::vector<byte>> &q):q_(q){}
-    virtual int init(const char *ip,ushort port) { return 0; }
+    VReceiver(){}
+    virtual int init(const char *ip,ushort port)
+    {
+        VSender::group.push_back(&q_);
+        return 0;
+    }
     virtual ssize_t recv(void *buf,size_t len)
     {
         if(q_.front().size()>len) return -1;
@@ -55,7 +67,7 @@ public:
     }
     virtual int close() { return 0; }
 
-    SafeQueue<std::vector<byte>> &q_;
+    SafeQueue<std::vector<byte>> q_;
 };
 
 class Sender : public ISender{
@@ -138,7 +150,7 @@ TEST(MockTest, realFakeTogether)
     run(&s,&r);
 
     VSender vs;
-    VReceiver vr(vs.q_);
+    VReceiver vr;
     run(&vs,&vr);
 }
 
@@ -173,7 +185,7 @@ TEST(MockTest, realMultiSendRecv)
     runMulti(&s,&r);
 
     VSender vs;
-    VReceiver vr(vs.q_);
+    VReceiver vr;
     runMulti(&vs,&vr);
 }
 
