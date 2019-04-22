@@ -189,18 +189,13 @@ TEST(MockTest, realMultiSendRecv)
     runMulti(&vs,&vr);
 }
 
-TEST(MockTest, realMulticast)
+void helloMulticast(ISender *si,std::vector<IReceiver*> &ris)
 {
-    Sender s;
-    Receiver r1,r2,r3;
-    ISender *si = &s;
-    IReceiver *ri[] = {&r1,&r2,&r3};
-
-    ASSERT_EQ(sizeof(ri)/sizeof(IReceiver*),3);
+    ASSERT_GT(ris.size(),0);
 
     ASSERT_EQ(si->init(MULTICAST_GROUP,MULTICAST_PORT),0);
-    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++)
-        ASSERT_EQ(ri[i]->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+    for(std::vector<IReceiver*>::iterator it=ris.begin();it!=ris.end();it++)
+        ASSERT_EQ((*it)->init(MULTICAST_GROUP,MULTICAST_PORT),0);
 
     char msg[]={"HelloMulticast"};  //message to send
     size_t len=sizeof(msg);         //size of message to send
@@ -210,45 +205,37 @@ TEST(MockTest, realMulticast)
 
     char buf[128];
     memset(buf,0,sizeof(buf));
-    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++){
-        ASSERT_EQ(ri[i]->recv(buf,sizeof(buf)),len);
+    for(std::vector<IReceiver*>::iterator it=ris.begin();it!=ris.end();it++){
+        ASSERT_EQ((*it)->recv(buf,sizeof(buf)),len);
         ASSERT_EQ(memcmp(buf,msg,len),0);
         memset(buf,0,sizeof(buf));
     }
 
     ASSERT_EQ(si->close(),0);
-    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++)
-        ASSERT_EQ(ri[i]->close(),0);
+    for(std::vector<IReceiver*>::iterator it=ris.begin();it!=ris.end();it++)
+        ASSERT_EQ((*it)->close(),0);
+}
+
+TEST(MockTest, realMulticast)
+{
+    Sender s;
+    Receiver r1,r2,r3;
+
+    std::vector<IReceiver*> rs;
+    rs.push_back(&r1);
+    rs.push_back(&r2);
+    rs.push_back(&r3);
+    helloMulticast(&s,rs);
 }
 
 TEST(MockTest, virtualMulticast)
 {
     VSender s;
     VReceiver r1,r2,r3;
-    ISender *si = &s;
-    IReceiver *ri[] = {&r1,&r2,&r3};
 
-    ASSERT_EQ(sizeof(ri)/sizeof(IReceiver*),3);
-
-    ASSERT_EQ(si->init(MULTICAST_GROUP,MULTICAST_PORT),0);
-    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++)
-        ASSERT_EQ(ri[i]->init(MULTICAST_GROUP,MULTICAST_PORT),0);
-
-    char msg[]={"HelloMulticast"};  //message to send
-    size_t len=sizeof(msg);         //size of message to send
-    ASSERT_EQ(len,strlen(msg)+1);   //sizeof accounts for NULL at the end
-
-    ASSERT_EQ(si->send(msg,len),len);
-
-    char buf[128];
-    memset(buf,0,sizeof(buf));
-    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++){
-        ASSERT_EQ(ri[i]->recv(buf,sizeof(buf)),len);
-        ASSERT_EQ(memcmp(buf,msg,len),0);
-        memset(buf,0,sizeof(buf));
-    }
-
-    ASSERT_EQ(si->close(),0);
-    for(size_t i=0;i<sizeof(ri)/sizeof(IReceiver*);i++)
-        ASSERT_EQ(ri[i]->close(),0);
+    std::vector<IReceiver*> rs;
+    rs.push_back(&r1);
+    rs.push_back(&r2);
+    rs.push_back(&r3);
+    helloMulticast(&s,rs);
 }
