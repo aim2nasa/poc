@@ -200,7 +200,7 @@ void helloMulticast(ISender *si,std::vector<IReceiver*> &ris)
         ASSERT_EQ((*it)->close(),0);
 }
 
-TEST(EmulTest, realMulticast)
+TEST(EmulTest, realHelloMulticast)
 {
     Sender s;
     Receiver r1,r2,r3;
@@ -212,7 +212,7 @@ TEST(EmulTest, realMulticast)
     helloMulticast(&s,rs);
 }
 
-TEST(EmulTest, virtualMulticast)
+TEST(EmulTest, virtualHelloMulticast)
 {
     VSender s;
     VReceiver r1,r2,r3;
@@ -252,7 +252,7 @@ void multicast(ISender *si,std::vector<IReceiver*> &ris,std::vector<std::string>
         ASSERT_EQ((*it)->close(),0);
 }
 
-TEST(EmulTest, realMulticastMessages)
+TEST(EmulTest, realMulticast)
 {
     Sender s;
     Receiver r1,r2,r3;
@@ -270,7 +270,7 @@ TEST(EmulTest, realMulticastMessages)
     multicast(&s,rs,msgs);
 }
 
-TEST(EmulTest, virtualMulticastMessages)
+TEST(EmulTest, virtualMulticast)
 {
     VSender s;
     VReceiver r1,r2,r3;
