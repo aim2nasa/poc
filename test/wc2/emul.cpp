@@ -223,3 +223,67 @@ TEST(EmulTest, virtualMulticast)
     rs.push_back(&r3);
     helloMulticast(&s,rs);
 }
+
+void multicast(ISender *si,std::vector<IReceiver*> &ris,std::vector<std::string> &messages)
+{
+    ASSERT_GT(ris.size(),0);
+    ASSERT_GT(messages.size(),0);
+
+    ASSERT_EQ(si->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+    for(std::vector<IReceiver*>::iterator it=ris.begin();it!=ris.end();it++)
+        ASSERT_EQ((*it)->init(MULTICAST_GROUP,MULTICAST_PORT),0);
+
+    for(std::vector<std::string>::iterator it=messages.begin();it!=messages.end();it++){
+        ASSERT_EQ(si->send((*it).c_str(),(*it).size()),(*it).size());
+
+        char buf[128];
+        ASSERT_GE(sizeof(buf),(*it).size());
+        for(std::vector<IReceiver*>::iterator itr=ris.begin();itr!=ris.end();itr++){
+            ASSERT_EQ((*itr)->recv(buf,sizeof(buf)),(*it).size());
+            ASSERT_EQ(memcmp(buf,(*it).c_str(),(*it).size()),0);
+#ifdef _DEBUG
+            std::cout<<"Receiver="<<*itr<<",message="<<(*it).c_str()<<std::endl;
+#endif
+        }
+    }
+
+    ASSERT_EQ(si->close(),0);
+    for(std::vector<IReceiver*>::iterator it=ris.begin();it!=ris.end();it++)
+        ASSERT_EQ((*it)->close(),0);
+}
+
+TEST(EmulTest, realMulticastMessages)
+{
+    Sender s;
+    Receiver r1,r2,r3;
+
+    std::vector<IReceiver*> rs;
+    rs.push_back(&r1);
+    rs.push_back(&r2);
+    rs.push_back(&r3);
+
+    std::vector<std::string> msgs;
+    msgs.push_back("message #1");
+    msgs.push_back("message #2");
+    msgs.push_back("message #3");
+
+    multicast(&s,rs,msgs);
+}
+
+TEST(EmulTest, virtualMulticastMessages)
+{
+    VSender s;
+    VReceiver r1,r2,r3;
+
+    std::vector<IReceiver*> rs;
+    rs.push_back(&r1);
+    rs.push_back(&r2);
+    rs.push_back(&r3);
+
+    std::vector<std::string> msgs;
+    msgs.push_back("message #1");
+    msgs.push_back("message #2");
+    msgs.push_back("message #3");
+
+    multicast(&s,rs,msgs);
+}
