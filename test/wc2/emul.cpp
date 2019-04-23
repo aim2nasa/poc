@@ -127,7 +127,7 @@ void run(ISender *si,IReceiver *ri)
     ASSERT_EQ(ri->close(),0);
 }
 
-TEST(MockTest, realFakeTogether)
+TEST(EmulTest, realFakeTogether)
 {
     Sender s;
     Receiver r;
@@ -162,7 +162,7 @@ void runMulti(ISender *si,IReceiver *ri)
     ASSERT_EQ(ri->close(),0);
 }
 
-TEST(MockTest, realMultiSendRecv)
+TEST(EmulTest, realMultiSendRecv)
 {
     Sender s;
     Receiver r;
@@ -200,7 +200,7 @@ void helloMulticast(ISender *si,std::vector<IReceiver*> &ris)
         ASSERT_EQ((*it)->close(),0);
 }
 
-TEST(MockTest, realMulticast)
+TEST(EmulTest, realMulticast)
 {
     Sender s;
     Receiver r1,r2,r3;
@@ -212,7 +212,7 @@ TEST(MockTest, realMulticast)
     helloMulticast(&s,rs);
 }
 
-TEST(MockTest, virtualMulticast)
+TEST(EmulTest, virtualMulticast)
 {
     VSender s;
     VReceiver r1,r2,r3;
