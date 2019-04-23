@@ -3,28 +3,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "SafeQueue.h"
+#include "ISession.h"
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT  12345
 
 typedef unsigned char byte;
-
-struct ISession{
-    virtual ~ISession() {}
-    virtual int init(const char *ip,ushort port)=0;
-    virtual int close()=0;
-};
-
-struct ISender : public ISession{
-    virtual ~ISender() {}
-    virtual ssize_t send(const void *buf,size_t len)=0;
-};
-
-struct IReceiver : public ISession{
-    virtual ~IReceiver() {}
-    virtual ssize_t recv(void *buf,size_t len)=0;
-};
-
 typedef SafeQueue<std::vector<byte>> Que;
 
 class VSender : public ISender{
