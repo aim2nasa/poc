@@ -1,6 +1,10 @@
 #ifndef __DETECT_H__
 #define __DETECT_H__
 
+#include "SafeQueue.h"
+typedef unsigned char byte;
+typedef SafeQueue<std::vector<byte>> Queue;
+
 class Detect{
 public:
     Detect(){}
@@ -11,6 +15,7 @@ public:
 
 private:
     pthread_t tid_;
+    Queue q_;
     static void* run(void *arg)
     {
         std::cout<<"start run.."<<std::endl;
