@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 
 
 TARGET = runTests
-SRCS = main.cpp baseTest.cpp emulTest.cpp SessionTest.cpp
+SRCS = main.cpp baseTest.cpp emulTest.cpp SessionTest.cpp DetectTest.cpp
 OBJS = ${SRCS:.cpp=.o}
 
 GTEST_LIBRARIES = -L/usr/local/lib -lgtest -lpthread -lgmock
