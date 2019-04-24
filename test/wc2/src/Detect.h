@@ -39,6 +39,8 @@ private:
         {
             std::vector<byte> msg = p->q_.dequeue();
             if(msg.size()==0 && p->stop_) break;    //Escape from infinite loop 
+
+            std::cout<<msg.data()<<std::endl;
         }
         std::cout<<"end of run"<<std::endl;
         return 0;

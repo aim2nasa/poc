@@ -8,3 +8,18 @@ TEST(Detect, run)
     d.stop();
     d.join();
 }
+
+TEST(Detect, messages)
+{
+    Detect d;
+    d.start(&d);
+
+    char msg[128];
+    for(int i=0;i<5;i++) {
+        sprintf(msg,"Message #%d",i);
+        d.recv((void*)msg,strlen(msg));
+    }
+
+    d.stop();
+    d.join();
+}
