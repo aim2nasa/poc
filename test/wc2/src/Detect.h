@@ -18,6 +18,7 @@ private:
     Queue q_;
     static void* run(void *arg)
     {
+        Detect *p = static_cast<Detect*>(arg);
         std::cout<<"start run.."<<std::endl;
         std::cout<<"end of run"<<std::endl;
         return 0;
