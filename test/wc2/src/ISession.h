@@ -13,9 +13,19 @@ struct ISender : public ISession{
     virtual ~ISender() {}
     virtual ssize_t send(const void *buf,size_t len)=0;
 };
+
+struct ISend{
+    virtual ~ISend() {}
+    virtual ssize_t send(const void *buf,size_t len)=0;
+};
     
 struct IReceiver : public ISession{
     virtual ~IReceiver() {}
+    virtual ssize_t recv(void *buf,size_t len)=0;
+};
+
+struct IReceive{
+    virtual ~IReceive() {}
     virtual ssize_t recv(void *buf,size_t len)=0;
 };
 
