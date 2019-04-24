@@ -6,29 +6,17 @@ public:
     Detect(){}
     virtual ~Detect(){}
 
-    int start(void *arg);
-    int join(void **retval=0);
+    int start(void *arg) { return pthread_create(&tid_,NULL,run,arg); }
+    int join(void **retval=0) { return pthread_join(tid_,retval); }
 
 private:
     pthread_t tid_;
-    static void* run(void *arg);
+    static void* run(void *arg)
+    {
+        std::cout<<"start run.."<<std::endl;
+        std::cout<<"end of run"<<std::endl;
+        return 0;
+    }
 };
-
-int Detect::start(void *arg)
-{
-    return pthread_create(&tid_,NULL,run,arg);
-}
-
-int Detect::join(void **retval)
-{
-    return pthread_join(tid_,retval);
-}
-
-void* Detect::run(void *arg)
-{
-    std::cout<<"start run.."<<std::endl;
-    std::cout<<"end of run"<<std::endl;
-    return 0;
-}
 
 #endif
