@@ -2,8 +2,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include "SafeQueue.h"
-#include "ISession.h"
+#include "src/SafeQueue.h"
+#include "src/ISession.h"
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT  12345

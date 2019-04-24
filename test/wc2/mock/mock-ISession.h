@@ -2,7 +2,7 @@
 #define __MOCK_ISESSION_H__
 
 #include "gmock/gmock.h"
-#include "../ISession.h"
+#include "../src/ISession.h"
 
 class MockSession : public ISession{
 public:
