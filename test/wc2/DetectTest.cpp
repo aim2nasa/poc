@@ -4,6 +4,6 @@
 TEST(Detect, run)
 {
     Detect d;
-    d.start(NULL);
+    d.start(&d);
     d.join();
 }
