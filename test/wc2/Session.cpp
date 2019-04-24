@@ -15,7 +15,7 @@ private:
 TEST(Session, openClose)
 {
     MockSession ms;
-    EXPECT_CALL(ms,init(NULL,0))
+    EXPECT_CALL(ms,init(testing::_,testing::_))
         .WillRepeatedly(testing::Return(0));
 
     EXPECT_CALL(ms,close())
