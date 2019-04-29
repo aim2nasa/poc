@@ -1,8 +1,10 @@
 CXX = g++
+CXXFLAGS = -std=c++11
 
 ifeq ($(shell echo $(TEST_DEBUG)|tr [a-z] [A-Z]),YES)
 	CXXFLAGS += -D DEBUG 
 endif
+INCLUDES = -I$(shell pwd)
 
 TARGET = runTests
 SRCS = main.cpp base.cpp key.cpp hacking.cpp encoding.cpp entity/keyStore.h entity/node.h
@@ -21,7 +23,7 @@ $(TARGET) : $(OBJS)
 
 %.o : %.cpp
 	@echo $@:$<...
-	$(CXX) -c $< $(CXXFLAGS)
+	$(CXX) -c $< $(CXXFLAGS) $(INCLUDES)
 
 clean:
 	@echo $@...
