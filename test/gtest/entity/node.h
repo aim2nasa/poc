@@ -48,8 +48,13 @@ public:
 	}
 
 	template <typename T>
-	std::string encrypt(T e,std::string aad,std::string input,int tagSize=0) {
-		e.SpecifyDataLengths(aad.size(),input.size(),0);
+	std::string encrypt(T e,const std::string aad,const std::string input,int tagSize=0) {
+	    return encrypt(e,aad,reinterpret_cast<const byte*>(input.c_str()),input.size(),tagSize);
+	}
+
+	template <typename T>
+	std::string encrypt(T e,const std::string aad,const byte *bstring,size_t length,int tagSize=0) {
+		e.SpecifyDataLengths(aad.size(),length,0);
 		std::string output;
 
 		EFilter f;
@@ -60,7 +65,7 @@ public:
 
 		f.ef_->ChannelPut("AAD",(const byte*)aad.data(),aad.size());
 		f.ef_->ChannelMessageEnd("AAD");
-		f.ef_->ChannelPut("",(const byte*)input.data(),input.size());
+		f.ef_->ChannelPut("",bstring,length);
 		f.ef_->ChannelMessageEnd("");
 		return output;
 	}
