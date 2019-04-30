@@ -7,7 +7,7 @@ endif
 INCLUDES = -I$(shell pwd)
 
 TARGET = runTests
-SRCS = main.cpp base.cpp key.cpp hacking.cpp encoding.cpp entity/keyStore.h entity/node.h
+SRCS = main.cpp base.cpp key.cpp hacking.cpp bug.cpp entity/keyStore.h entity/node.h
 OBJS = ${SRCS:.cpp=.o}
 
 GTEST_LIBRARIES = -L/usr/local/lib -lgtest -lpthread
