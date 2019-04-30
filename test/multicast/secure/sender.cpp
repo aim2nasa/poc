@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
     int i=0;
     ssize_t bytes;
-    char buffer[1024];
+    char buffer[256];
     while (1) {
         sprintf(buffer,"%s-%d",message,i);
 #ifdef PUBKEY_SECURITY
