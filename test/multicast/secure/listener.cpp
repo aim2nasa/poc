@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
     std::string recoveredText;
     std::string adata(16, (char)0x00);
 
+    unsigned int sequence;
     while (1) {
         socklen_t addrlen=sizeof(addr);
         if ((nbytes=recvfrom(fd,msgbuf,MSGBUFSIZE,0,
@@ -129,8 +130,10 @@ int main(int argc, char *argv[])
         if((rtn=Bob.decrypt(d,tagSize,adata,std::string(msgbuf,nbytes),recoveredText))!=DECRYPT_OK) {
             printf("%s",Node::errToStr(rtn).c_str());
         }else{
+            memcpy(&sequence,recoveredText.c_str(),sizeof(sequence));
+            printf("sequence=%u ",sequence);
             if(pCol) pCol->collect(msgbuf,nbytes);
-            printf("%s",recoveredText.c_str());
+            printf("%s\n",recoveredText.c_str()+sizeof(sequence));
         }
         printf(" (%dbytes)\n",nbytes);
     }
