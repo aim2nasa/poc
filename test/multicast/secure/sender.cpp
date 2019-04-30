@@ -79,20 +79,24 @@ int main(int argc, char *argv[])
     std::string cipherText;
 
     int i=0;
+    unsigned int sequence=0;
     ssize_t bytes;
     char buffer[256];
     while (1) {
         sprintf(buffer,"%s-%d",message,i);
+        bytes = strlen(buffer);
+        memmove(buffer+sizeof(sequence),buffer,bytes);
+        memcpy(buffer,&sequence,sizeof(sequence));
 #ifdef PUBKEY_SECURITY
         FILE *fp;
         if((fp=fopen("pubKey","r"))==NULL) { //pubKey mocks actual key file
             printf("No publish key(pubKey),Unauthorized to use encryption module\n");
             return 0;
         }else{
-            cipherText = Alice.encrypt(e,adata,buffer,tagSize);
+            cipherText = Alice.encrypt(e,adata,reinterpret_cast<const byte*>(buffer),bytes+sizeof(sequence),tagSize);
         }
 #else
-        cipherText = Alice.encrypt(e,adata,buffer,tagSize);
+        cipherText = Alice.encrypt(e,adata,reinterpret_cast<const byte*>(buffer),bytes+sizeof(sequence),tagSize);
 #endif
 
 #ifdef SENDER_DETECT
@@ -111,7 +115,7 @@ int main(int argc, char *argv[])
             printf("sendto failed\n");
             return -1;
         }
-        printf("\r[%d] %s (%zdbytes)",++i,buffer,bytes);
+        printf("\r[%d] %u %s (%zdbytes)",i++,sequence++,buffer+sizeof(sequence),bytes);
         fflush(stdout);
         sleep(1);
 #ifdef PUBKEY_SECURITY
