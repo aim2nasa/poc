@@ -2,7 +2,7 @@
 #include <entity/keyStore.h>
 #include <entity/node.h>
 
-TEST(encodingTest, bug_NO265) { 
+TEST(bugTest, bug_NO265) { 
 	Node Alice;
 	Alice.size_ = 32;
 	Alice.key_ = new byte[Alice.size_];
