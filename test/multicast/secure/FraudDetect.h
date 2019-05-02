@@ -2,7 +2,7 @@
 #define __FRAUDDETECT_H__
 
 #include <vector>
-#include "message.h"
+#include "messageCount.h"
 #include <entity/node.h>
 
 #define MAX_QUEUE 5
@@ -19,8 +19,8 @@ public:
 
     int msqid_;
 protected:
-    static bool exist(std::vector<message>& q,const char *buff,unsigned int buffSize);
-    static int existOrder(std::vector<message>& q,const char *buff,unsigned int buffSize);
+    static bool exist(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
+    static int existOrder(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
     int sock_;
     Node Bob_;
 };

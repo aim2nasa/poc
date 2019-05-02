@@ -40,18 +40,18 @@ int FraudDetect::start(void *arg)
     return pthread_create(&p_thread,NULL,run,arg);
 }
 
-bool FraudDetect::exist(std::vector<message>& q,const char *buff,unsigned int buffSize)
+bool FraudDetect::exist(std::vector<messageCount>& q,const char *buff,unsigned int buffSize)
 {
-    for(std::vector<message>::iterator it = q.begin(); it != q.end(); ++it){
+    for(std::vector<messageCount>::iterator it = q.begin(); it != q.end(); ++it){
         if(memcmp((*it).body,buff,buffSize)==0) return true;
     }
     return false;
 }
 
-int FraudDetect::existOrder(std::vector<message>& q,const char *buff,unsigned int buffSize)
+int FraudDetect::existOrder(std::vector<messageCount>& q,const char *buff,unsigned int buffSize)
 {
     int i=1;
-    for(std::vector<message>::iterator it = q.begin(); it != q.end(); ++it){
+    for(std::vector<messageCount>::iterator it = q.begin(); it != q.end(); ++it){
         if(memcmp((*it).body,buff,buffSize)==0) return i;
         i++;
     }
@@ -68,9 +68,9 @@ void* FraudDetect::run(void *arg)
     int clientSock;
     ssize_t rcvLen;
     char buffer[1024];
-    struct message msg;
+    struct messageCount msg;
     long msgtyp = 0;
-    std::vector<message> q;
+    std::vector<messageCount> q;
 
     int tagSize = 16;
     CryptoPP::GCM<CryptoPP::AES>::Decryption d;
@@ -78,6 +78,7 @@ void* FraudDetect::run(void *arg)
     std::string recoveredText;
     std::string adata(16, (char)0x00);
 
+    int sequence;
     while(1) {
         if((rcvLen = recv(p->sock_, buffer,sizeof(buffer), 0)) < 0){
             printf("error recv_len=%zd\n",rcvLen);
@@ -86,9 +87,11 @@ void* FraudDetect::run(void *arg)
         if(rcvLen==0) break;
         printf("<%zd>",rcvLen);
         while(1) {
-            if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(msg),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
+            if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(message),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
                 while(q.size()>=MAX_QUEUE) { q.erase(q.begin()); printf("~"); }
                 q.push_back(msg);
+                for(unsigned int j=0;j<msg.size;j++) printf("%x ",(unsigned char)msg.body[j]);
+                printf(",vc=%d ",msg.visitCount);
                 printf("+");
             }else{
                 printf("(%zd).",q.size());
@@ -101,7 +104,8 @@ void* FraudDetect::run(void *arg)
             if((rtn=p->Bob_.decrypt(d,tagSize,adata,std::string(buffer,rcvLen),recoveredText))!=DECRYPT_OK){
                 printf(" %s",Node::errToStr(rtn).c_str());
             }else{
-                printf(" %s",recoveredText.c_str());
+                memcpy(&sequence,recoveredText.c_str(),sizeof(int));
+                printf("%u %s",sequence,recoveredText.c_str()+sizeof(int));
             }
         }
 
