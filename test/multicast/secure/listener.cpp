@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
             memcpy(&sequence,recoveredText.c_str(),sizeof(sequence));
             printf("sequence=%u ",sequence);
             if(pCol) pCol->collect(msgbuf,nbytes);
-            printf("%s\n",recoveredText.c_str()+sizeof(sequence));
+            printf("%s",recoveredText.c_str()+sizeof(sequence));
         }
         printf(" (%dbytes)\n",nbytes);
     }
