@@ -85,7 +85,7 @@ void* FraudDetect::run(void *arg)
             break;
         }
         if(rcvLen==0) break;
-        printf("<%zd>",rcvLen);
+        printf("(%zd)",rcvLen);
         while(1) {
             if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(message),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
                 while(q.size()>=MAX_QUEUE) { q.erase(q.begin()); printf("~"); }
@@ -94,7 +94,7 @@ void* FraudDetect::run(void *arg)
                 printf(",vc=%d ",msg.visitCount);
                 printf("+");
             }else{
-                printf("(%zd).",q.size());
+                printf("{%zd}",q.size());
                 break;
             }
         }
@@ -105,7 +105,7 @@ void* FraudDetect::run(void *arg)
                 printf(" %s",Node::errToStr(rtn).c_str());
             }else{
                 memcpy(&sequence,recoveredText.c_str(),sizeof(int));
-                printf("%u %s",sequence,recoveredText.c_str()+sizeof(int));
+                printf("[%u] %s",sequence,recoveredText.c_str()+sizeof(int));
             }
         }
 
