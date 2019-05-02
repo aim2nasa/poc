@@ -131,10 +131,10 @@ int main(int argc, char *argv[])
             printf("%s",Node::errToStr(rtn).c_str());
         }else{
             memcpy(&sequence,recoveredText.c_str(),sizeof(sequence));
-            printf("sequence=%u ",sequence);
+            printf("[%u] ",sequence);
             if(pCol) pCol->collect(msgbuf,nbytes);
             printf("%s",recoveredText.c_str()+sizeof(sequence));
         }
-        printf(" (%dbytes)\n",nbytes);
+        printf(" (%d)\n",nbytes);
     }
 }
