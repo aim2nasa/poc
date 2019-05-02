@@ -115,7 +115,8 @@ int main(int argc, char *argv[])
             printf("sendto failed\n");
             return -1;
         }
-        printf("\r[%d] %u %s (%zdbytes)",i++,sequence++,buffer+sizeof(sequence),bytes);
+        for(int j=0;j<cipherText.size();j++) printf("%x ",(unsigned char)cipherText.c_str()[j]);
+        printf("\n[%d] %u %s (%zdbytes)\n",i++,sequence++,buffer+sizeof(sequence),bytes);
         fflush(stdout);
         sleep(1);
 #ifdef PUBKEY_SECURITY
