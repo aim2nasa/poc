@@ -90,7 +90,6 @@ int main(int argc, char *argv[])
             delete pCol;
             return -1;
         }
-        msgbuf[nbytes]=0;
 
         pCol->collect(msgbuf,nbytes);
         printf("(%d)\n",nbytes);
