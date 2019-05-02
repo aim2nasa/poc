@@ -78,12 +78,11 @@ int main(int argc, char *argv[])
     e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
     std::string cipherText;
 
-    int i=0;
     unsigned int sequence=0;
     ssize_t bytes;
     char buffer[256];
     while (1) {
-        sprintf(buffer,"%s-%d",message,i);
+        sprintf(buffer,"%s-%u",message,sequence);
         bytes = strlen(buffer);
         memmove(buffer+sizeof(sequence),buffer,bytes);
         memcpy(buffer,&sequence,sizeof(sequence));
@@ -115,8 +114,9 @@ int main(int argc, char *argv[])
             printf("sendto failed\n");
             return -1;
         }
+        printf("[%u] %s (%zd) ",sequence++,buffer+sizeof(sequence),bytes);
         for(int j=0;j<cipherText.size();j++) printf("%x ",(unsigned char)cipherText.c_str()[j]);
-        printf("\n[%d] %u %s (%zdbytes)\n",i++,sequence++,buffer+sizeof(sequence),bytes);
+        printf("\n");
         fflush(stdout);
         sleep(1);
 #ifdef PUBKEY_SECURITY
