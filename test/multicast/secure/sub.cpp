@@ -86,7 +86,6 @@ int main(int argc, char *argv[])
             printf("recvfrom failed\n");
             return -1;
         }
-        msgbuf[nbytes]=0;
 
         if((rtn=Bob.decrypt(d,tagSize,adata,std::string(msgbuf,nbytes),recoveredText))!=DECRYPT_OK) {
             printf("%s",Node::errToStr(rtn).c_str());
