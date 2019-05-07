@@ -112,6 +112,7 @@ void* FraudDetect::run(void *arg)
                     continue;
                 }else if(v.visitCount>0){
                     printf(" * Replay detected(%d-%d/%zd)\n",v.visitCount,v.order,q.size());
+                    continue;
                 }else{
                     assert(v.visitCount==0);
                     printf(" (%d/%zd)\n",v.order,q.size());
