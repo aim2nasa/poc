@@ -102,7 +102,8 @@ void* FraudDetect::run(void *arg)
         if(p->Bob_.size_>0) {
             int rtn;
             if((rtn=p->Bob_.decrypt(d,tagSize,adata,std::string(buffer,rcvLen),recoveredText))!=DECRYPT_OK){
-                printf(" %s",Node::errToStr(rtn).c_str());
+                printf(" %s\n",Node::errToStr(rtn).c_str());
+                continue;
             }else{
                 memcpy(&sequence,recoveredText.c_str(),sizeof(int));
                 printf("[%u] %s",sequence,recoveredText.c_str()+sizeof(int));
