@@ -22,12 +22,15 @@ public:
     int start(void *arg);
     static void* run(void *arg);
     void setKeys(int size,int key,int iv);
+    int getFrameNumDiff(unsigned int frameNumber);
 
     int msqid_;
 protected:
     static vcRtn getVisitCount(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
     int sock_;
     Node Bob_;
+    bool prevFrameDefined_;
+    unsigned int prevFrameNumber_;
 };
 
 #endif

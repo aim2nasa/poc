@@ -10,6 +10,7 @@
 #include <sys/msg.h>
 
 FraudDetect::FraudDetect()
+:prevFrameDefined_(false)
 {
 }
 
@@ -54,6 +55,12 @@ vcRtn FraudDetect::getVisitCount(std::vector<messageCount>& q,const char *buff,u
         i++;
     }
     return v;
+}
+
+int FraudDetect::getFrameNumDiff(unsigned int frameNumber)
+{
+    if(!prevFrameDefined_) return 1;
+    return (frameNumber - prevFrameNumber_);
 }
 
 void* FraudDetect::run(void *arg)
@@ -102,10 +109,6 @@ void* FraudDetect::run(void *arg)
                 printf(" *Unauthorized publishing detected(%s)\n",Node::errToStr(rtn).c_str());
                 continue;
             }else{
-                unsigned int frameNumber;
-                memcpy(&frameNumber,recoveredText.c_str(),sizeof(frameNumber));
-                printf("[%u] %s",frameNumber,recoveredText.c_str()+sizeof(frameNumber));
-
                 vcRtn v = getVisitCount(q,buffer,rcvLen);
                 if(v.visitCount<0) {
                     printf(" *Fraud data detected\n");
@@ -116,6 +119,21 @@ void* FraudDetect::run(void *arg)
                 }else{
                     assert(v.visitCount==0);
                     printf(" (%d/%zd)\n",v.order,q.size());
+
+                    unsigned int frameNumber;
+                    memcpy(&frameNumber,recoveredText.c_str(),sizeof(frameNumber));
+
+                    int frameNumDiff = p->getFrameNumDiff(frameNumber);
+                    p->prevFrameNumber_ = frameNumber;
+                    p->prevFrameDefined_ = true;
+
+                    if(frameNumDiff!=1) {
+                        printf("*sequence error detected(%d) ",frameNumDiff);
+                    }else{
+                        printf("O ");
+                        assert(frameNumDiff==1);
+                    }
+                    printf("[%u] %s",frameNumber,recoveredText.c_str()+sizeof(frameNumber));
                 }
             }
         }
