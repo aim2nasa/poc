@@ -90,9 +90,9 @@ void* FraudDetect::run(void *arg)
             if(-1!=msgrcv(p->msqid_,(void*)&msg,sizeof(message),msgtyp,MSG_NOERROR | IPC_NOWAIT)){
                 while(q.size()>=MAX_QUEUE) { q.erase(q.begin()); printf("~"); }
                 q.push_back(msg);
+                printf("+");
                 for(unsigned int j=0;j<msg.size;j++) printf("%x ",(unsigned char)msg.body[j]);
                 printf(",vc=%d ",msg.visitCount);
-                printf("+");
             }else{
                 printf("{%zd}",q.size());
                 break;
