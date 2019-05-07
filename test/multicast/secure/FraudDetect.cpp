@@ -76,7 +76,7 @@ void* FraudDetect::run(void *arg)
     std::string recoveredText;
     std::string adata(16, (char)0x00);
 
-    int sequence;
+    unsigned int sequence;
     while(1) {
         if((rcvLen = recv(p->sock_, buffer,sizeof(buffer), 0)) < 0){
             printf("error recv_len=%zd\n",rcvLen);
@@ -103,7 +103,7 @@ void* FraudDetect::run(void *arg)
                 printf(" *Unauthorized publishing detected(%s)\n",Node::errToStr(rtn).c_str());
                 continue;
             }else{
-                memcpy(&sequence,recoveredText.c_str(),sizeof(int));
+                memcpy(&sequence,recoveredText.c_str(),sizeof(sequence));
                 printf("[%u] %s",sequence,recoveredText.c_str()+sizeof(int));
 
                 vcRtn v = getVisitCount(q,buffer,rcvLen);
