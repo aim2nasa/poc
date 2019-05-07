@@ -40,24 +40,6 @@ int FraudDetect::start(void *arg)
     return pthread_create(&p_thread,NULL,run,arg);
 }
 
-bool FraudDetect::exist(std::vector<messageCount>& q,const char *buff,unsigned int buffSize)
-{
-    for(std::vector<messageCount>::iterator it = q.begin(); it != q.end(); ++it){
-        if(memcmp((*it).body,buff,buffSize)==0) return true;
-    }
-    return false;
-}
-
-int FraudDetect::existOrder(std::vector<messageCount>& q,const char *buff,unsigned int buffSize)
-{
-    int i=1;
-    for(std::vector<messageCount>::iterator it = q.begin(); it != q.end(); ++it){
-        if(memcmp((*it).body,buff,buffSize)==0) return i;
-        i++;
-    }
-    return -1;
-}
-
 vcRtn FraudDetect::getVisitCount(std::vector<messageCount>& q,const char *buff,unsigned int buffSize)
 {
     int i=1;

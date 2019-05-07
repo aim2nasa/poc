@@ -25,8 +25,6 @@ public:
 
     int msqid_;
 protected:
-    static bool exist(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
-    static int existOrder(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
     static vcRtn getVisitCount(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
     int sock_;
     Node Bob_;
