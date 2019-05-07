@@ -58,6 +58,22 @@ int FraudDetect::existOrder(std::vector<messageCount>& q,const char *buff,unsign
     return -1;
 }
 
+vcRtn FraudDetect::getVisitCount(std::vector<messageCount>& q,const char *buff,unsigned int buffSize)
+{
+    int i=1;
+    vcRtn v;
+    for(std::vector<messageCount>::iterator it = q.begin(); it != q.end(); ++it){
+        if(memcmp((*it).body,buff,buffSize)==0) {
+            v.visitCount = (*it).visitCount;
+            v.order = i;
+            (*it).visitCount++;
+            return v;
+        }
+        i++;
+    }
+    return v;
+}
+
 void* FraudDetect::run(void *arg)
 {
     printf("\nwaiting for client..\n");
@@ -107,13 +123,17 @@ void* FraudDetect::run(void *arg)
             }else{
                 memcpy(&sequence,recoveredText.c_str(),sizeof(int));
                 printf("[%u] %s",sequence,recoveredText.c_str()+sizeof(int));
+
+                vcRtn v = getVisitCount(q,buffer,rcvLen);
+                if(v.visitCount<0) {
+                    printf(" *Fraud data detected\n");
+                    continue;
+                }else{
+                    printf(" %d/%zd\n",v.order,q.size());
+                    fflush(stdout);
+                }
             }
         }
-
-        int order;
-        ((order=existOrder(q,buffer,rcvLen))>0)?printf(" [O]"):printf(" [X]");
-        printf(" %d/%zd\n",order,q.size());
-        fflush(stdout);
     }
     return 0;
 }

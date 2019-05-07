@@ -7,6 +7,12 @@
 
 #define MAX_QUEUE 5
 
+struct vcRtn{
+    vcRtn():visitCount(-1),order(-1){}
+    int visitCount;
+    int order;
+};
+
 class FraudDetect{
 public:
 	FraudDetect();
@@ -21,6 +27,7 @@ public:
 protected:
     static bool exist(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
     static int existOrder(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
+    static vcRtn getVisitCount(std::vector<messageCount>& q,const char *buff,unsigned int buffSize);
     int sock_;
     Node Bob_;
 };
