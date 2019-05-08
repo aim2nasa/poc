@@ -79,6 +79,10 @@ int main(int argc, char *argv[])
               perror("recvfrom");
               return -1;
         }
+        std::vector<byte> msg(nbytes);
+        memcpy(msg.data(),msgbuf,nbytes);
+        q.enqueue(msg);
+
         printf("(%zd) ",nbytes);
         for(int i=0;i<nbytes;i++) printf("%x ",(unsigned char)msgbuf[i]);
         printf("\n");
