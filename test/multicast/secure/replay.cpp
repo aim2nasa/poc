@@ -13,9 +13,13 @@
 #define MULTICAST_PORT 12345
 #define MSGBUFSIZE 256
 
+typedef unsigned char byte;
+typedef SafeQueue<std::vector<byte>> Queue;
+
 void* run(void *arg)
 {
     printf("transmit thread started\n");
+    Queue *q = reinterpret_cast<Queue*>(arg);
     return 0;
 }
 
@@ -62,8 +66,9 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    Queue q;
     pthread_t p_thread;
-    pthread_create(&p_thread,NULL,run,NULL);
+    pthread_create(&p_thread,NULL,run,&q);
 
     int nbytes;
     char msgbuf[MSGBUFSIZE];
