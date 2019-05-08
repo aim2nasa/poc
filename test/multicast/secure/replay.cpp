@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     pthread_t p_thread;
     pthread_create(&p_thread,NULL,run,&q);
 
-    int nbytes;
+    size_t nbytes;
     char msgbuf[MSGBUFSIZE];
     while (1) {
         socklen_t addrlen=sizeof(addr);
@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
               perror("recvfrom");
               return -1;
         }
+        printf("(%zd) ",nbytes);
         for(int i=0;i<nbytes;i++) printf("%x ",(unsigned char)msgbuf[i]);
         printf("\n");
     }
