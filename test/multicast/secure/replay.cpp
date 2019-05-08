@@ -6,10 +6,17 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345
 #define MSGBUFSIZE 256
+
+void* run(void *arg)
+{
+    printf("transmit thread started\n");
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -53,6 +60,9 @@ int main(int argc, char *argv[])
         perror("setsockopt");
         return -1;
     }
+
+    pthread_t p_thread;
+    pthread_create(&p_thread,NULL,run,NULL);
 
     int nbytes;
     char msgbuf[MSGBUFSIZE];
