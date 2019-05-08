@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -g -ggdb
 
-TARGET = pub pubs pubd pubsd sub dcol detect
+TARGET = pub pubs pubd pubsd sub dcol detect replay
 
 INCLUDES = -I$(shell pwd)/../../gtest
 CRYPTOPP_LIBRARIES = -lcryptopp
@@ -35,6 +35,10 @@ dcol : dcol.cpp Collector.cpp ErrorCode.cpp
 	$(CXX) -o $@ $^ $(CXXFLAGS) -D LISTENER_DETECT $(INCLUDES) $(LIBS)
 
 detect : detect.cpp FraudDetect.cpp ErrorCode.cpp
+	@echo $@:$^...
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
+
+replay : replay.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
