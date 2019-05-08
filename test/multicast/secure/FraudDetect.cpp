@@ -106,36 +106,32 @@ void* FraudDetect::run(void *arg)
         if(p->Bob_.size_>0) {
             int rtn;
             if((rtn=p->Bob_.decrypt(d,tagSize,adata,std::string(buffer,rcvLen),recoveredText))!=DECRYPT_OK){
-                printf(" *Unauthorized publishing detected(%s)\n",Node::errToStr(rtn).c_str());
-                continue;
+                printf("-Unauthorized publishing(%s)",Node::errToStr(rtn).c_str());
             }else{
                 vcRtn v = getVisitCount(q,buffer,rcvLen);
+                unsigned int frameNumber;
+                memcpy(&frameNumber,recoveredText.c_str(),sizeof(frameNumber));
+                printf("[%u] %s(%d/%zd)",frameNumber,recoveredText.c_str()+sizeof(frameNumber),v.order,q.size());
+
                 if(v.visitCount<0) {
-                    printf(" *Fraud data detected\n");
-                    continue;
+                    printf("-Fraud data");
                 }else if(v.visitCount>0){
-                    printf(" * Replay detected(%d-%d/%zd)\n",v.visitCount,v.order,q.size());
-                    continue;
+                    printf("-Replay data(%d,%d/%zd)",v.visitCount,v.order,q.size());
                 }else{
                     assert(v.visitCount==0);
-                    printf(" (%d/%zd)\n",v.order,q.size());
-
-                    unsigned int frameNumber;
-                    memcpy(&frameNumber,recoveredText.c_str(),sizeof(frameNumber));
 
                     int frameNumDiff = p->getFrameNumDiff(frameNumber);
                     p->prevFrameNumber_ = frameNumber;
                     p->prevFrameDefined_ = true;
 
                     if(frameNumDiff!=1) {
-                        printf("*sequence error detected(%d) ",frameNumDiff);
+                        printf("-Sequence error(%d)",frameNumDiff);
                     }else{
-                        printf("O ");
-                        assert(frameNumDiff==1);
+                        printf("-OK");
                     }
-                    printf("[%u] %s",frameNumber,recoveredText.c_str()+sizeof(frameNumber));
                 }
             }
+            printf("\n");
         }
     }
     return 0;
