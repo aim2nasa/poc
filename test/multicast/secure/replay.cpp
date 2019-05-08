@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <../../wc2/src/SafeQueue.h>
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345

@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -g -ggdb
+CXXFLAGS = -g -ggdb -std=c++11
 
 TARGET = pub pubs pubd pubsd sub dcol detect replay
 
