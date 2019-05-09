@@ -37,12 +37,12 @@ void* run(void *arg)
     while(1){
         std::vector<byte> msg = q.dequeue();
 
-        printf(".");
         if((sent=sendto(fd,msg.data(),msg.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0)
             perror("sendto");
 
         usleep(usecs);
-        printf(".");
+        printf("r ");
+        fflush(stdout);
     }
     return 0;
 }
@@ -109,8 +109,7 @@ int main(int argc, char *argv[])
         memcpy(msg.data(),msgbuf,nbytes);
         q.enqueue(msg);
 
-        printf("(%zd) ",nbytes);
-        for(int i=0;i<nbytes;i++) printf("%x ",(unsigned char)msgbuf[i]);
-        printf("\n");
+        printf("(%zd)",nbytes);
+        fflush(stdout);
     }
 }
