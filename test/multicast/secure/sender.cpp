@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 {
     struct sockaddr_in addr;
     int fd, cnt,key,iv;
+    unsigned int usecs;
     struct ip_mreq mreq;
     char *message = NULL;
 
@@ -34,15 +35,18 @@ int main(int argc, char *argv[])
     printf("Fraud Detecting deactivated\n");
 #endif
 
-    if(argc>3) {
+    if(argc>4) {
         message = argv[1];
         printf("message:%s\n",message);
         key = atoi(argv[2]);
         iv = atoi(argv[3]);
         printf("key=%d,iv=%d\n",key,iv);
+        usecs = atoi(argv[4]);
+        printf("micro sleep:%dus(%fsec)\n",usecs,usecs/1000000.);
     }else{
-        printf("usage: sender <message> <key> <iv>\n");
+        printf("usage: sender <message> <key> <iv> <usleep>\n");
         printf("      key,iv: any integer value, Arrays are filled with given integer recpectively\n");
+        printf("      usleep: microsecond intervals\n");
         return -1;
     }
 
@@ -118,7 +122,7 @@ int main(int argc, char *argv[])
         for(int j=0;j<cipherText.size();j++) printf("%x ",(unsigned char)cipherText.c_str()[j]);
         printf("\n");
         fflush(stdout);
-        sleep(1);
+        usleep(usecs);
 #ifdef PUBKEY_SECURITY
         fclose(fp);
 #endif
