@@ -18,6 +18,7 @@ typedef unsigned char byte;
 typedef SafeQueue<std::vector<byte>> Queue;
 
 Queue q;
+unsigned int usecs;
 
 void* run(void *arg)
 {
@@ -40,7 +41,7 @@ void* run(void *arg)
         if((sent=sendto(fd,msg.data(),msg.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0)
             perror("sendto");
 
-        sleep(1);
+        usleep(usecs);
         printf(".");
     }
     return 0;
@@ -49,13 +50,16 @@ void* run(void *arg)
 int main(int argc, char *argv[])
 {
     int enable=1;
-    if(argc>1) {
+    if(argc>2) {
         enable = (atoi(argv[1])==1)?1:0;
         printf("reuse socket address:");
         (enable)?printf("activated\n"):printf("deactivated\n");
+        usecs = atoi(argv[2]);
+        printf("micro sleep:%dus(%fsec)\n",usecs,usecs/1000000.);
     }else{
-        printf("usage: replay <reuse>\n");
+        printf("usage: replay <reuse> <usleep>\n");
         printf("     reuse: don't reuse socket address(0),reuse socket address(1)\n");
+        printf("     usleep: microsecond intervals\n");
         return -1;
     }
 
