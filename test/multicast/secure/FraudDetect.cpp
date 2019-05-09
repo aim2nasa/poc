@@ -9,6 +9,8 @@
 #include <pthread.h>
 #include <sys/msg.h>
 
+bool FraudDetect::verbosity_(false);
+
 FraudDetect::FraudDetect()
 :prevFrameDefined_(false)
 {
@@ -95,8 +97,10 @@ void* FraudDetect::run(void *arg)
                 while(q.size()>=MAX_QUEUE) { q.erase(q.begin()); printf("~"); }
                 q.push_back(msg);
                 printf("+");
-                for(unsigned int j=0;j<msg.size;j++) printf("%x ",(unsigned char)msg.body[j]);
-                printf(",vc=%d ",msg.visitCount);
+                if(verbosity_) {
+                    for(unsigned int j=0;j<msg.size;j++) printf("%x ",(unsigned char)msg.body[j]);
+                    printf(",vc=%d ",msg.visitCount);
+                }
             }else{
                 printf("{%zd}",q.size());
                 break;
@@ -143,4 +147,9 @@ void FraudDetect::setKeys(int size,int key,int iv)
     Bob_.key_ = new byte[Bob_.size_];
     memset(Bob_.key_,key,Bob_.size_);
     memset(Bob_.iv_,iv,CryptoPP::AES::BLOCKSIZE);
+}
+
+void FraudDetect::verbosity(bool b)
+{
+    verbosity_ = b;
 }

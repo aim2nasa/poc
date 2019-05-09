@@ -23,6 +23,7 @@ public:
     static void* run(void *arg);
     void setKeys(int size,int key,int iv);
     int getFrameNumDiff(unsigned int frameNumber);
+    static void verbosity(bool b);
 
     int msqid_;
 protected:
@@ -31,6 +32,7 @@ protected:
     Node Bob_;
     bool prevFrameDefined_;
     unsigned int prevFrameNumber_;
+    static bool verbosity_;
 };
 
 #endif
