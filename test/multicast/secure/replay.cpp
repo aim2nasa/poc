@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <unistd.h>
 #include <../../wc2/src/SafeQueue.h>
 
 #define MULTICAST_GROUP "225.0.0.37"
@@ -16,10 +17,32 @@
 typedef unsigned char byte;
 typedef SafeQueue<std::vector<byte>> Queue;
 
+Queue q;
+
 void* run(void *arg)
 {
     printf("transmit thread started\n");
-    Queue *q = reinterpret_cast<Queue*>(arg);
+    int fd;
+    if((fd=socket(AF_INET,SOCK_DGRAM,0))<0)
+        perror("socket");
+
+    struct sockaddr_in addr;
+    memset(&addr,0,sizeof(addr));
+    addr.sin_family=AF_INET;
+    addr.sin_addr.s_addr=inet_addr(MULTICAST_GROUP);
+    addr.sin_port=htons(MULTICAST_PORT);
+
+    ssize_t sent;
+    while(1){
+        std::vector<byte> msg = q.dequeue();
+
+        printf(".");
+        if((sent=sendto(fd,msg.data(),msg.size(),0,(struct sockaddr *) &addr,sizeof(addr))) < 0)
+            perror("sendto");
+
+        sleep(1);
+        printf(".");
+    }
     return 0;
 }
 
@@ -66,9 +89,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    Queue q;
     pthread_t p_thread;
-    pthread_create(&p_thread,NULL,run,&q);
+    pthread_create(&p_thread,NULL,run,NULL);
 
     size_t nbytes;
     char msgbuf[MSGBUFSIZE];
