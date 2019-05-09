@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -g -ggdb -std=c++11
 
-TARGET = pub pubs pubd pubsd sub dcol detect replay
+TARGET = pub pubs pubd pubsd sub dcol detect replay psender
 
 INCLUDES = -I$(shell pwd)/../../gtest
 CRYPTOPP_LIBRARIES = -lcryptopp
@@ -39,6 +39,10 @@ detect : detect.cpp FraudDetect.cpp ErrorCode.cpp
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
 replay : replay.cpp
+	@echo $@:$^...
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
+
+psender : packetSender.cpp FraudDetect.cpp ErrorCode.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
