@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         enable = (atoi(argv[1])==1)?1:0;
         printf("reuse socket address:");
         (enable)?printf("activated\n"):printf("deactivated\n");
-        usecs = atoi(argv[2])*1000000;
+        usecs = atof(argv[2])*1000000;
         printf("micro sleep:%dus(%fsec)\n",usecs,usecs/1000000.);
     }else{
         printf("usage: replay <reuse> <sleep>\n");

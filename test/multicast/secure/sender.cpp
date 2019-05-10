@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
         key = atoi(argv[2]);
         iv = atoi(argv[3]);
         printf("key=%d,iv=%d\n",key,iv);
-        usecs = atoi(argv[4])*1000000;
+        usecs = atof(argv[4])*1000000;
         printf("micro sleep:%dus(%fsec)\n",usecs,usecs/1000000.);
     }else{
         printf("usage: %s <message> <key> <iv> <sleep>\n",argv[0]);
