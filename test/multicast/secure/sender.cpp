@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
         usecs = atoi(argv[4]);
         printf("micro sleep:%dus(%fsec)\n",usecs,usecs/1000000.);
     }else{
-        printf("usage: sender <message> <key> <iv> <usleep>\n");
+        printf("usage: %s <message> <key> <iv> <usleep>\n",argv[0]);
         printf("      key,iv: any integer value, Arrays are filled with given integer recpectively\n");
         printf("      usleep: microsecond intervals\n");
         return -1;
