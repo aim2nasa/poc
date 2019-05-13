@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
         printf("      frameNumber: frame number of the message\n");
         printf("      message: content user wants to send\n");
         printf("      key,iv: any integer value, Arrays are filled with given integer recpectively\n");
-        printf("      msqid: linux message queu id (optional)\n");
+        printf("      msqid: SystemV message queue id (optional)\n");
         return -1;
     }
 
