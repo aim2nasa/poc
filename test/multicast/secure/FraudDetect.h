@@ -13,6 +13,8 @@ struct vcRtn{
     int order;
 };
 
+class IDetect;
+
 class FraudDetect{
 public:
 	FraudDetect();
@@ -24,6 +26,7 @@ public:
     void setKeys(int size,int key,int iv);
     int getFrameNumDiff(unsigned int frameNumber);
     static void verbosity(bool b);
+    void setDetect(IDetect *p);
 
     int msqid_;
 protected:
@@ -33,6 +36,7 @@ protected:
     bool prevFrameDefined_;
     unsigned int prevFrameNumber_;
     static bool verbosity_;
+    IDetect *detect_;
 };
 
 #endif

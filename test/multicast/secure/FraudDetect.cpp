@@ -8,11 +8,12 @@
 #include "ErrorCode.h"
 #include <pthread.h>
 #include <sys/msg.h>
+#include "IDetect.h"
 
 bool FraudDetect::verbosity_(false);
 
 FraudDetect::FraudDetect()
-:prevFrameDefined_(false)
+:prevFrameDefined_(false),detect_(NULL)
 {
 }
 
@@ -110,6 +111,9 @@ void* FraudDetect::run(void *arg)
         if(p->Bob_.size_>0) {
             int rtn;
             if((rtn=p->Bob_.decrypt(d,tagSize,adata,std::string(buffer,rcvLen),recoveredText))!=DECRYPT_OK){
+                if(p->detect_)
+                    p->detect_->onUnauthorizedPubData(std::string(buffer,rcvLen).c_str(),rcvLen,Node::errToStr(rtn).c_str());
+
                 printf("-Unauthorized publishing(%s)",Node::errToStr(rtn).c_str());
             }else{
                 vcRtn v = getVisitCount(q,buffer,rcvLen);
@@ -118,8 +122,14 @@ void* FraudDetect::run(void *arg)
                 printf("[%u] %s(%d/%zd)",frameNumber,recoveredText.c_str()+sizeof(frameNumber),v.order,q.size());
 
                 if(v.visitCount<0) {
+                    if(p->detect_)
+                        p->detect_->onFraudData(std::string(buffer,rcvLen).c_str(),rcvLen);
+
                     printf("-Fraud data");
                 }else if(v.visitCount>0){
+                    if(p->detect_)
+                        p->detect_->onReplayData(std::string(buffer,rcvLen).c_str(),rcvLen,v.visitCount,v.order,q.size());
+
                     printf("-Replay data(%d,%d/%zd)",v.visitCount,v.order,q.size());
                 }else{
                     assert(v.visitCount==0);
@@ -129,8 +139,14 @@ void* FraudDetect::run(void *arg)
                     p->prevFrameDefined_ = true;
 
                     if(frameNumDiff!=1) {
+                        if(p->detect_)
+                            p->detect_->onWrongSequenceData(std::string(buffer,rcvLen).c_str(),rcvLen);
+
                         printf("-Sequence error(%d)",frameNumDiff);
                     }else{
+                        if(p->detect_)
+                            p->detect_->onVerifiedData(std::string(buffer,rcvLen).c_str(),rcvLen,frameNumber);
+
                         printf("-OK");
                     }
                 }
@@ -152,4 +168,9 @@ void FraudDetect::setKeys(int size,int key,int iv)
 void FraudDetect::verbosity(bool b)
 {
     verbosity_ = b;
+}
+
+void FraudDetect::setDetect(IDetect *p)
+{
+    detect_ = p;
 }
