@@ -47,6 +47,37 @@ void Classifier::setDetect(IDetect *p)
     detect_ = p;
 }
 
+const char* Classifier::errToMsg(int askRtn)
+{
+    const char *pRtn= 0;
+    switch(askRtn){
+    case initErr:
+        pRtn = "init error";
+        break;
+    case unexpected:
+        pRtn = "uexpected error";
+        break;
+    case verified:
+        pRtn = "verified";
+        break;
+    case sequence:
+        pRtn = "sequence warning";
+        break;
+    case replay:
+        pRtn = "replay attack";
+        break;
+    case fraud:
+        pRtn = "fraud attack";
+        break;
+    case unAuthPub:
+        pRtn = "unauthorized publishing attack";
+        break;
+    default:
+        break;
+    }
+    return pRtn;
+}
+
 void Classifier::init(int tagSize,std::string adata,int keySize,int key,int iv,IDetect *p)
 {
     tagSize_ = tagSize;

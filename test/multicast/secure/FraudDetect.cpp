@@ -78,7 +78,7 @@ void* FraudDetect::run(void *arg)
             }
         }
 
-        printf("-%d\n",p->cf_.ask(buffer,rcvLen));
+        printf("-%s\n",Classifier::errToMsg(p->cf_.ask(buffer,rcvLen)));
     }
     return 0;
 }

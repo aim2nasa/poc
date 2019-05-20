@@ -30,6 +30,7 @@ public:
         unAuthPub=4
     };
 
+    static const char* errToMsg(int askRtn);
     void init(int tagSize,std::string adata,int keySize,int key,int iv,IDetect *p=NULL);
     int ask(const char* buf, size_t size);
     std::vector<messageCount> q_;
