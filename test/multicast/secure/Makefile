@@ -10,19 +10,19 @@ LIBS = $(CRYPTOPP_LIBRARIES) -lpthread
 all : $(TARGET)
 	@echo $@:$(TARGET)...
 
-pub : sender.cpp FraudDetect.cpp ErrorCode.cpp
+pub : sender.cpp FraudDetect.cpp ErrorCode.cpp Classifier.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
-pubs : sender.cpp FraudDetect.cpp ErrorCode.cpp
+pubs : sender.cpp FraudDetect.cpp ErrorCode.cpp Classifier.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) -D PUBKEY_SECURITY $(INCLUDES) $(LIBS)
 
-pubd : sender.cpp FraudDetect.cpp ErrorCode.cpp
+pubd : sender.cpp FraudDetect.cpp ErrorCode.cpp Classifier.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) -D SENDER_DETECT $(INCLUDES) $(LIBS)
 
-pubsd : sender.cpp FraudDetect.cpp ErrorCode.cpp
+pubsd : sender.cpp FraudDetect.cpp ErrorCode.cpp Classifier.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) -D PUBKEY_SECURITY -D SENDER_DETECT $(INCLUDES) $(LIBS)
 
@@ -34,7 +34,7 @@ dcol : dcol.cpp Collector.cpp ErrorCode.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) -D LISTENER_DETECT $(INCLUDES) $(LIBS)
 
-detect : detect.cpp FraudDetect.cpp ErrorCode.cpp
+detect : detect.cpp FraudDetect.cpp ErrorCode.cpp Classifier.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
@@ -42,7 +42,7 @@ replay : replay.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
-psender : packetSender.cpp FraudDetect.cpp ErrorCode.cpp
+psender : packetSender.cpp FraudDetect.cpp ErrorCode.cpp Classifier.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
