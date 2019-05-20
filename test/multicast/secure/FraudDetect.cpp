@@ -8,12 +8,10 @@
 #include "ErrorCode.h"
 #include <pthread.h>
 #include <sys/msg.h>
-#include "IDetect.h"
 
 bool FraudDetect::verbosity_(false);
 
 FraudDetect::FraudDetect()
-:prevFrameDefined_(false),detect_(NULL)
 {
 }
 
@@ -44,28 +42,6 @@ int FraudDetect::start(void *arg)
     return pthread_create(&p_thread,NULL,run,arg);
 }
 
-vcRtn FraudDetect::getVisitCount(std::vector<messageCount>& q,const char *buff,unsigned int buffSize)
-{
-    int i=1;
-    vcRtn v;
-    for(std::vector<messageCount>::iterator it = q.begin(); it != q.end(); ++it){
-        if(memcmp((*it).body,buff,buffSize)==0) {
-            v.visitCount = (*it).visitCount;
-            v.order = i;
-            (*it).visitCount++;
-            return v;
-        }
-        i++;
-    }
-    return v;
-}
-
-int FraudDetect::getFrameNumDiff(unsigned int frameNumber)
-{
-    if(!prevFrameDefined_) return 1;
-    return (frameNumber - prevFrameNumber_);
-}
-
 void* FraudDetect::run(void *arg)
 {
     printf("\nwaiting for client..\n");
@@ -78,13 +54,7 @@ void* FraudDetect::run(void *arg)
     char buffer[1024];
     struct messageCount msg;
     long msgtyp = 0;
-    std::vector<messageCount> q;
-
-    int tagSize = 16;
-    CryptoPP::GCM<CryptoPP::AES>::Decryption d;
-    d.SetKeyWithIV(p->Bob_.key_,p->Bob_.size_,p->Bob_.iv_);
-    std::string recoveredText;
-    std::string adata(16, (char)0x00);
+    std::vector<messageCount> &q = p->cf_.q_;
 
     while(1) {
         if((rcvLen = recv(p->sock_, buffer,sizeof(buffer), 0)) < 0){
@@ -108,69 +78,12 @@ void* FraudDetect::run(void *arg)
             }
         }
 
-        if(p->Bob_.size_>0) {
-            int rtn;
-            if((rtn=p->Bob_.decrypt(d,tagSize,adata,std::string(buffer,rcvLen),recoveredText))!=DECRYPT_OK){
-                if(p->detect_)
-                    p->detect_->onUnauthorizedPubData(std::string(buffer,rcvLen).c_str(),rcvLen,Node::errToStr(rtn).c_str());
-
-                printf("-Unauthorized publishing(%s)",Node::errToStr(rtn).c_str());
-            }else{
-                vcRtn v = getVisitCount(q,buffer,rcvLen);
-                unsigned int frameNumber;
-                memcpy(&frameNumber,recoveredText.c_str(),sizeof(frameNumber));
-                printf("[%u] %s(%d/%zd)",frameNumber,recoveredText.c_str()+sizeof(frameNumber),v.order,q.size());
-
-                if(v.visitCount<0) {
-                    if(p->detect_)
-                        p->detect_->onFraudData(std::string(buffer,rcvLen).c_str(),rcvLen);
-
-                    printf("-Fraud data");
-                }else if(v.visitCount>0){
-                    if(p->detect_)
-                        p->detect_->onReplayData(std::string(buffer,rcvLen).c_str(),rcvLen,v.visitCount,v.order,q.size());
-
-                    printf("-Replay data(%d,%d/%zd)",v.visitCount,v.order,q.size());
-                }else{
-                    assert(v.visitCount==0);
-
-                    int frameNumDiff = p->getFrameNumDiff(frameNumber);
-                    p->prevFrameNumber_ = frameNumber;
-                    p->prevFrameDefined_ = true;
-
-                    if(frameNumDiff!=1) {
-                        if(p->detect_)
-                            p->detect_->onWrongSequenceData(std::string(buffer,rcvLen).c_str(),rcvLen);
-
-                        printf("-Sequence error(%d)",frameNumDiff);
-                    }else{
-                        if(p->detect_)
-                            p->detect_->onVerifiedData(std::string(buffer,rcvLen).c_str(),rcvLen,frameNumber);
-
-                        printf("-OK");
-                    }
-                }
-            }
-            printf("\n");
-        }
+        printf("-%d\n",p->cf_.ask(buffer,rcvLen));
     }
     return 0;
-}
-
-void FraudDetect::setKeys(int size,int key,int iv)
-{
-    Bob_.size_ = size;
-    Bob_.key_ = new byte[Bob_.size_];
-    memset(Bob_.key_,key,Bob_.size_);
-    memset(Bob_.iv_,iv,CryptoPP::AES::BLOCKSIZE);
 }
 
 void FraudDetect::verbosity(bool b)
 {
     verbosity_ = b;
-}
-
-void FraudDetect::setDetect(IDetect *p)
-{
-    detect_ = p;
 }

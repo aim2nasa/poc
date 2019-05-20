@@ -31,7 +31,10 @@ int main(int argc, char *argv[])
         printf("FraudDetect init failed(%s)\n",errToMsg(errRtn));
     else{
         fdetect.msqid_ = msqid;
-        if(argc>4) fdetect.setKeys(32,key,iv);
+        if(argc>4) {
+            std::string adata(16, (char)0x00);
+            fdetect.cf_.init(16,adata,32,key,iv);
+        }
         fdetect.run((void*)&fdetect);
     }
     return 0;
