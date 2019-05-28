@@ -47,7 +47,7 @@ void Classifier::setDetect(IDetect *p)
     detect_ = p;
 }
 
-const char* Classifier::errToMsg(int askRtn)
+const char* Classifier::errToMsg(kind askRtn)
 {
     const char *pRtn= 0;
     switch(askRtn){
@@ -87,7 +87,7 @@ void Classifier::init(int tagSize,std::string adata,int keySize,int key,int iv,I
     d_.SetKeyWithIV(Bob_.key_,Bob_.size_,Bob_.iv_);
 }
 
-int Classifier::ask(const char* buf, size_t size)
+Classifier::kind Classifier::ask(const char* buf, size_t size)
 {
     if(Bob_.size_==0) return initErr;
 
