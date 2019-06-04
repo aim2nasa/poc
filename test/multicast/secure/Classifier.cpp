@@ -1,6 +1,5 @@
 #include "Classifier.h"
 #include <string.h>
-#include "ErrorCode.h"
 #include "IDetect.h"
 
 Classifier::Classifier()
