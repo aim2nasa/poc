@@ -1,5 +1,6 @@
 #include "gmock/gmock.h"
 #include "src/Detect.h"
+#include "Classifier.h"
 
 TEST(Detect, run)
 {
@@ -22,4 +23,9 @@ TEST(Detect, messages)
 
     d.stop();
     d.join();
+}
+
+TEST(Classifier, ask)
+{
+	Classifier cf;
 }
