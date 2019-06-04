@@ -26,7 +26,7 @@ pubsd : sender.cpp FraudDetect.cpp ErrorCode.cpp Classifier.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) -D PUBKEY_SECURITY -D SENDER_DETECT $(INCLUDES) $(LIBS)
 
-sub : sub.cpp Collector.cpp ErrorCode.cpp
+sub : sub.cpp Collector.cpp
 	@echo $@:$^...
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(INCLUDES) $(LIBS)
 
