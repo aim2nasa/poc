@@ -9,7 +9,6 @@
 #include <entity/keyStore.h>
 #include <entity/node.h>
 #include "Collector.h"
-#include "ErrorCode.h"
 
 #define MULTICAST_GROUP "225.0.0.37"
 #define MULTICAST_PORT 12345
