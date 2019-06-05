@@ -53,6 +53,7 @@ TEST(Classifier, ask)
 	struct messageCount msg;
 	msg.size = cipherText.size();
 	memcpy(msg.body,cipherText.c_str(),msg.size);
+	ASSERT_EQ(msg.visitCount,0);
 	cf.q_.push_back(msg);
 
 	ASSERT_EQ(cf.q_.size(),1);
