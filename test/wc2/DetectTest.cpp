@@ -58,4 +58,5 @@ TEST(Classifier, ask)
 
 	ASSERT_EQ(cf.q_.size(),1);
 	ASSERT_EQ(cf.ask(cipherText.c_str(),msg.size),Classifier::verified);
+	ASSERT_EQ(cf.ask(cipherText.c_str(),msg.size),Classifier::replay);
 }
