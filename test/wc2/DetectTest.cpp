@@ -60,3 +60,15 @@ TEST(Classifier, ask)
 	ASSERT_EQ(cf.ask(cipherText.c_str(),msg.size),Classifier::replay);
 	ASSERT_EQ(cf.q_.front().visitCount,2);
 }
+
+TEST(Classifier, ask_UnauthorizedPublishAttack)
+{
+	char unAuthPub[256]={0};	//represent random data which can't be decrypted with key,iv of Classifier
+
+	std::string adata(16,(char)0x00);
+	Classifier cf;
+	cf.init(/*tagSize*/16,adata,/*keySize*/32,/*key*/3,/*iv*/4);
+
+	ASSERT_EQ(cf.q_.size(),0);
+	ASSERT_EQ(cf.ask(unAuthPub,sizeof(unAuthPub)),Classifier::unAuthPub);
+}
