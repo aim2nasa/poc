@@ -25,30 +25,27 @@ TEST(Detect, messages)
     d.join();
 }
 
+std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message)
+{
+    Node Alice;
+    Alice.size_ = keySize;
+    Alice.key_ = new byte[Alice.size_];
+    memset(Alice.key_,key,Alice.size_);
+    memset(Alice.iv_,iv,CryptoPP::AES::BLOCKSIZE);
+
+    CryptoPP::GCM<CryptoPP::AES>::Encryption e;
+    e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
+    return Alice.encrypt(e,adata,message,tagSize);
+}
+
 TEST(Classifier, ask)
 {
-	int kv = 3; //ranom value
-	int ivv = 4; //ranom value
-	int tagSize = 16;
 	std::string adata(16,(char)0x00);
-
-	//Alice
-	Node Alice;
-	Alice.size_=32;
-	Alice.key_ = new byte[Alice.size_];
-	memset(Alice.key_,kv,Alice.size_);
-	memset(Alice.iv_,ivv,CryptoPP::AES::BLOCKSIZE);
-
-	//Secret message fron Alice to Bob
-	//Encryption from Alice
-	std::string message = "I love you, Bob";
-	CryptoPP::GCM<CryptoPP::AES>::Encryption e;
-	e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
-	std::string cipherText = Alice.encrypt(e,adata,message,tagSize);
-	ASSERT_NE(message,cipherText);
+	std::string cipherText = encrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,"I love you, Bob");
+	ASSERT_NE("I love you, Bob",cipherText);
 
 	Classifier cf;
-	cf.init(tagSize,adata,Alice.size_,kv,ivv);
+	cf.init(/*tagSize*/16,adata,/*keySize*/32,/*key*/3,/*iv*/4);
 
 	struct messageCount msg;
 	msg.size = cipherText.size();
