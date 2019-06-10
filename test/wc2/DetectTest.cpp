@@ -47,16 +47,21 @@ void msgToTransmittedQueue(std::vector<messageCount>& q,std::string& cipherText)
 	q.push_back(msg);
 }
 
+std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message,
+							  Classifier& cf)
+{
+	std::string cipherText = encrypt(keySize,key,iv,tagSize,adata,"I love you, Bob");
+	cf.init(tagSize,adata,keySize,key,iv);
+	msgToTransmittedQueue(cf.q_,cipherText);
+	return cipherText;
+}
+
 TEST(Classifier, ask_onFirstVerifiedData)
 {
-	std::string adata(16,(char)0x00);
-	std::string cipherText = encrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,"I love you, Bob");
-	ASSERT_NE("I love you, Bob",cipherText);
-
 	Classifier cf;
-	cf.init(/*tagSize*/16,adata,/*keySize*/32,/*key*/3,/*iv*/4);
-
-	msgToTransmittedQueue(cf.q_,cipherText);
+	std::string adata(16,(char)0x00);
+	std::string cipherText = firstVerifiedData(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,"I love you, Bob",cf);
+	ASSERT_NE("I love you, Bob",cipherText);
 
 	ASSERT_EQ(cf.q_.size(),1);
 	ASSERT_EQ(cf.q_.front().visitCount,0);
