@@ -72,3 +72,16 @@ TEST(Classifier, ask_UnauthorizedPublishAttack)
 	ASSERT_EQ(cf.q_.size(),0);
 	ASSERT_EQ(cf.ask(unAuthPub,sizeof(unAuthPub)),Classifier::unAuthPub);
 }
+
+TEST(Classifier, ask_Fraud)
+{
+	std::string adata(16,(char)0x00);
+	std::string cipherText = encrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,"I love you, Bob");
+	ASSERT_NE("I love you, Bob",cipherText);
+
+	Classifier cf;
+	cf.init(/*tagSize*/16,adata,/*keySize*/32,/*key*/3,/*iv*/4);
+
+	ASSERT_EQ(cf.q_.size(),0);
+	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::fraud);
+}
