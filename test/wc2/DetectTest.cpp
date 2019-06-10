@@ -93,3 +93,21 @@ TEST(Classifier, ask_Fraud)
 	ASSERT_EQ(cf.q_.size(),0);
 	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::fraud);
 }
+
+TEST(Classifier, ask_Replay_NoQueueOverflow)
+{
+	Classifier cf;
+	std::string adata(16,(char)0x00);
+	std::string cipherText = firstVerifiedData(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,"I love you, Bob",cf);
+	ASSERT_NE("I love you, Bob",cipherText);
+
+	ASSERT_EQ(cf.q_.size(),1);
+	ASSERT_EQ(cf.q_.front().visitCount,0);
+	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::verified);
+	ASSERT_EQ(cf.q_.front().visitCount,1);
+
+	for(int i=0;i<100;i++) {
+		ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::replay);
+		ASSERT_EQ(cf.q_.front().visitCount,i+2);	//visitCount increases
+	}
+}
