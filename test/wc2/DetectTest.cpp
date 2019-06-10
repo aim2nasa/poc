@@ -38,7 +38,16 @@ std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata
     return Alice.encrypt(e,adata,message,tagSize);
 }
 
-TEST(Classifier, ask)
+void msgToTransmittedQueue(std::vector<messageCount>& q,std::string& cipherText)
+{
+	struct messageCount msg;
+	msg.size = cipherText.size();
+	memcpy(msg.body,cipherText.c_str(),msg.size);
+	ASSERT_EQ(msg.visitCount,0);
+	q.push_back(msg);
+}
+
+TEST(Classifier, ask_onFirstVerifiedData)
 {
 	std::string adata(16,(char)0x00);
 	std::string cipherText = encrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,"I love you, Bob");
@@ -47,18 +56,12 @@ TEST(Classifier, ask)
 	Classifier cf;
 	cf.init(/*tagSize*/16,adata,/*keySize*/32,/*key*/3,/*iv*/4);
 
-	struct messageCount msg;
-	msg.size = cipherText.size();
-	memcpy(msg.body,cipherText.c_str(),msg.size);
-	ASSERT_EQ(msg.visitCount,0);
-	cf.q_.push_back(msg);
+	msgToTransmittedQueue(cf.q_,cipherText);
 
 	ASSERT_EQ(cf.q_.size(),1);
 	ASSERT_EQ(cf.q_.front().visitCount,0);
-	ASSERT_EQ(cf.ask(cipherText.c_str(),msg.size),Classifier::verified);
+	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::verified);
 	ASSERT_EQ(cf.q_.front().visitCount,1);
-	ASSERT_EQ(cf.ask(cipherText.c_str(),msg.size),Classifier::replay);
-	ASSERT_EQ(cf.q_.front().visitCount,2);
 }
 
 TEST(Classifier, ask_UnauthorizedPublishAttack)
