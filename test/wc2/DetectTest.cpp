@@ -248,3 +248,43 @@ TEST(Classifier, ask_Sequence_positiveSkip)
 	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::sequence);
 	ASSERT_EQ(cf.q_.at(1).visitCount,1);
 }
+
+TEST(Classifier, ask_Sequence_negativeSkip)
+{
+	Classifier cf;
+	char buffer[256];
+
+	//first frame(sequence:5)
+	size_t msgSize = makeMessage(/*sequence*/5,"message",buffer);
+	std::string adata(16,(char)0x00);
+	std::string cipherText = firstVerifiedData(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,reinterpret_cast<const byte*>(buffer),msgSize,cf);
+	ASSERT_GT(cipherText.size(),0);
+	std::string decMsg = decrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,cipherText);
+	ASSERT_EQ(decMsg.size(),13);	//(sequence)+"message-0"=4+9=13
+	ASSERT_EQ(decMsg.substr(4,13),"message-5");	//compare exclude the sequence, cause sequence is just hexa value
+	unsigned int number;
+	memcpy(&number,decMsg.c_str(),sizeof(number));
+	ASSERT_EQ(number,5);	//sequence number
+
+	ASSERT_EQ(cf.q_.size(),1);
+	ASSERT_EQ(cf.q_.front().visitCount,0);
+	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::verified);
+	ASSERT_EQ(cf.q_.front().visitCount,1);
+
+	//second frame(sequence:2)
+	msgSize = makeMessage(/*sequence*/2,"message",buffer);
+	cipherText = encrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,reinterpret_cast<const byte*>(buffer),msgSize);
+	ASSERT_GT(cipherText.size(),0);
+	decMsg = decrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,cipherText);
+	ASSERT_EQ(decMsg.size(),13);	//(sequence)+"message-0"=4+9=13
+	ASSERT_EQ(decMsg.substr(4,13),"message-2");	//compare exclude the sequence, cause sequence is just hexa value
+	memcpy(&number,decMsg.c_str(),sizeof(number));
+	ASSERT_EQ(number,2);	//sequence number
+
+	msgToTransmittedQueue(cf.q_,cipherText);
+
+	ASSERT_EQ(cf.q_.size(),2);
+	ASSERT_EQ(cf.q_.at(1).visitCount,0);
+	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::sequence);
+	ASSERT_EQ(cf.q_.at(1).visitCount,1);
+}
