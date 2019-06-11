@@ -25,7 +25,7 @@ TEST(Detect, messages)
     d.join();
 }
 
-std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message,size_t messageSize)
+std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata,const byte* message,size_t messageSize)
 {
     Node Alice;
     Alice.size_ = keySize;
@@ -35,12 +35,12 @@ std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata
 
     CryptoPP::GCM<CryptoPP::AES>::Encryption e;
     e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
-	return Alice.encrypt(e,adata,reinterpret_cast<const byte*>(message.c_str()),messageSize,tagSize);
+	return Alice.encrypt(e,adata,message,messageSize,tagSize);
 }
 
 std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message)
 {
-	return encrypt(keySize,key,iv,tagSize,adata,message,message.size());
+	return encrypt(keySize,key,iv,tagSize,adata,reinterpret_cast<const byte*>(message.c_str()),message.size());
 }
 
 void msgToTransmittedQueue(std::vector<messageCount>& q,std::string& cipherText)
@@ -52,7 +52,7 @@ void msgToTransmittedQueue(std::vector<messageCount>& q,std::string& cipherText)
 	q.push_back(msg);
 }
 
-std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message,
+std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::string& adata,const byte* message,
 							  size_t messageSize,Classifier& cf)
 {
 	std::string cipherText = encrypt(keySize,key,iv,tagSize,adata,message,messageSize);
@@ -64,7 +64,7 @@ std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::str
 std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message,
 							  Classifier& cf)
 {
-	return firstVerifiedData(keySize,key,iv,tagSize,adata,message,message.size(),cf);
+	return firstVerifiedData(keySize,key,iv,tagSize,adata,reinterpret_cast<const byte*>(message.c_str()),message.size(),cf);
 }
 
 TEST(Classifier, ask_onFirstVerifiedData)
