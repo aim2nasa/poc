@@ -55,7 +55,7 @@ void msgToTransmittedQueue(std::vector<messageCount>& q,std::string& cipherText)
 std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message,
 							  Classifier& cf)
 {
-	std::string cipherText = encrypt(keySize,key,iv,tagSize,adata,"I love you, Bob");
+	std::string cipherText = encrypt(keySize,key,iv,tagSize,adata,message);
 	cf.init(tagSize,adata,keySize,key,iv);
 	msgToTransmittedQueue(cf.q_,cipherText);
 	return cipherText;
