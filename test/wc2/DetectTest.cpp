@@ -53,12 +53,18 @@ void msgToTransmittedQueue(std::vector<messageCount>& q,std::string& cipherText)
 }
 
 std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message,
-							  Classifier& cf)
+							  size_t messageSize,Classifier& cf)
 {
-	std::string cipherText = encrypt(keySize,key,iv,tagSize,adata,message);
+	std::string cipherText = encrypt(keySize,key,iv,tagSize,adata,message,messageSize);
 	cf.init(tagSize,adata,keySize,key,iv);
 	msgToTransmittedQueue(cf.q_,cipherText);
 	return cipherText;
+}
+
+std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message,
+							  Classifier& cf)
+{
+	return firstVerifiedData(keySize,key,iv,tagSize,adata,message,message.size(),cf);
 }
 
 TEST(Classifier, ask_onFirstVerifiedData)
