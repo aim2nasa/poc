@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "src/Detect.h"
 #include "Classifier.h"
+#include "IDetect.h"
 
 TEST(Detect, run)
 {
@@ -169,6 +170,22 @@ size_t makeMessage(unsigned int sequence,const char* msg,char* buffer)
 	return bytes+sizeof(sequence);
 }
 
+class Watcher:public IDetect{
+public:
+	Watcher():frameNumber_(-1),frameNumDiff_(0){}
+	virtual void onUnauthorizedPubData(const char *data,size_t size,const char* errMsg){}
+	virtual void onFraudData(const char *data,size_t size){}
+	virtual void onReplayData(const char *data,size_t size,int visitCount,int orfer,size_t qsize){}
+	virtual void onWrongSequenceData(const char *data,size_t size,unsigned int frameNumber,int frameNumDiff){
+		frameNumber_ = frameNumber;
+		frameNumDiff_ = frameNumDiff;
+	}
+	virtual void onVerifiedData(const char *data,size_t size,unsigned int frameNumber){ frameNumber_=frameNumber; }
+
+	unsigned int frameNumber_;
+	int frameNumDiff_;
+};
+
 TEST(Classifier, ask_Sequence_Correct)
 {
 	Classifier cf;
@@ -211,13 +228,14 @@ TEST(Classifier, ask_Sequence_Correct)
 
 TEST(Classifier, ask_Sequence_positiveSkip)
 {
+	Watcher wat;
 	Classifier cf;
 	char buffer[256];
 
 	//first frame(sequence:5)
 	size_t msgSize = makeMessage(/*sequence*/5,"message",buffer);
 	std::string adata(16,(char)0x00);
-	std::string cipherText = firstVerifiedData(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,reinterpret_cast<const byte*>(buffer),msgSize,cf);
+	std::string cipherText = firstVerifiedData(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,reinterpret_cast<const byte*>(buffer),msgSize,cf,&wat);
 	ASSERT_GT(cipherText.size(),0);
 	std::string decMsg = decrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,cipherText);
 	ASSERT_EQ(decMsg.size(),13);	//(sequence)+"message-0"=4+9=13
@@ -230,6 +248,7 @@ TEST(Classifier, ask_Sequence_positiveSkip)
 	ASSERT_EQ(cf.q_.front().visitCount,0);
 	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::verified);
 	ASSERT_EQ(cf.q_.front().visitCount,1);
+	ASSERT_EQ(wat.frameNumber_,5);
 
 	//second frame(sequence:9)
 	msgSize = makeMessage(/*sequence*/9,"message",buffer);
@@ -247,6 +266,8 @@ TEST(Classifier, ask_Sequence_positiveSkip)
 	ASSERT_EQ(cf.q_.at(1).visitCount,0);
 	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::sequence);
 	ASSERT_EQ(cf.q_.at(1).visitCount,1);
+	ASSERT_EQ(wat.frameNumber_,9);
+	ASSERT_EQ(wat.frameNumDiff_,4);
 }
 
 TEST(Classifier, ask_Sequence_negativeSkip)
