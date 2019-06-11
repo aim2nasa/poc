@@ -174,7 +174,7 @@ TEST(Classifier, ask_Sequence_Correct)
 	Classifier cf;
 	char buffer[256];
 
-//	first frame
+	//first frame(sequence:0)
 	size_t msgSize = makeMessage(/*sequence*/0,"message",buffer);
 	std::string adata(16,(char)0x00);
 	std::string cipherText = firstVerifiedData(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,reinterpret_cast<const byte*>(buffer),msgSize,cf);
@@ -191,7 +191,7 @@ TEST(Classifier, ask_Sequence_Correct)
 	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::verified);
 	ASSERT_EQ(cf.q_.front().visitCount,1);
 
-//	second frame
+	//second frame(sequence:1)
 	msgSize = makeMessage(/*sequence*/1,"message",buffer);
 	cipherText = encrypt(/*keySize*/32,/*key*/3,/*iv*/4,/*tagSize*/16,adata,reinterpret_cast<const byte*>(buffer),msgSize);
 	ASSERT_GT(cipherText.size(),0);
@@ -206,5 +206,3 @@ TEST(Classifier, ask_Sequence_Correct)
 	ASSERT_EQ(cf.q_.size(),2);
 	ASSERT_EQ(cf.q_.at(1).visitCount,0);
 	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::verified);
-	ASSERT_EQ(cf.q_.at(1).visitCount,1);
-}
