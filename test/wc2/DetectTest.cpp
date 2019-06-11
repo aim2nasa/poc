@@ -25,7 +25,7 @@ TEST(Detect, messages)
     d.join();
 }
 
-std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message)
+std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message,size_t messageSize)
 {
     Node Alice;
     Alice.size_ = keySize;
@@ -35,7 +35,12 @@ std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata
 
     CryptoPP::GCM<CryptoPP::AES>::Encryption e;
     e.SetKeyWithIV(Alice.key_,Alice.size_,Alice.iv_);
-    return Alice.encrypt(e,adata,message,tagSize);
+	return Alice.encrypt(e,adata,reinterpret_cast<const byte*>(message.c_str()),messageSize,tagSize);
+}
+
+std::string encrypt(size_t keySize,int key,int iv,int tagSize,std::string& adata,std::string message)
+{
+	return encrypt(keySize,key,iv,tagSize,adata,message,message.size());
 }
 
 void msgToTransmittedQueue(std::vector<messageCount>& q,std::string& cipherText)
