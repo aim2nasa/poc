@@ -206,3 +206,5 @@ TEST(Classifier, ask_Sequence_Correct)
 	ASSERT_EQ(cf.q_.size(),2);
 	ASSERT_EQ(cf.q_.at(1).visitCount,0);
 	ASSERT_EQ(cf.ask(cipherText.c_str(),cipherText.size()),Classifier::verified);
+	ASSERT_EQ(cf.q_.at(1).visitCount,1);
+}
