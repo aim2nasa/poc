@@ -114,7 +114,7 @@ Classifier::kind Classifier::ask(const char* buf, size_t size)
             prevFrameDefined_ = true;
 
             if(frameNumDiff!=1) {
-                if(detect_) detect_->onWrongSequenceData(buf,size);
+                if(detect_) detect_->onWrongSequenceData(buf,size,frameNumber,frameNumDiff);
                 return sequence;
             }else{
                 if(detect_) detect_->onVerifiedData(buf,size,frameNumber);
