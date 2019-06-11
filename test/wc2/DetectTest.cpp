@@ -68,10 +68,10 @@ void msgToTransmittedQueue(std::vector<messageCount>& q,std::string& cipherText)
 }
 
 std::string firstVerifiedData(size_t keySize,int key,int iv,int tagSize,std::string& adata,const byte* message,
-							  size_t messageSize,Classifier& cf)
+							  size_t messageSize,Classifier& cf,IDetect* detect=NULL)
 {
 	std::string cipherText = encrypt(keySize,key,iv,tagSize,adata,message,messageSize);
-	cf.init(tagSize,adata,keySize,key,iv);
+	cf.init(tagSize,adata,keySize,key,iv,detect);
 	msgToTransmittedQueue(cf.q_,cipherText);
 	return cipherText;
 }
