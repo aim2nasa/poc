@@ -21,8 +21,7 @@ public:
 	~Classifier();
 
     enum kind{
-        initErr=-2,
-        unexpected=-1,
+        initErr=-1,
         verified=0,
         sequence=1,
         replay=2,
