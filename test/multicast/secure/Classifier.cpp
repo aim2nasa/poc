@@ -53,9 +53,6 @@ const char* Classifier::errToMsg(kind askRtn)
     case initErr:
         pRtn = "init error";
         break;
-    case unexpected:
-        pRtn = "uexpected error";
-        break;
     case verified:
         pRtn = "verified";
         break;
@@ -122,5 +119,4 @@ Classifier::kind Classifier::ask(const char* buf, size_t size)
             }
         }
     }
-    return unexpected;
 }
