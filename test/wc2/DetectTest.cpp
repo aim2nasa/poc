@@ -316,3 +316,10 @@ TEST(Classifier, ask_Sequence_negativeSkip)
 	ASSERT_EQ(wat.frameNumber_,2);
 	ASSERT_EQ(wat.frameNumDiff_,-3);
 }
+
+TEST(Classifier, ask_initErr)
+{
+	Classifier cf;
+	char buffer[256];
+	ASSERT_EQ(cf.ask(buffer,sizeof(buffer)),Classifier::initErr);
+}
